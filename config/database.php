@@ -124,11 +124,11 @@ return [
 
         'logs' => [
             'driver' => 'mongodb',
-            'host' => env('DB_LOG_HOST', '127.0.0.1'),
+            'host' => env('DB_LOG_HOST', 'localhost'),
             'port' => env('DB_LOG_PORT', 27017),
-            'database' => '',
-            'username' => '',
-            'password' => '',
+            'database' => 'bytepoint_store',
+            'username' => env('DB_LOG_USERNAME', ''),
+            'password' => env('DB_LOG_PASSWORD', ''),
             'options' => [
                 'database' => env('DB_LOG_AUTHENTICATION_DATABASE', 'admin'),
             ],

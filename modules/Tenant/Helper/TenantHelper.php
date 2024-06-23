@@ -19,6 +19,8 @@ class TenantHelper {
         $tenant->makeCurrent();
 
         config(['database.default' => 'tenant']);
+        
+        config(['database.logs.database' => $tenant->database]);
 
         return $tenant;
     }
