@@ -1,0 +1,10 @@
+{
+    "name": "Customer",
+    "alias": "customer",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+    ],
+    "files": []
+}

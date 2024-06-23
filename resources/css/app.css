@@ -1,0 +1,21 @@
+body {
+    margin: 0;
+}
+
+.centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.details-table {
+    width: 100%;
+}
+
+.text-center {
+    text-align: center !important;
+}
+
+.z-2 {
+    z-index: 2;
+}

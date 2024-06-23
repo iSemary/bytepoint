@@ -1,0 +1,10 @@
+{
+    "name": "Tenant",
+    "alias": "tenant",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+    ],
+    "files": []
+}
