@@ -1,58 +1,27 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Layout from "../../Layout/Layout";
 import { DataGrid } from "@mui/x-data-grid";
 import { Button } from "@mui/material";
 import LogModal from "./LogModal";
-
-const columns = [
-    { field: "id", headerName: "ID" },
-    { field: "service", headerName: "Service" },
-    { field: "type", headerName: "Type" },
-    { field: "createdAt", headerName: "Created At" },
-    {
-        field: "action",
-        headerName: "Action",
-        sortable: false,
-        renderCell: (params) => (
-            <Button
-                variant="contained"
-                color="secondary"
-                style={{ marginRight: 8 }}
-                onClick={() => handleOpenDrawer(params.row)}
-            >
-                Review
-            </Button>
-        ),
-    },
-];
-
-const rows = [
-    {
-        id: 1,
-        service: "API Mock-up",
-        type: "info",
-        json: [
-            {
-                key: "value",
-            },
-        ],
-        createdAt: "2024-06-17T10:00:00Z",
-    },
-];
-
-const links = [
-    { label: "Home", href: "/", icon: "home" },
-    { label: "Logs", icon: "whatshot" },
-];
+import axiosConfig from "../../configs/AxiosConfig";
 
 export default function Logs() {
     const [drawerOpen, setDrawerOpen] = useState(false);
-    const [selectedRow, setSelectedRow] = useState(null);
+    const [logs, setLogs] = useState([]);
+    const [log, setLog] = useState({});
 
     const handleOpenDrawer = (row) => {
-        setSelectedRow(row);
         setDrawerOpen(true);
+
+        axiosConfig
+            .get(`logs/${row._id}`)
+            .then((response) => {
+                setLog(response.data.data.log);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     };
 
     const handleCloseDrawer = () => {
@@ -60,11 +29,55 @@ export default function Logs() {
         setSelectedRow(null);
     };
 
+    const columns = [
+        { field: "_id", headerName: "ID" },
+        { field: "service", headerName: "Service" },
+        { field: "title", headerName: "Title" },
+        { field: "type", headerName: "Type" },
+        { field: "created_at", headerName: "Created At" },
+        {
+            field: "action",
+            headerName: "Action",
+            sortable: false,
+            renderCell: (params) => (
+                <Button
+                    variant="contained"
+                    color="secondary"
+                    style={{ marginRight: 8 }}
+                    onClick={() => handleOpenDrawer(params.row)}
+                >
+                    Review
+                </Button>
+            ),
+        },
+    ];
+
+    const links = [
+        { label: "Home", href: "/", icon: "home" },
+        { label: "Logs", icon: "whatshot" },
+    ];
+
+    function getRowId(row) {
+        return row._id;
+    }
+
+    useEffect(() => {
+        axiosConfig
+            .get("logs")
+            .then((response) => {
+                setLogs(response.data.data.logs.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }, []);
+
     return (
         <Layout links={links} title="Logs">
             <Box my={4}>
                 <DataGrid
-                    rows={rows}
+                    rows={logs}
+                    getRowId={getRowId}
                     columns={columns.map((column) =>
                         column.field === "action"
                             ? {
@@ -93,7 +106,7 @@ export default function Logs() {
                 />
                 <LogModal
                     drawerOpen={drawerOpen}
-                    selectedRow={selectedRow}
+                    selectedRow={log}
                     handleCloseDrawer={handleCloseDrawer}
                 />
             </Box>

@@ -86,7 +86,7 @@ export default function LogModal({
                                 </td>
                                 <td>
                                     <Typography variant="body1">
-                                        {selectedRow.id}
+                                        {selectedRow._id}
                                     </Typography>
                                 </td>
                             </tr>
@@ -126,12 +126,27 @@ export default function LogModal({
                                         variant="subtitle1"
                                         color="textSecondary"
                                     >
+                                        Title
+                                    </Typography>
+                                </td>
+                                <td>
+                                    <Typography variant="body1">
+                                        {selectedRow.title}
+                                    </Typography>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <Typography
+                                        variant="subtitle1"
+                                        color="textSecondary"
+                                    >
                                         Created At
                                     </Typography>
                                 </td>
                                 <td>
                                     <Typography variant="body1">
-                                        {selectedRow.createdAt}
+                                        {selectedRow.created_at}
                                     </Typography>
                                 </td>
                             </tr>
@@ -144,7 +159,7 @@ export default function LogModal({
                             >
                                 Details
                             </Typography>
-                            <ReactJson src={selectedRow.json} />
+                            <ReactJson src={selectedRow.body} />
                         </Box>
                     </Box>
                 )}
