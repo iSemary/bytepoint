@@ -5,47 +5,6 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Button } from "@mui/material";
 import DataRepositoryModal from "./DataRepositoryModal";
 
-const columns = [
-    { field: "id", headerName: "ID" },
-    { field: "title", headerName: "Title" },
-    { field: "type", headerName: "Type" },
-    { field: "createdAt", headerName: "Created At" },
-    {
-        field: "action",
-        headerName: "Action",
-        sortable: false,
-        renderCell: (params) => (
-            <Button
-                variant="contained"
-                color="secondary"
-                style={{ marginRight: 8 }}
-                onClick={() => handleOpenDrawer(params.row)}
-            >
-                Review
-            </Button>
-        ),
-    },
-];
-
-const rows = [
-    {
-        id: 1,
-        title: "Repository 1",
-        type: "For Retrieve Data",
-        createdAt: "2024-06-17T10:00:00Z",
-    },
-];
-
-const links = [
-    { label: "Home", href: "/", icon: "home" },
-    { label: "Data Repository", icon: "whatshot" },
-];
-
-
-const buttons = [
-    { label: "Create new data repository", href: "/data-repository/create", icon: "grain" },
-];
-
 export default function DataRepository() {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [selectedRow, setSelectedRow] = useState(null);
@@ -59,6 +18,57 @@ export default function DataRepository() {
         setDrawerOpen(false);
         setSelectedRow(null);
     };
+
+    const columns = [
+        { field: "id", headerName: "ID", flex: 1, minWidth: 100 },
+        { field: "title", headerName: "Title", flex: 1, minWidth: 100 },
+        { field: "type", headerName: "Type", flex: 1, minWidth: 100 },
+        {
+            field: "createdAt",
+            headerName: "Created At",
+            flex: 1,
+            minWidth: 100,
+        },
+        {
+            field: "action",
+            headerName: "Action",
+            sortable: false,
+            flex: 1,
+            minWidth: 100,
+            renderCell: (params) => (
+                <Button
+                    variant="contained"
+                    color="secondary"
+                    style={{ marginRight: 8 }}
+                    onClick={() => handleOpenDrawer(params.row)}
+                >
+                    Review
+                </Button>
+            ),
+        },
+    ];
+
+    const rows = [
+        {
+            id: 1,
+            title: "Repository 1",
+            type: "For Retrieve Data",
+            createdAt: "2024-06-17T10:00:00Z",
+        },
+    ];
+
+    const links = [
+        { label: "Home", href: "/", icon: "home" },
+        { label: "Data Repository", icon: "whatshot" },
+    ];
+
+    const buttons = [
+        {
+            label: "Create new data repository",
+            href: "/data-repository/create",
+            icon: "grain",
+        },
+    ];
 
     return (
         <Layout links={links} buttons={buttons} title="Data Repository">

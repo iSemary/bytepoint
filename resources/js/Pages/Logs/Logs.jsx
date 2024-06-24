@@ -1,15 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Layout from "../../Layout/Layout";
 import { DataGrid } from "@mui/x-data-grid";
-import { Button } from "@mui/material";
+import { Button, IconButton } from "@mui/material";
 import LogModal from "./LogModal";
 import axiosConfig from "../../configs/AxiosConfig";
+import RefreshIcon from "@mui/icons-material/Refresh";
 
 export default function Logs() {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [logs, setLogs] = useState([]);
     const [log, setLog] = useState({});
+    const [loading, setLoading] = useState(false);
 
     const handleOpenDrawer = (row) => {
         setDrawerOpen(true);
@@ -30,15 +32,22 @@ export default function Logs() {
     };
 
     const columns = [
-        { field: "_id", headerName: "ID" },
-        { field: "service", headerName: "Service" },
-        { field: "title", headerName: "Title" },
-        { field: "type", headerName: "Type" },
-        { field: "created_at", headerName: "Created At" },
+        { field: "_id", headerName: "ID", flex: 1, minWidth: 100 },
+        { field: "service", headerName: "Service", flex: 1, minWidth: 100 },
+        { field: "title", headerName: "Title", flex: 2, minWidth: 200 },
+        { field: "type", headerName: "Type", flex: 1, minWidth: 100 },
+        {
+            field: "created_at",
+            headerName: "Created At",
+            flex: 1,
+            minWidth: 150,
+        },
         {
             field: "action",
             headerName: "Action",
             sortable: false,
+            flex: 1,
+            minWidth: 100,
             renderCell: (params) => (
                 <Button
                     variant="contained"
@@ -46,7 +55,7 @@ export default function Logs() {
                     style={{ marginRight: 8 }}
                     onClick={() => handleOpenDrawer(params.row)}
                 >
-                    Review
+                    View
                 </Button>
             ),
         },
@@ -61,7 +70,8 @@ export default function Logs() {
         return row._id;
     }
 
-    useEffect(() => {
+    const fetchLogs = useCallback(() => {
+        setLoading(true);
         axiosConfig
             .get("logs")
             .then((response) => {
@@ -69,15 +79,37 @@ export default function Logs() {
             })
             .catch((error) => {
                 console.error(error);
+            })
+            .finally(() => {
+                setLoading(false);
             });
     }, []);
+
+    const handleRefresh = () => {
+        fetchLogs();
+    };
+
+    useEffect(() => {
+        fetchLogs();
+    }, [fetchLogs]);
 
     return (
         <Layout links={links} title="Logs">
             <Box my={4}>
+                <Box display="flex" justifyContent="flex-end" mb={2}>
+                    <IconButton
+                        color="primary"
+                        title="Refresh"
+                        onClick={handleRefresh}
+                        aria-label="refresh"
+                    >
+                        <RefreshIcon />
+                    </IconButton>
+                </Box>
                 <DataGrid
                     rows={logs}
                     getRowId={getRowId}
+                    loading={loading}
                     columns={columns.map((column) =>
                         column.field === "action"
                             ? {

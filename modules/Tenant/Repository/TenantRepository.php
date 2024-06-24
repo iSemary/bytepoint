@@ -48,11 +48,17 @@ class TenantRepository {
     }
 
     private function migrateTenant($tenantId) {
-        $path = 'database/migrations/tenant';
+        $paths = [
+            'database/migrations/tenant',
+            'modules/*/Database/Migrations'
+        ];
+
         $database = 'tenant';
 
-        $command = "tenants:artisan 'migrate --path={$path} --database={$database}' --tenant={$tenantId}";
-        Artisan::call($command);
+        foreach ($paths as $path) {
+            $command = "tenants:artisan 'migrate --path={$path} --database={$database}' --tenant={$tenantId}";
+            Artisan::call($command);
+        }
     }
 
     private function seedTenantDatabase($tenantId) {

@@ -22,6 +22,7 @@ import ApiKeyIcon from "@mui/icons-material/VpnKey";
 import UserIcon from "@mui/icons-material/People";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { Link } from "@inertiajs/react";
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 
 export default function Sidebar({ user, userLoading, open, setOpen }) {
     const toggleDrawer = (newOpen) => () => {
@@ -104,6 +105,11 @@ export default function Sidebar({ user, userLoading, open, setOpen }) {
                         icon: <FileManagerIcon />,
                     },
                     { text: "Logs", link: "/logs", icon: <LogsIcon /> },
+                    {
+                        text: "Activity Log",
+                        link: "/activity-log",
+                        icon: <ManageAccountsIcon />,
+                    },
                     {
                         text: "API Key Management",
                         link: "/api-key-management",

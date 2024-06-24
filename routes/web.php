@@ -8,11 +8,6 @@ Route::get('/', function () {
     return Inertia::render('Welcome');
 });
 
-Route::middleware('tenant')->group(function () {
-    Route::get('/test', [AppController::class, 'index']);
-});
-
-
 Route::get('/login', function () {
     return Inertia::render('Auth/Login');
 });
@@ -63,7 +58,6 @@ Route::get('/logs', function () {
 Route::get('/templates', function () {
     return Inertia::render('Templates/Templates');
 });
-
 
 Route::get('/settings', function () {
     return Inertia::render('Settings/Settings');
