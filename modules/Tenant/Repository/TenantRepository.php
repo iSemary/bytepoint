@@ -50,7 +50,7 @@ class TenantRepository {
     private function migrateTenant($tenantId) {
         $paths = [
             'database/migrations/tenant',
-            'modules/*/Database/Migrations'
+            'modules/*/Database/Migrations/tenant'
         ];
 
         $database = 'tenant';

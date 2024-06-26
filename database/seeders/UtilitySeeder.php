@@ -8,19 +8,24 @@ use Illuminate\Database\Seeder;
 use App\Models\Country;
 use App\Models\CreationType;
 use App\Models\DataType;
+use Modules\GPT\Entities\Prompt;
 
-class UtilitySeeder extends Seeder {
+class UtilitySeeder extends Seeder
+{
     /**
      * Run the database seeds.
      */
-    public function run(): void {
+    public function run(): void
+    {
         $this->seedCountries();
         $this->seedCategories();
         $this->seedDataTypes();
         $this->seedCreationTypes();
+        $this->seedPrompts();
     }
 
-    private function seedCountries() {
+    private function seedCountries()
+    {
         $countries = [
             [
                 'iso' => 'EG',
@@ -59,7 +64,8 @@ class UtilitySeeder extends Seeder {
         }
     }
 
-    private function seedCategories() {
+    private function seedCategories()
+    {
 
         $categories = [
             ['title' => 'Business'],
@@ -75,7 +81,8 @@ class UtilitySeeder extends Seeder {
         }
     }
 
-    private function seedDataTypes() {
+    private function seedDataTypes()
+    {
         $types = [
             ['title' => 'string'],
             ['title' => 'integer'],
@@ -92,7 +99,8 @@ class UtilitySeeder extends Seeder {
             );
         }
     }
-    private function seedCreationTypes() {
+    private function seedCreationTypes()
+    {
         $types = [
             ['title' => 'Manual', 'description' => "Create your own API using the API builder", 'icon' => 'Construction'],
             ['title' => 'Import', 'description' => "Import xlsx or csv file", 'icon' => 'UploadFileIcon'],
@@ -103,6 +111,24 @@ class UtilitySeeder extends Seeder {
             CreationType::updateOrCreate(
                 ['title' => $type['title']],
                 $type
+            );
+        }
+    }
+
+    private function seedPrompts()
+    {
+        $prompts = [
+            [
+                'title' => 'Generate Values For Data Repository',
+                'body' => Prompt::DATA_REPOSITORY_PROMPT,
+                'type' => Prompt::DATA_REPOSITORY_TYPE
+            ],
+        ];
+
+        foreach ($prompts as $prompt) {
+            Prompt::updateOrCreate(
+                ['type' => $prompt['type']],
+                $prompt
             );
         }
     }

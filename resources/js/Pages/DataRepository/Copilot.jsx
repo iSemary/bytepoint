@@ -102,7 +102,7 @@ export default function Copilot({ id }) {
         >
             <Box container>
                 <Typography my={1}>Step 1: Describe your needs</Typography>
-                <AITextArea />
+                <AITextArea type={1} />
                 <br />
                 {/* <ApiBuilder allowBody={false} /> */}
             </Box>

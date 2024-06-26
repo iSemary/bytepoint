@@ -3,5 +3,6 @@
     "Customer": true,
     "Tenant": true,
     "Log": true,
-    "DataRepository": true
+    "DataRepository": true,
+    "GPT": true
 }
