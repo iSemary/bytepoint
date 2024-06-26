@@ -1,5 +1,5 @@
 import React from "react";
-import Box from "@mui/material/Box";
+import { Box } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 
@@ -9,7 +9,6 @@ const Footer = () => {
             sx={{
                 width: "100%",
                 bottom: 0,
-                backgroundColor: "primary.main",
                 color: "white",
                 textAlign: "center",
                 py: 2,

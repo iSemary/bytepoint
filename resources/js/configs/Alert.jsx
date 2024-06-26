@@ -8,10 +8,13 @@ export default function Alert(
 ) {
     return Swal.fire({
         title: message,
-        icon: type, // You can pass 'success', 'error', 'info', etc. as the type
+        icon: type,
         position: position,
         toast: true,
         showConfirmButton: false,
         timer: time,
+        customClass: {
+            container: "small-toast-container",
+        },
     });
 }

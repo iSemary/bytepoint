@@ -1,5 +1,5 @@
 import React from "react";
-import Box from "@mui/material/Box";
+import { Box } from "@mui/material";
 import Layout from "../../Layout/Layout";
 import { Link } from "@inertiajs/react";
 import { DataGrid } from "@mui/x-data-grid";

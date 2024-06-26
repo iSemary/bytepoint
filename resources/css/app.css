@@ -19,3 +19,25 @@ body {
 .z-2 {
     z-index: 2;
 }
+
+.w-fit-content {
+    width: fit-content !important;
+}
+
+.text-white {
+    color: #ffffff;
+}
+
+.text-right {
+    text-align: right!important;
+}
+
+.small-toast-container .swal2-popup.swal2-toast {
+    top: calc(45px + 1rem);
+}
+
+.small-toast-container .swal2-popup.swal2-toast .swal2-title {
+    margin: 0em;
+    padding: 10px 0 0 0;
+    font-size: 0.9em;
+}

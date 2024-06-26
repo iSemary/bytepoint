@@ -1,10 +1,13 @@
 <?php
+
 namespace Database\Seeders;
 
 
 use App\Models\Category;
 use Illuminate\Database\Seeder;
 use App\Models\Country;
+use App\Models\CreationType;
+use App\Models\DataType;
 
 class UtilitySeeder extends Seeder {
     /**
@@ -13,6 +16,8 @@ class UtilitySeeder extends Seeder {
     public function run(): void {
         $this->seedCountries();
         $this->seedCategories();
+        $this->seedDataTypes();
+        $this->seedCreationTypes();
     }
 
     private function seedCountries() {
@@ -66,6 +71,38 @@ class UtilitySeeder extends Seeder {
             Category::updateOrCreate(
                 ['title' => $category['title']],
                 $category
+            );
+        }
+    }
+
+    private function seedDataTypes() {
+        $types = [
+            ['title' => 'string'],
+            ['title' => 'integer'],
+            ['title' => 'float'],
+            ['title' => 'boolean'],
+            ['title' => 'date'],
+            ['title' => 'iso date'],
+        ];
+
+        foreach ($types as $type) {
+            DataType::updateOrCreate(
+                ['title' => $type['title']],
+                $type
+            );
+        }
+    }
+    private function seedCreationTypes() {
+        $types = [
+            ['title' => 'Manual', 'description' => "Create your own API using the API builder", 'icon' => 'Construction'],
+            ['title' => 'Import', 'description' => "Import xlsx or csv file", 'icon' => 'UploadFileIcon'],
+            ['title' => 'AI Copilot', 'description' => "Unleash your creativity with our AI Copilot", 'icon' => 'AutoAwesomeIcon'],
+        ];
+
+        foreach ($types as $type) {
+            CreationType::updateOrCreate(
+                ['title' => $type['title']],
+                $type
             );
         }
     }

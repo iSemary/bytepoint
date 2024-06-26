@@ -8,8 +8,15 @@ use Illuminate\Http\Request;
 use Modules\DataRepository\Entities\DataRepository;
 use Modules\DataRepository\Http\Requests\StoreDataRepositoryRequest;
 use Modules\DataRepository\Http\Requests\UpdateDataRepositoryRequest;
+use Modules\DataRepository\Services\DataRepositoryService;
 
 class DataRepositoryController extends ApiController {
+    protected $dataRepositoryService;
+
+    public function __construct(DataRepositoryService $dataRepositoryService) {
+        $this->dataRepositoryService = $dataRepositoryService;
+    }
+
     /**
      * Fetch all data repositories
      *
@@ -29,7 +36,8 @@ class DataRepositoryController extends ApiController {
      */
     public function show(string $id): JsonResponse {
         $dataRepository = DataRepository::where("id", $id)->first();
-        return $this->return(200, "Data Repository Fetched Successfully", ['data_repository' => $dataRepository]);
+        $dataRepositoryValues = $this->dataRepositoryService->get($id);
+        return $this->return(200, "Data Repository Fetched Successfully", ['data_repository' => $dataRepository, 'data_repository_values' => $dataRepositoryValues]);
     }
 
     /**
@@ -88,6 +96,25 @@ class DataRepositoryController extends ApiController {
             $dataRepository->restore();
 
             return $this->return(200, "Data Repository Restored Successfully");
+        }
+
+        return $this->return(404, "Data Repository not found or not soft deleted");
+    }
+
+    /**
+     * Sync keys and values of the specified data repository.
+     *
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function fill(int $id, Request $request): JsonResponse {
+        $dataRepository = DataRepository::withTrashed()->findOrFail($id);
+
+        if ($dataRepository) {
+
+            $this->dataRepositoryService->sync($id, $request);
+
+            return $this->return(200, "Data Repository Filled Successfully");
         }
 
         return $this->return(404, "Data Repository not found or not soft deleted");

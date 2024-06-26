@@ -52,6 +52,12 @@ BytePoint CloudAPI is a comprehensive solution for cloud hosting, offering a ran
     npm install
     ```
 
+7. **Install OpenAI**
+
+    ```sh
+    php artisan openai:install
+    ```
+
 ## Contact
 
 For any inquiries or support, please email me at [abdelrahmansamirmostafa@gmail.com](mailto:abdelrahmansamirmostafa@gmail.com) or visit my website at [abdelrahman.online](https://www.abdelrahman.online/).

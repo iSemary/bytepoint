@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import Box from "@mui/material/Box";
+import { Box } from "@mui/material";
 import Layout from "../../Layout/Layout";
 import { DataGrid } from "@mui/x-data-grid";
 import { Button, IconButton } from "@mui/material";
