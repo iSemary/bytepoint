@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Category;
 use App\Models\Country;
+use App\Models\DataType;
 use Illuminate\Http\Request;
 
 class UtilityController extends ApiController {
@@ -15,5 +16,10 @@ class UtilityController extends ApiController {
     public function getCountries() {
         $countries = Country::orderBy("id", "DESC")->get();
         return $this->return(200, 'Countries fetched successfully', ['data' => $countries]);
+    }
+
+    public function getDataTypes() {
+        $dataTypes = DataType::orderBy("id", "DESC")->get();
+        return $this->return(200, 'Data Types fetched successfully', ['data' => $dataTypes]);
     }
 }

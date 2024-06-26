@@ -1,5 +1,7 @@
 {
     "Auth": true,
     "Customer": true,
-    "Tenant": true
+    "Tenant": true,
+    "Log": true,
+    "DataRepository": true
 }

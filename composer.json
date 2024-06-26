@@ -8,11 +8,13 @@
         "php": "^8.1",
         "guzzlehttp/guzzle": "^7.2",
         "inertiajs/inertia-laravel": "^1.2",
+        "jenssegers/mongodb": "^4.5",
         "laravel/framework": "^10.10",
         "laravel/passport": "^12.2",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
         "nwidart/laravel-modules": "^10.0",
+        "openai-php/laravel": "^0.10.1",
         "spatie/laravel-activitylog": "^4.8",
         "spatie/laravel-multitenancy": "^3.0",
         "spatie/laravel-permission": "^6.7"

@@ -12,6 +12,7 @@ class TenantRepository {
         $this->setupDatabase($customerUsername);
         $this->migrateTenant($tenantId);
         $this->seedTenantDatabase($tenantId);
+        $this->createLogMongoDatabase($customerUsername);
 
         // Return tenant details
         return $this->getTenantById($tenantId);
@@ -47,11 +48,17 @@ class TenantRepository {
     }
 
     private function migrateTenant($tenantId) {
-        $path = 'database/migrations/tenant';
+        $paths = [
+            'database/migrations/tenant',
+            'modules/*/Database/Migrations'
+        ];
+
         $database = 'tenant';
 
-        $command = "tenants:artisan 'migrate --path={$path} --database={$database}' --tenant={$tenantId}";
-        Artisan::call($command);
+        foreach ($paths as $path) {
+            $command = "tenants:artisan 'migrate --path={$path} --database={$database}' --tenant={$tenantId}";
+            Artisan::call($command);
+        }
     }
 
     private function seedTenantDatabase($tenantId) {
@@ -59,6 +66,28 @@ class TenantRepository {
 
         $command = "tenants:artisan 'migrate --database={$database} --seed' --tenant={$tenantId}";
         Artisan::call($command);
+    }
+
+    private function createLogMongoDatabase($customerUsername) {
+        $databaseName = $this->generateDatabaseName($customerUsername);
+
+        $clientOptions = ['authSource' => config('database.connections.logs.options.database')];
+
+        // Check if username is defined in configuration
+        if (!empty(config('database.connections.logs.username'))) {
+            $clientOptions['username'] = config('database.connections.logs.username');
+            $clientOptions['password'] = config('database.connections.logs.password');
+        }
+
+        $client = new \MongoDB\Client(
+            "mongodb://" . config('database.connections.logs.host') . ":" . config('database.connections.logs.port'),
+            $clientOptions
+        );
+
+
+        // Create database and a collection to ensure the database is created
+        $db = $client->selectDatabase($databaseName);
+        $db->createCollection('logs');
     }
 
     private function getTenantById($tenantId) {

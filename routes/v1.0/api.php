@@ -13,3 +13,4 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('categories', [UtilityController::class, 'getCategories']);
 Route::get('countries', [UtilityController::class, 'getCountries']);
+Route::get('data-types', [UtilityController::class, 'getDataTypes']);
