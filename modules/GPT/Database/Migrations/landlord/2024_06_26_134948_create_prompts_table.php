@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('prompts', function (Blueprint $table) {
             $table->id();
-            $table->tinyInteger('type');
+            $table->string('title', 255);
             $table->string('body', 5000);
+            $table->tinyInteger('type');
             $table->softDeletes();
             $table->timestamps();
         });

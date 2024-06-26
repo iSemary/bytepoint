@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Models\Category;
 use App\Models\Country;
 use App\Models\DataType;
-use Illuminate\Http\Request;
 
 class UtilityController extends ApiController {
     public function getCategories() {

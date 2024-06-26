@@ -34,7 +34,7 @@ class GPTService
 
     private function prepareSystemPrompt($type)
     {
-        $prompt = Prompt::select('body')->whereType($type)->findOrFail();
+        $prompt = Prompt::select('body')->whereType($type)->first();
 
         if (!$prompt) {
             throw new Exception('Prompt not found');
