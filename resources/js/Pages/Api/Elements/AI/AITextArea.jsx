@@ -4,7 +4,7 @@ import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 import axiosConfig from "../../../../configs/AxiosConfig";
 
-export default function AITextArea({ generatedType }) {
+export default function AITextArea({ type }) {
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [text, setText] = useState("");
     const [timing, setTiming] = useState(null);
@@ -40,7 +40,7 @@ export default function AITextArea({ generatedType }) {
         setStartTime(new Date().getTime()); // Start timing
 
         axiosConfig
-            .post(`/generate`, { type: generatedType, text: text })
+            .post(`/gpt/generate`, { type: type, text: text })
             .then((response) => {
                 setGeneratedText(response.data.generatedText);
             })
@@ -53,9 +53,7 @@ export default function AITextArea({ generatedType }) {
     };
 
     return (
-        <Box
-
-        >
+        <Box>
             {showEmojiPicker && (
                 <Picker data={data} onEmojiSelect={handleEmojiSelect} />
             )}
@@ -64,6 +62,7 @@ export default function AITextArea({ generatedType }) {
                 multiline
                 rows={6}
                 variant="outlined"
+                required
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 InputProps={{

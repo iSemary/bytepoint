@@ -32,6 +32,7 @@ BytePoint CloudAPI is a comprehensive solution for cloud hosting, offering a ran
 
     ```sh
     php artisan migrate --path=database/migrations/landlord --database=landlord
+    php artisan migrate --path=modules/*/Database/Migrations/landlord --database=landlord
     ```
 
 4. **Seed the Database**
