@@ -8,6 +8,7 @@ use Illuminate\Database\Seeder;
 use App\Models\Country;
 use App\Models\CreationType;
 use App\Models\DataType;
+use Modules\Api\Entities\ApiPurpose;
 use Modules\GPT\Entities\Prompt;
 
 class UtilitySeeder extends Seeder
@@ -22,6 +23,7 @@ class UtilitySeeder extends Seeder
         $this->seedDataTypes();
         $this->seedCreationTypes();
         $this->seedPrompts();
+        $this->seedApiPurpose();
     }
 
     private function seedCountries()
@@ -129,6 +131,21 @@ class UtilitySeeder extends Seeder
             Prompt::updateOrCreate(
                 ['type' => $prompt['type']],
                 $prompt
+            );
+        }
+    }
+
+    private function seedApiPurpose()
+    {
+        $apiPurposes = [
+            ['title' => 'Retrieve Data', 'description' => 'Purpose to retrieve data from the data repository'],
+            ['title' => 'Store Data', 'description' => 'Purpose to store data into the data repository'],
+        ];
+
+        foreach ($apiPurposes as $apiPurpose) {
+            ApiPurpose::updateOrCreate(
+                ['title' => $apiPurpose['title']],
+                $apiPurpose
             );
         }
     }

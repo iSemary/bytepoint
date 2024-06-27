@@ -1,104 +1,143 @@
-import React from "react";
-import { Box } from "@mui/material";
+import React, { useCallback, useEffect, useState } from "react";
+import { Box, IconButton } from "@mui/material";
 import Layout from "../../Layout/Layout";
-import { Link } from "@inertiajs/react";
 import { DataGrid } from "@mui/x-data-grid";
 import { Button } from "@mui/material";
+import ApiModal from "./ApiModal";
+import axiosConfig from "../../configs/AxiosConfig";
+import RefreshIcon from "@mui/icons-material/Refresh";
+import { Link } from "@inertiajs/react";
 
-const columns = [
-    { field: "id", headerName: "ID" },
-    { field: "endPoint", headerName: "End Point", width: 550 },
-    { field: "type", headerName: "Type" },
-    {
-        field: "purpose",
-        headerName: "Purpose",
-        type: "string",
-        width: 250,
-    },
-    {
-        field: "action",
-        headerName: "Action",
-        sortable: false,
-        width: "100%",
-        renderCell: (params) => (
-            <Box>
-                <Link href={`/apis/edit/${params.row.id}`}>
+export default function Apis() {
+    const [drawerOpen, setDrawerOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [apis, setApis] = useState([]);
+    const [api, setApi] = useState({});
+
+    const handleCloseDrawer = () => {
+        setDrawerOpen(false);
+        setApi({});
+    };
+
+    const handleOpenDrawer = (row) => {
+        setDrawerOpen(true);
+        axiosConfig
+            .get(`apis/${row.id}`)
+            .then((response) => {
+                setApi(response.data.data.api);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    };
+
+    const columns = [
+        { field: "id", headerName: "ID", flex: 1, minWidth: 50 },
+        { field: "endPoint", headerName: "End Point", flex: 1, minWidth: 150 },
+        { field: "type", headerName: "Type", flex: 1, minWidth: 100 },
+        {
+            field: "purpose",
+            headerName: "Purpose",
+            flex: 1,
+            minWidth: 200,
+        },
+        {
+            field: "action",
+            headerName: "Action",
+            sortable: false,
+            flex: 2,
+            minWidth: 250,
+            renderCell: (params) => (
+                <>
                     <Button
                         variant="contained"
                         color="primary"
                         style={{ marginRight: 8 }}
+                        onClick={() => handleOpenDrawer(params.row)}
+                    >
+                        View
+                    </Button>
+                    <Button
+                        variant="contained"
+                        component={Link}
+                        href={`/apis/edit/${params.row.id}`}
+                        color="secondary"
+                        style={{ marginRight: 8 }}
                     >
                         Edit
                     </Button>
-                </Link>
-                <Link href={`/apis/review/${params.row.id}`}>
                     <Button
                         variant="contained"
+                        component={Link}
+                        href={`/apis/review/${params.row.id}`}
                         color="secondary"
                         style={{ marginRight: 8 }}
                     >
                         Review
                     </Button>
-                </Link>
-                <Button
-                    variant="contained"
-                    color="error"
-                    onClick={() => handleDelete(params.row.id)}
-                >
-                    Delete
-                </Button>
-            </Box>
-        ),
-    },
-];
+                    <Button
+                        variant="contained"
+                        color="error"
+                        onClick={() => handleDelete(params.row.id)}
+                    >
+                        Delete
+                    </Button>
+                </>
+            ),
+        },
+    ];
 
-const rows = [
-    { id: 1, type: "API", endPoint: "/users", purpose: "Fetch users" },
-    { id: 2, type: "API", endPoint: "/posts", purpose: "Fetch posts" },
-    { id: 3, type: "API", endPoint: "/comments", purpose: "Fetch comments" },
-    {
-        id: 4,
-        type: "Database",
-        endPoint: "users_table",
-        purpose: "Store user data",
-    },
-    {
-        id: 5,
-        type: "Database",
-        endPoint: "posts_table",
-        purpose: "Store post data",
-    },
-    {
-        id: 6,
-        type: "Service",
-        endPoint: "email_service",
-        purpose: "Send emails",
-    },
-    {
-        id: 7,
-        type: "Service",
-        endPoint: "payment_service",
-        purpose: "Process payments",
-    },
-    { id: 8, type: "API", endPoint: "/login", purpose: "User login" },
-    { id: 9, type: "API", endPoint: "/logout", purpose: "User logout" },
-];
+    const fetchApis = useCallback(() => {
+        setLoading(true);
+        axiosConfig
+            .get("apis")
+            .then((response) => {
+                setApis(response.data.data.apis);
+            })
+            .catch((error) => {
+                console.error(error);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    }, []);
 
-const links = [
-    { label: "Home", href: "/", icon: "home" },
-    { label: "Apis", icon: "whatshot" },
-];
+    const handleRefresh = () => {
+        fetchApis();
+    };
 
-const buttons = [
-    { label: "Create new api", href: "/apis/create", icon: "grain" },
-];
+    useEffect(() => {
+        fetchApis();
+    }, [fetchApis]);
 
-const Apis = () => {
+    const links = [
+        { label: "Home", href: "/", icon: "home" },
+        { label: "Apis", icon: "whatshot" },
+    ];
+
+    const buttons = [
+        {
+            label: "Create new API",
+            href: "/apis/create",
+            icon: "grain",
+        },
+    ];
+
     return (
         <Layout links={links} buttons={buttons} title="APIs">
             <Box my={4}>
+                <Box display="flex" justifyContent="flex-end" mb={2}>
+                    <IconButton
+                        color="primary"
+                        title="Refresh"
+                        onClick={handleRefresh}
+                        aria-label="refresh"
+                    >
+                        <RefreshIcon />
+                    </IconButton>
+                </Box>
                 <DataGrid
-                    rows={rows}
+                    rows={apis}
                     columns={columns}
                     initialState={{
                         pagination: {
@@ -106,11 +145,14 @@ const Apis = () => {
                         },
                     }}
                     pageSizeOptions={[5, 10]}
-                    checkboxSelection
+                    loading={loading}
+                />
+                <ApiModal
+                    drawerOpen={drawerOpen}
+                    api={api}
+                    handleCloseDrawer={handleCloseDrawer}
                 />
             </Box>
         </Layout>
     );
-};
-
-export default Apis;
+}

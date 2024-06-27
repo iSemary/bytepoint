@@ -15,14 +15,6 @@ Route::get('/', function () {
     return Inertia::render('Welcome');
 });
 
-Route::get('/apis', function () {
-    return Inertia::render('Api/Api');
-});
-
-Route::get('/apis/create', function () {
-    return Inertia::render('Api/Create');
-});
-
 Route::prefix('mock-ups')->group(function () {
     Route::get('/', function () {
         return Inertia::render('Mockup/Mockup');
