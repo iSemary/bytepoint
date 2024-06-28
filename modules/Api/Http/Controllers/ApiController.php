@@ -8,11 +8,18 @@ use Illuminate\Http\JsonResponse;
 use Modules\Api\Entities\Api;
 use Modules\Api\Http\Requests\StoreApiRequest;
 use Modules\Api\Http\Requests\UpdateApiRequest;
+use Modules\Api\Services\ApiService;
+use Modules\Api\Services\ApiPreparationService;
 
 class ApiController extends ApiControllerHandler
 {
+    private $apiService;
+    private $apiPreparationService;
 
-    public function __construct() {
+    public function __construct(ApiService $apiService, ApiPreparationService $apiPreparationService)
+    {
+        $this->apiService = $apiService;
+        $this->apiPreparationService = $apiPreparationService;
     }
 
     /**
@@ -21,7 +28,8 @@ class ApiController extends ApiControllerHandler
      * @param Request $request
      * @return JsonResponse
      */
-    public function index(Request $request): JsonResponse {
+    public function index(Request $request): JsonResponse
+    {
         $apis = Api::paginate(10);
         return $this->return(200, "Apis Fetched Successfully", ['apis' => $apis]);
     }
@@ -32,7 +40,8 @@ class ApiController extends ApiControllerHandler
      * @param string $id
      * @return JsonResponse
      */
-    public function show(string $id): JsonResponse {
+    public function show(string $id): JsonResponse
+    {
         $api = Api::where("id", $id)->first();
         return $this->return(200, "Api Fetched Successfully", ['api' => $api]);
     }
@@ -43,7 +52,8 @@ class ApiController extends ApiControllerHandler
      * @param Request $request
      * @return JsonResponse
      */
-    public function store(StoreApiRequest $storeApiRequest): JsonResponse {
+    public function store(StoreApiRequest $storeApiRequest): JsonResponse
+    {
         // Validate the incoming request
         $validatedData = $storeApiRequest->validated();
         $api = Api::create($validatedData);
@@ -57,7 +67,8 @@ class ApiController extends ApiControllerHandler
      * @param Request $request
      * @return JsonResponse
      */
-    public function update(int $id, UpdateApiRequest $updateApiRequest): JsonResponse {
+    public function update(int $id, UpdateApiRequest $updateApiRequest): JsonResponse
+    {
         // Validate the incoming request
         $validatedData = $updateApiRequest->validated();
 
@@ -73,7 +84,8 @@ class ApiController extends ApiControllerHandler
      * @param int $id
      * @return JsonResponse
      */
-    public function destroy(int $id): JsonResponse {
+    public function destroy(int $id): JsonResponse
+    {
         $dataRepository = Api::findOrFail($id);
         $dataRepository->delete();
 
@@ -86,7 +98,8 @@ class ApiController extends ApiControllerHandler
      * @param int $id
      * @return JsonResponse
      */
-    public function restore(int $id): JsonResponse {
+    public function restore(int $id): JsonResponse
+    {
         $dataRepository = Api::withTrashed()->findOrFail($id);
 
         if ($dataRepository->trashed()) {
@@ -98,4 +111,9 @@ class ApiController extends ApiControllerHandler
         return $this->return(404, "Api not found or not soft deleted");
     }
 
+    public function prepare(): JsonResponse
+    {
+        $apiPreparation = $this->apiPreparationService->returnPreparation();
+        return $this->return(200, "Api Preparation Fetched Successfully", ['data'=>$apiPreparation]);
+    }
 }

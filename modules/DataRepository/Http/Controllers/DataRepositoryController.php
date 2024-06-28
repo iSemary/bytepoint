@@ -10,10 +10,12 @@ use Modules\DataRepository\Http\Requests\StoreDataRepositoryRequest;
 use Modules\DataRepository\Http\Requests\UpdateDataRepositoryRequest;
 use Modules\DataRepository\Services\DataRepositoryService;
 
-class DataRepositoryController extends ApiController {
+class DataRepositoryController extends ApiController
+{
     protected $dataRepositoryService;
 
-    public function __construct(DataRepositoryService $dataRepositoryService) {
+    public function __construct(DataRepositoryService $dataRepositoryService)
+    {
         $this->dataRepositoryService = $dataRepositoryService;
     }
 
@@ -23,8 +25,14 @@ class DataRepositoryController extends ApiController {
      * @param Request $request
      * @return JsonResponse
      */
-    public function index(Request $request): JsonResponse {
-        $dataRepositories = DataRepository::paginate(10);
+    public function index(Request $request): JsonResponse
+    {
+        $keyword = $request->input('keyword');
+        $query = DataRepository::query();
+        if ($keyword) {
+            $query->where('title', 'like', '%' . $keyword . '%');
+        }
+        $dataRepositories = $query->paginate(10);
         return $this->return(200, "Data Repositories Fetched Successfully", ['data_repositories' => $dataRepositories]);
     }
 
@@ -34,7 +42,8 @@ class DataRepositoryController extends ApiController {
      * @param string $id
      * @return JsonResponse
      */
-    public function show(string $id): JsonResponse {
+    public function show(string $id): JsonResponse
+    {
         $dataRepository = DataRepository::where("id", $id)->first();
         $dataRepositoryValues = $this->dataRepositoryService->get($id);
         return $this->return(200, "Data Repository Fetched Successfully", ['data_repository' => $dataRepository, 'data_repository_values' => $dataRepositoryValues]);
@@ -46,7 +55,8 @@ class DataRepositoryController extends ApiController {
      * @param Request $request
      * @return JsonResponse
      */
-    public function store(StoreDataRepositoryRequest $storeDataRepositoryRequest): JsonResponse {
+    public function store(StoreDataRepositoryRequest $storeDataRepositoryRequest): JsonResponse
+    {
         // Validate the incoming request
         $validatedData = $storeDataRepositoryRequest->validated();
         $dataRepository = DataRepository::create($validatedData);
@@ -60,7 +70,8 @@ class DataRepositoryController extends ApiController {
      * @param Request $request
      * @return JsonResponse
      */
-    public function update(int $id, UpdateDataRepositoryRequest $updateDataRepositoryRequest): JsonResponse {
+    public function update(int $id, UpdateDataRepositoryRequest $updateDataRepositoryRequest): JsonResponse
+    {
         // Validate the incoming request
         $validatedData = $updateDataRepositoryRequest->validated();
 
@@ -76,7 +87,8 @@ class DataRepositoryController extends ApiController {
      * @param int $id
      * @return JsonResponse
      */
-    public function destroy(int $id): JsonResponse {
+    public function destroy(int $id): JsonResponse
+    {
         $dataRepository = DataRepository::findOrFail($id);
         $dataRepository->delete();
 
@@ -89,7 +101,8 @@ class DataRepositoryController extends ApiController {
      * @param int $id
      * @return JsonResponse
      */
-    public function restore(int $id): JsonResponse {
+    public function restore(int $id): JsonResponse
+    {
         $dataRepository = DataRepository::withTrashed()->findOrFail($id);
 
         if ($dataRepository->trashed()) {
@@ -107,7 +120,8 @@ class DataRepositoryController extends ApiController {
      * @param int $id
      * @return JsonResponse
      */
-    public function fill(int $id, Request $request): JsonResponse {
+    public function fill(int $id, Request $request): JsonResponse
+    {
         $dataRepository = DataRepository::withTrashed()->findOrFail($id);
 
         if ($dataRepository) {

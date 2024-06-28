@@ -1,46 +1,139 @@
-import React from 'react';
-import { Box, Grid, TextField, Button, IconButton } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
+import React from "react";
+import {
+    Box,
+    Grid,
+    TextField,
+    Button,
+    IconButton,
+    Tabs,
+    Tab,
+    Tooltip,
+} from "@mui/material";
+import InfoIcon from "@mui/icons-material/Info";
 
-function Body({ body, handleBodyChange, addBody, removeBody }) {
+import DeleteIcon from "@mui/icons-material/Delete";
+import ReactJson from "react-json-view";
+import { Help } from "@mui/icons-material";
+
+function Body({
+    dataTypes,
+    bodyTypes,
+    bodyType,
+    handleBodyTypeChange,
+    body,
+    handleBodyChange,
+    jsonBody,
+    handleJsonBodyChange,
+    addBody,
+    removeBody,
+}) {
     return (
         <Box mt={1}>
-            <Grid container spacing={1}>
-                <Grid item xs={9}>
-                    <h4>Request Body:</h4>
-                </Grid>
-                <Grid item xs={3}>
-                    <Button
-                        onClick={addBody}
-                        sx={{ marginTop: 1 }}
-                        variant="contained"
-                        fullWidth
-                    >
-                        Add Body Item
-                    </Button>
-                </Grid>
-            </Grid>
-            {body.map((item, index) => (
-                <div key={index}>
-                    <TextField
-                        label="Key"
-                        value={item.key}
-                        onChange={(e) =>
-                            handleBodyChange(index, e.target.value, item.value)
+            <Tabs
+                value={bodyType}
+                onChange={(e, newValue) => handleBodyTypeChange(newValue)}
+                variant="scrollable"
+                scrollButtons="auto"
+                sx={{ marginTop: 2 }}
+            >
+                {bodyTypes.map((type) => (
+                    <Tab
+                        key={type.id}
+                        label={
+                            <Box>
+                                {type.title.replace(
+                                    /^application\/|^multipart\//,
+                                    ""
+                                )}
+                                {type.description && (
+                                    <Tooltip title={type.description}>
+                                        <IconButton size="small">
+                                            <Help
+                                                fontSize="11"
+                                                color="#787878"
+                                            />
+                                        </IconButton>
+                                    </Tooltip>
+                                )}
+                            </Box>
                         }
+                        value={type.id}
                     />
-                    <TextField
-                        label="Value"
-                        value={item.value}
-                        onChange={(e) =>
-                            handleBodyChange(index, item.key, e.target.value)
-                        }
+                ))}
+            </Tabs>
+            <Box mt={2}>
+                {bodyType === 3 ? (
+                    <ReactJson
+                        theme={"monokai"}
+                        src={jsonBody}
+                        onEdit={handleJsonBodyChange}
+                        onDelete={handleJsonBodyChange}
+                        onAdd={handleJsonBodyChange}
                     />
-                    <IconButton onClick={() => removeBody(index)} aria-label="delete">
-                        <DeleteIcon />
-                    </IconButton>
-                </div>
-            ))}
+                ) : (
+                    <>
+                        <Grid
+                            container
+                            justifyContent={"end"}
+                            mb={2}
+                            spacing={1}
+                        >
+                            <Grid item xs={3}>
+                                <Button
+                                    onClick={addBody}
+                                    sx={{ marginTop: 1 }}
+                                    variant="contained"
+                                    fullWidth
+                                >
+                                    Add Body Item
+                                </Button>
+                            </Grid>
+                        </Grid>
+                        {body.map((item, index) => (
+                            <Box my={2} key={index}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={5}>
+                                        <TextField
+                                            label="Key"
+                                            value={item.key}
+                                            onChange={(e) =>
+                                                handleBodyChange(
+                                                    index,
+                                                    e.target.value,
+                                                    item.value
+                                                )
+                                            }
+                                            fullWidth
+                                        />
+                                    </Grid>
+                                    <Grid item xs={5}>
+                                        <TextField
+                                            label="Value"
+                                            value={item.value}
+                                            onChange={(e) =>
+                                                handleBodyChange(
+                                                    index,
+                                                    item.key,
+                                                    e.target.value
+                                                )
+                                            }
+                                            fullWidth
+                                        />
+                                    </Grid>
+                                    <Grid item xs={2}>
+                                        <IconButton
+                                            onClick={() => removeBody(index)}
+                                            aria-label="delete"
+                                        >
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </Grid>
+                                </Grid>
+                            </Box>
+                        ))}
+                    </>
+                )}
+            </Box>
         </Box>
     );
 }

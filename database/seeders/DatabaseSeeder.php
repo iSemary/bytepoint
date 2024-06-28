@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
                 MethodSeeder::class,
                 HeaderSeeder::class,
                 ContentTypeSeeder::class,
+                BodyTypeSeeder::class,
             ]);
         } else {
             $this->call(UtilitySeeder::class);

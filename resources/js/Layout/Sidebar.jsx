@@ -21,8 +21,8 @@ import LogsIcon from "@mui/icons-material/History";
 import ApiKeyIcon from "@mui/icons-material/VpnKey";
 import UserIcon from "@mui/icons-material/People";
 import SettingsIcon from "@mui/icons-material/Settings";
-import { Link } from "@inertiajs/react";
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import { Link } from "@inertiajs/react";
 
 export default function Sidebar({ user, userLoading, open, setOpen }) {
     const toggleDrawer = (newOpen) => () => {

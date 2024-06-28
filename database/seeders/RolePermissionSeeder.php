@@ -2,21 +2,31 @@
 
 namespace Database\Seeders;
 
+use App\Constants\Resources;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
-class RolePermissionSeeder extends Seeder {
+class RolePermissionSeeder extends Seeder
+{
+    private $resources;
+
+    public function __construct()
+    {
+        $this->resources = Resources::getResources();
+    }
     /**
      * Run the database seeds.
      */
-    public function run(): void {
+    public function run(): void
+    {
         $this->seedRoles();
         $this->seedPermissions();
         $this->seedPermissionsToRoles();
     }
 
-    private function seedRoles() {
+    private function seedRoles()
+    {
         $roles = [
             [
                 'name' => 'owner',
@@ -44,21 +54,12 @@ class RolePermissionSeeder extends Seeder {
         }
     }
 
-    private function seedPermissions() {
-        $resources = [
-            'mockups',
-            'apis',
-            'data_repositories',
-            'cloud_services',
-            'file_manager',
-            'api_key_management',
-            'user_management',
-            'logs',
-            'templates',
-        ];
+    private function seedPermissions()
+    {
+
         $actions = ['view', 'create', 'update', 'delete'];
 
-        foreach ($resources as $resource) {
+        foreach ($this->resources as $resource) {
             foreach ($actions as $action) {
                 Permission::updateOrCreate(
                     ['name' => "$action.$resource", 'guard_name' => 'api'],
@@ -68,7 +69,8 @@ class RolePermissionSeeder extends Seeder {
         }
     }
 
-    private function seedPermissionsToRoles() {
+    private function seedPermissionsToRoles()
+    {
         $roles = ['owner', 'super_admin'];
         $permissions = Permission::all();
 

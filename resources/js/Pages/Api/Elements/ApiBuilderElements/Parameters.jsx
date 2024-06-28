@@ -1,14 +1,16 @@
-import React from 'react';
-import { Box, Grid, TextField, Button, IconButton } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
+import React from "react";
+import { Box, Grid, TextField, Button, IconButton } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 
-function Parameters({ parameters, handleParameterChange, addParameter, removeParameter }) {
+function Parameters({
+    parameters,
+    handleParameterChange,
+    addParameter,
+    removeParameter,
+}) {
     return (
         <Box mt={1}>
-            <Grid container spacing={1}>
-                <Grid item xs={9}>
-                    <h4>Parameters:</h4>
-                </Grid>
+            <Grid container justifyContent={"end"} mb={2} spacing={1}>
                 <Grid item xs={3}>
                     <Button
                         onClick={addParameter}
@@ -21,25 +23,46 @@ function Parameters({ parameters, handleParameterChange, addParameter, removePar
                 </Grid>
             </Grid>
             {parameters.map((param, index) => (
-                <div key={index}>
-                    <TextField
-                        label="Key"
-                        value={param.key}
-                        onChange={(e) =>
-                            handleParameterChange(index, e.target.value, param.value)
-                        }
-                    />
-                    <TextField
-                        label="Value"
-                        value={param.value}
-                        onChange={(e) =>
-                            handleParameterChange(index, param.key, e.target.value)
-                        }
-                    />
-                    <IconButton onClick={() => removeParameter(index)} aria-label="delete">
-                        <DeleteIcon />
-                    </IconButton>
-                </div>
+                <Box my={2} key={index}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={5}>
+                            <TextField
+                                label="Key"
+                                value={param.key}
+                                onChange={(e) =>
+                                    handleParameterChange(
+                                        index,
+                                        e.target.value,
+                                        param.value
+                                    )
+                                }
+                                fullWidth
+                            />
+                        </Grid>
+                        <Grid item xs={5}>
+                            <TextField
+                                label="Value"
+                                value={param.value}
+                                onChange={(e) =>
+                                    handleParameterChange(
+                                        index,
+                                        param.key,
+                                        e.target.value
+                                    )
+                                }
+                                fullWidth
+                            />
+                        </Grid>
+                        <Grid item xs={2}>
+                            <IconButton
+                                onClick={() => removeParameter(index)}
+                                aria-label="delete"
+                            >
+                                <DeleteIcon />
+                            </IconButton>
+                        </Grid>
+                    </Grid>
+                </Box>
             ))}
         </Box>
     );
