@@ -1,12 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { Box, LinearProgress, Typography } from "@mui/material";
+import {
+    Box,
+    FormControlLabel,
+    FormGroup,
+    Grid,
+    LinearProgress,
+    Switch,
+    Typography,
+} from "@mui/material";
 import ReactJson from "react-json-view";
 import DataObjectIcon from "@mui/icons-material/DataObject";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import SettingsInputComponentIcon from "@mui/icons-material/SettingsInputComponent";
 
 function Retrieve({ dataRepository, dataRepositoryValues, loading }) {
     const [dataRepositoryResponse, setDataRepositoryResponse] = useState({});
     const [jsonLoading, setJsonLoading] = useState(false);
+    const [responseSettings, setResponseSettings] = useState({
+        count: false,
+        paginate: false,
+    });
 
     const handleDataRepositoryResponse = () => {
         if (dataRepositoryValues && dataRepositoryValues.length) {
@@ -40,6 +53,39 @@ function Retrieve({ dataRepository, dataRepositoryValues, loading }) {
                 <LinearProgress />
             ) : dataRepository?.id && dataRepositoryValues.length ? (
                 <>
+                    {/* Response Settings */}
+                    <Typography variant="h6" gutterBottom>
+                        <Box display="flex" alignItems="center">
+                            <SettingsInputComponentIcon sx={{ mr: 1 }} />{" "}
+                            Response Settings
+                        </Box>
+                    </Typography>
+                    <FormGroup>
+                        <Grid container spacing={2}>
+                            <Grid item xs={6}>
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            checked={responseSettings.count}
+                                        />
+                                    }
+                                    label="Count Data Set"
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            checked={responseSettings.paginate}
+                                        />
+                                    }
+                                    label="Paginate Data Set"
+                                />
+                            </Grid>
+                        </Grid>
+                    </FormGroup>
+
+                    {/* Json Viewer */}
                     <Typography variant="h6" gutterBottom>
                         <Box display="flex" alignItems="center">
                             <DataObjectIcon sx={{ mr: 1 }} /> Json Example on
