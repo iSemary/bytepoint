@@ -77,12 +77,9 @@ export default function DataRepositoryModal({
                     display="flex"
                     justifyContent="end"
                     alignItems="center"
-                    mb={2}
+                    m={1}
                 >
                     <Box>
-                        <IconButton title="Close" onClick={handleCloseDrawer}>
-                            <CloseIcon />
-                        </IconButton>
                         <IconButton
                             title={
                                 drawerWidth === "700px" ? "Expand" : "Shrink"
@@ -94,6 +91,9 @@ export default function DataRepositoryModal({
                             ) : (
                                 <FullscreenExitIcon />
                             )}
+                        </IconButton>
+                        <IconButton title="Close" onClick={handleCloseDrawer}>
+                            <CloseIcon />
                         </IconButton>
                     </Box>
                 </Box>
@@ -169,12 +169,12 @@ export default function DataRepositoryModal({
                         </table>
 
                         {dataRepositoryValues && dataRepositoryValues.length ? (
-                            <>
+                            <Box my={2}>
+                                <Divider />
                                 <Typography
                                     variant="h6"
                                     mb={1}
-                                    mt={2}
-                                    color="textSecondary"
+                                    mt={1}
                                 >
                                     Data Repository Values
                                 </Typography>
@@ -191,7 +191,7 @@ export default function DataRepositoryModal({
                                     }}
                                     pageSizeOptions={[5, 10]}
                                 />
-                            </>
+                            </Box>
                         ) : (
                             <p className="text-center">
                                 <i>- No Data Values Yet -</i>

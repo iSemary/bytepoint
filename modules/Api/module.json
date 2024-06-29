@@ -1,0 +1,10 @@
+{
+    "name": "Api",
+    "alias": "api",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+    ],
+    "files": []
+}

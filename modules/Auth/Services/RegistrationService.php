@@ -10,7 +10,6 @@ use Modules\Auth\Repository\UserRepository;
 use Modules\Customer\Repository\CustomerRepository;
 use Modules\Tenant\Helper\TenantHelper;
 use Modules\Tenant\Repository\TenantRepository;
-use Spatie\Multitenancy\Models\Tenant;
 
 class RegistrationService {
     protected $customerRepository;

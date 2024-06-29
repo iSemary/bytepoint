@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class DataType extends Model {
     use HasFactory, SoftDeletes;
-
+    protected $connection = 'landlord';
+     
     protected $fillable = ['title'];
 }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import { Box, Grid, Button, CircularProgress } from "@mui/material";
@@ -8,6 +8,9 @@ import Sidebar from "./Sidebar";
 import { useAuth } from "../providers/AuthProvider";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { router } from "@inertiajs/react";
+
+import "animate.css";
 
 const darkTheme = createTheme({
     palette: {
@@ -43,6 +46,14 @@ export default function Layout({
     const { user, userLoading } = useAuth();
 
     const [userTheme, setUserTheme] = useState(false);
+    const [leaving, setLeaving] = useState(null);
+
+    useEffect(() => {
+        setUserTheme(false);
+
+        router.on("start", () => setLeaving(true));
+        router.on("finish", () => setLeaving(false));
+    }, [user]);
 
     return (
         <ThemeProvider theme={userTheme ? lightTheme : darkTheme}>
@@ -111,7 +122,16 @@ export default function Layout({
                             )}
                         </Grid>
                     </Grid>
-                    {children}
+                    <div
+                        className={
+                            "animate__animated " +
+                            (leaving
+                                ? "animate__zoomOut"
+                                : "animate__fadeIn")
+                        }
+                    >
+                        {children}
+                    </div>
                 </Box>
                 <Footer />
             </Box>

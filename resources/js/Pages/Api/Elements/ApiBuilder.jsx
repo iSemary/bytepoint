@@ -1,26 +1,57 @@
-// ApiBuilder.js
-import React, { useState } from "react";
-import { Box, Grid, Select, MenuItem, Button, Tabs, Tab, TextField } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import {
+    Box,
+    Grid,
+    Select,
+    MenuItem,
+    Button,
+    Tabs,
+    Tab,
+    TextField,
+    Typography,
+} from "@mui/material";
 import Parameters from "./ApiBuilderElements/Parameters";
 import Body from "./ApiBuilderElements/Body";
 import Headers from "./ApiBuilderElements/Headers";
+import axiosConfig from "../../../configs/AxiosConfig";
+import InputAdornment from "@mui/material/InputAdornment";
 
 function ApiBuilder({
     allowBody = true,
     allowParameters = true,
     allowHeaders = true,
+    showPurposes = true,
+    purpose,
+    setPurpose,
 }) {
+    const [baseURL, setBaseURL] = useState("/");
+
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
+
     const [endpoint, setEndpoint] = useState("");
     const [method, setMethod] = useState("");
     const [headers, setHeaders] = useState([{ key: "", value: "" }]);
     const [parameters, setParameters] = useState([{ key: "", value: "" }]);
+    const [bodyType, setBodyType] = useState(1);
     const [body, setBody] = useState([{ key: "", value: "" }]);
+    const [jsonBody, setJsonBody] = useState({});
     const [tabIndex, setTabIndex] = useState(0);
+
+    const [methods, setMethods] = useState([]);
+    const [purposes, setPurposes] = useState([]);
+    const [apiHeaders, setApiHeaders] = useState([]);
+    const [dataTypes, setDataTypes] = useState([]);
+    const [bodyTypes, setBodyTypes] = useState([]);
 
     const handleHeaderChange = (index, key, value) => {
         const newHeaders = [...headers];
         newHeaders[index] = { key, value };
         setHeaders(newHeaders);
+    };
+
+    const handleJsonBodyChange = (edit) => {
+        setJsonBody(edit.updated_src);
     };
 
     const handleBodyChange = (index, key, value) => {
@@ -33,6 +64,10 @@ function ApiBuilder({
         const newParameters = [...parameters];
         newParameters[index] = { key, value };
         setParameters(newParameters);
+    };
+
+    const handleBodyTypeChange = (value) => {
+        setBodyType(value);
     };
 
     const addHeader = () => {
@@ -67,23 +102,100 @@ function ApiBuilder({
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Handle form submission here
     };
 
     const handleTabChange = (event, newIndex) => {
         setTabIndex(newIndex);
     };
 
+    const fetchAPIPreparation = () => {
+        axiosConfig
+            .get("apis/prepare")
+            .then((response) => {
+                setMethods(response.data.data.data.methods);
+                setPurposes(response.data.data.data.api_purposes);
+                setApiHeaders(response.data.data.data.headers);
+                setDataTypes(response.data.data.data.data_types);
+                setDataTypes(response.data.data.data.data_types);
+                setBodyTypes(response.data.data.data.body_types);
+                setBaseURL(response.data.data.data.base_url);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    };
+
+    useEffect(() => {
+        fetchAPIPreparation();
+    }, []);
+
     return (
         <form onSubmit={handleSubmit}>
-            <Box>
+            <Box mb={1}>
                 <Grid container spacing={1}>
+                    <Grid item xs={6}>
+                        <TextField
+                            label="Title"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            fullWidth
+                        />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <TextField
+                            label="Description"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            fullWidth
+                        />
+                    </Grid>
+                </Grid>
+                {showPurposes && (
+                    <Grid container my={2}>
+                        <Grid item xs={12}>
+                            <Select
+                                value={purpose}
+                                onChange={(e) => setPurpose(e.target.value)}
+                                displayEmpty
+                                fullWidth
+                            >
+                                <MenuItem value="" disabled>
+                                    Select Purpose
+                                </MenuItem>
+                                {purposes &&
+                                    purposes.map((purpose, i) => (
+                                        <MenuItem key={i} value={purpose.id}>
+                                            <Typography variant="body1">
+                                                {purpose.title} &nbsp;
+                                            </Typography>
+                                            <Typography
+                                                variant="body2"
+                                                color="textSecondary"
+                                            >
+                                                {purpose.description}
+                                            </Typography>
+                                        </MenuItem>
+                                    ))}
+                            </Select>
+                        </Grid>
+                    </Grid>
+                )}
+            </Box>
+            <Box>
+                <Grid container mt={1} spacing={1}>
                     <Grid item xs={9}>
                         <TextField
                             label="Endpoint"
                             value={endpoint}
                             onChange={(e) => setEndpoint(e.target.value)}
                             fullWidth
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        {baseURL}
+                                    </InputAdornment>
+                                ),
+                            }}
                         />
                     </Grid>
                     <Grid item xs={3}>
@@ -96,17 +208,22 @@ function ApiBuilder({
                             <MenuItem value="" disabled>
                                 Method
                             </MenuItem>
-                            <MenuItem value="GET">GET</MenuItem>
-                            <MenuItem value="POST">POST</MenuItem>
-                            <MenuItem value="PUT">PUT</MenuItem>
-                            <MenuItem value="PATCH">PATCH</MenuItem>
-                            <MenuItem value="DELETE">DELETE</MenuItem>
+                            {methods &&
+                                methods.map((method, i) => (
+                                    <MenuItem key={i} value={method.id}>
+                                        {method.title}
+                                    </MenuItem>
+                                ))}
                         </Select>
                     </Grid>
                 </Grid>
             </Box>
 
-            <Tabs value={tabIndex} onChange={handleTabChange} sx={{ marginTop: 2 }}>
+            <Tabs
+                value={tabIndex}
+                onChange={handleTabChange}
+                sx={{ marginTop: 2 }}
+            >
                 {allowParameters && <Tab label="Parameters" />}
                 {allowHeaders && <Tab label="Headers" />}
                 {allowBody && <Tab label="Body" />}
@@ -124,6 +241,7 @@ function ApiBuilder({
             {allowHeaders && tabIndex === 1 && (
                 <Headers
                     headers={headers}
+                    apiHeaders={apiHeaders}
                     handleHeaderChange={handleHeaderChange}
                     addHeader={addHeader}
                     removeHeader={removeHeader}
@@ -132,16 +250,18 @@ function ApiBuilder({
 
             {allowBody && tabIndex === 2 && (
                 <Body
+                    dataTypes={dataTypes}
+                    bodyTypes={bodyTypes}
+                    bodyType={bodyType}
+                    handleBodyTypeChange={handleBodyTypeChange}
                     body={body}
                     handleBodyChange={handleBodyChange}
+                    jsonBody={jsonBody}
+                    handleJsonBodyChange={handleJsonBodyChange}
                     addBody={addBody}
                     removeBody={removeBody}
                 />
             )}
-
-            <Button type="submit" variant="contained" sx={{ marginTop: 2 }}>
-                Send
-            </Button>
         </form>
     );
 }

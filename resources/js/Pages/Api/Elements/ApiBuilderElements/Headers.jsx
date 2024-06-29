@@ -1,14 +1,37 @@
-import React from 'react';
-import { Box, Grid, TextField, Button, IconButton } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
+import React from "react";
+import { Box, Grid, TextField, Button, IconButton } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import CreatableSelect from "react-select/creatable";
+import ReactSelectDarkMode from "../../../../configs/styles/ReactSelectDarkMode";
 
-function Headers({ headers, handleHeaderChange, addHeader, removeHeader }) {
+function Headers({
+    apiHeaders,
+    headers,
+    handleHeaderChange,
+    addHeader,
+    removeHeader,
+}) {
+    const handleChange = (index, newValue, actionMeta) => {
+        if (actionMeta.action === "create-option") {
+            const createdHeader = {
+                id: new Date().toISOString(),
+                key: newValue.value,
+                value: "", // Assuming you need to initialize value
+            };
+            handleHeaderChange(index, createdHeader);
+        } else {
+            handleHeaderChange(index, newValue);
+        }
+    };
+
+    const options = apiHeaders.map((apiHeader) => ({
+        value: apiHeader.id,
+        label: apiHeader.title,
+    }));
+
     return (
         <Box mt={1}>
-            <Grid container spacing={1}>
-                <Grid item xs={9}>
-                    <h4>Headers:</h4>
-                </Grid>
+            <Grid container mb={2} justifyContent={"end"} spacing={1}>
                 <Grid item xs={3}>
                     <Button
                         onClick={addHeader}
@@ -21,25 +44,45 @@ function Headers({ headers, handleHeaderChange, addHeader, removeHeader }) {
                 </Grid>
             </Grid>
             {headers.map((header, index) => (
-                <div key={index}>
-                    <TextField
-                        label="Key"
-                        value={header.key}
-                        onChange={(e) =>
-                            handleHeaderChange(index, e.target.value, header.value)
-                        }
-                    />
-                    <TextField
-                        label="Value"
-                        value={header.value}
-                        onChange={(e) =>
-                            handleHeaderChange(index, header.key, e.target.value)
-                        }
-                    />
-                    <IconButton onClick={() => removeHeader(index)} aria-label="delete">
-                        <DeleteIcon />
-                    </IconButton>
-                </div>
+                <Grid container my={2} spacing={1} alignItems="center" key={index}>
+                    <Grid item xs={6}>
+                        <CreatableSelect
+                        
+                            value={options.find(
+                                (option) => option.value === header.key
+                            )}
+                            onChange={(newValue, actionMeta) =>
+                                handleChange(index, newValue, actionMeta)
+                            }
+                            options={options}
+                            placeholder="Key"
+                            isClearable
+                            styles={ReactSelectDarkMode}
+                        />
+                    </Grid>
+                    <Grid item xs={4}>
+                        <TextField
+                            label="Value"
+                            value={header.value}
+                            onChange={(e) =>
+                                handleHeaderChange(
+                                    index,
+                                    header.key,
+                                    e.target.value
+                                )
+                            }
+                            fullWidth
+                        />
+                    </Grid>
+                    <Grid item xs={2}>
+                        <IconButton
+                            onClick={() => removeHeader(index)}
+                            aria-label="delete"
+                        >
+                            <DeleteIcon />
+                        </IconButton>
+                    </Grid>
+                </Grid>
             ))}
         </Box>
     );

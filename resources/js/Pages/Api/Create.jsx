@@ -3,45 +3,53 @@ import { Box } from "@mui/material";
 import Layout from "../../Layout/Layout";
 import { Grid } from "@mui/material";
 import ApiBuilder from "./Elements/ApiBuilder";
-import TextField from "@mui/material/TextField";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
 import ApiController from "./Elements/ApiController";
+import SaveIcon from "@mui/icons-material/Save";
 
 const Create = () => {
-    const [purpose, setPurpose] = useState("");
-
     const links = [
         { label: "Home", href: "/", icon: "home" },
         { label: "Apis", href: "/apis", icon: "whatshot" },
         { label: "Create", icon: "grain" },
     ];
 
- 
+    const [purpose, setPurpose] = useState("1");
+    const [saveLoading, setSaveLoading] = useState(false);
+
+    const handleSaveAPI = () => {
+        setSaveLoading(true);
+
+        axiosConfig
+            .post(`apis`)
+            .then((response) => {
+                
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    };
+
+    const actionButtons = [
+        {
+            label: "Save",
+            onClick: handleSaveAPI,
+            icon: <SaveIcon />,
+            loading: saveLoading,
+        },
+    ];
+
     return (
-        <Layout links={links} title="Create New API">
+        <Layout
+            links={links}
+            actionButtons={actionButtons}
+            title="Create New API"
+        >
             <Box container>
-                <Grid container spacing={1}>
-                    <Grid item xs={7}>
-                        <Box mb={1}>
-                            <Grid item xs={12}>
-                                <Select
-                                    value={purpose}
-                                    onChange={(e) => setPurpose(e.target.value)}
-                                    displayEmpty
-                                    fullWidth
-                                >
-                                    <MenuItem value="" disabled>
-                                        Select Purpose
-                                    </MenuItem>
-                                    <MenuItem value="1">Retrieve Data</MenuItem>
-                                    <MenuItem value="2">Store Data</MenuItem>
-                                </Select>
-                            </Grid>
-                        </Box>
-                        <ApiBuilder />
+                <Grid container spacing={4}>
+                    <Grid item xs={6}>
+                        <ApiBuilder purpose={purpose} setPurpose={setPurpose} />
                     </Grid>
-                    <Grid item xs={5}>
+                    <Grid item xs={6}>
                         <ApiController purpose={purpose} />
                     </Grid>
                 </Grid>

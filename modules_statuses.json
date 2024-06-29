@@ -4,5 +4,6 @@
     "Tenant": true,
     "Log": true,
     "DataRepository": true,
-    "GPT": true
+    "GPT": true,
+    "Api": true
 }
