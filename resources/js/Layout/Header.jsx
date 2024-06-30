@@ -25,14 +25,18 @@ const Header = ({ user, userLoading, open, setOpen }) => {
     return (
         <AppBar position="static">
             <Toolbar>
-                <IconButton
-                    edge="start"
-                    color="inherit"
-                    aria-label="menu"
-                    onClick={() => setOpen(!open)}
-                >
-                    <MenuIcon />
-                </IconButton>
+                {user ? (
+                    <IconButton
+                        edge="start"
+                        color="inherit"
+                        aria-label="menu"
+                        onClick={() => setOpen(!open)}
+                    >
+                        <MenuIcon />
+                    </IconButton>
+                ) : (
+                    ""
+                )}
                 <Typography
                     variant="h6"
                     component={Link}
@@ -40,7 +44,7 @@ const Header = ({ user, userLoading, open, setOpen }) => {
                     style={{ flexGrow: 1, textDecoration: "none" }}
                     color="inherit"
                 >
-                    BytePoint
+                    {import.meta.env.VITE_APP_NAME}
                 </Typography>
                 {userLoading ? (
                     <CircularProgress color="inherit" size={24} />
@@ -50,7 +54,7 @@ const Header = ({ user, userLoading, open, setOpen }) => {
                             size="large"
                             onClick={handleMenu}
                             color="inherit"
-                            sx={{ borderRadius:0 }}
+                            sx={{ borderRadius: 0 }}
                         >
                             <AccountCircle />
                             <Typography variant="h6" color="inherit">

@@ -41,8 +41,3 @@ Route::get('/file-manager', function () {
 Route::get('/templates', function () {
     return Inertia::render('Templates/Templates');
 });
-
-Route::get('/settings', function () {
-    return Inertia::render('Settings/Settings');
-});
-

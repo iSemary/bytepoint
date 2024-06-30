@@ -51,7 +51,7 @@ export default function Sidebar({ user, userLoading, open, setOpen }) {
                             }}
                         />
                         <Typography variant="subtitle2">
-                            {user?.data?.data?.customer?.name}
+                            {user?.data?.data?.customer?.customer_name}
                         </Typography>
                     </Box>
                     <Divider />

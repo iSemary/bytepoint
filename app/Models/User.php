@@ -13,15 +13,18 @@ use Laravel\Passport\Token;
 use Modules\Auth\Entities\EmailToken;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable {
+class User extends Authenticatable
+{
     use HasApiTokens, HasFactory, Notifiable, HasRoles, SoftDeletes;
+
+    protected $connection = 'tenant';
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
-    protected $fillable = ['customer_id', 'name', 'email', 'username', 'country_id', 'factor_authenticate', 'language_id', 'password'];
+    protected $fillable = ['customer_id', 'name', 'email', 'username', 'country_id', 'language_id', 'theme_mode', 'factor_authenticate', 'google2fa_secret', 'password'];
 
 
     /**
@@ -42,7 +45,8 @@ class User extends Authenticatable {
     protected $casts = ['email_verified_at' => 'datetime', 'password' => 'hashed'];
 
 
-    public function role() {
+    public function role()
+    {
         return $this->roles()->latest()->first();
     }
 
@@ -55,7 +59,8 @@ class User extends Authenticatable {
      * 
      * @return User an instance of the User model where the id matches the user_id of the EmailToken.
      */
-    public static function verifyToken(string $token) {
+    public static function verifyToken(string $token)
+    {
         $userToken = EmailToken::where("token", $token)->where("status", 0)->first();
         if ($userToken) {
             $userToken->update(["status" => 1]);
@@ -70,7 +75,8 @@ class User extends Authenticatable {
      * 
      * @return string password reset token.
      */
-    public function createResetToken(): string {
+    public function createResetToken(): string
+    {
         $token = DB::table('password_reset_tokens')->where("user_id", $this->id)->value('token');
         if (!$token) {
             $token = EmailToken::generateToken();
@@ -85,7 +91,8 @@ class User extends Authenticatable {
      * @param string newPassword The  parameter is a string that represents the new password
      * that the user wants to set.
      */
-    public function updatePassword(string $newPassword): void {
+    public function updatePassword(string $newPassword): void
+    {
         $this->update(['password' => bcrypt($newPassword)]);
     }
 
@@ -96,7 +103,8 @@ class User extends Authenticatable {
      * @param value The value parameter represents the new value that is being assigned to the email
      * attribute.
      */
-    public function setEmailAttribute($value) {
+    public function setEmailAttribute($value)
+    {
         $this->attributes['email'] = $value;
         $this->attributes['email_verified_at'] = $this->email == $value ? $this->email_verified_at : null;
     }
@@ -112,7 +120,8 @@ class User extends Authenticatable {
      * @return either the user associated with the token if the token is found in the database, or false if
      * the token is not found or if the 'jti' field is not present in the token header.
      */
-    public static function manualCheckToken($accessToken) {
+    public static function manualCheckToken($accessToken)
+    {
         $tokenParts = explode('.', $accessToken);
         $tokenHeader = $tokenParts[1];
         $tokenHeaderJson = base64_decode($tokenHeader);
