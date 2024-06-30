@@ -499,10 +499,12 @@ class AuthController extends ApiController
         }
         $user->save();
 
-        $client = $this->getCustomerDetails($user->customer_id);
-        $client->category_id = $request->category_id;
-        $client->name = $request->customer_name;
-        $client->save();
+        if ($user->role()->name == 'super_admin') {
+            $client = $this->getCustomerDetails($user->customer_id);
+            $client->category_id = $request->category_id;
+            $client->name = $request->customer_name;
+            $client->save();
+        }
 
         return $this->return(200, "Profile updated successfully");
     }
