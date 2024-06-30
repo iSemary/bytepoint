@@ -217,22 +217,24 @@ export default function Settings() {
                                         }
                                     />
                                 </Grid>
-                                <Grid item xs={12} md={12}>
-                                    <TextField
-                                        variant="outlined"
-                                        required
-                                        fullWidth
-                                        label="Customer Title"
-                                        name="customerTitle"
-                                        value={customer.customer_name}
-                                        onChange={(e) =>
-                                            handleCustomerInputChange(
-                                                "customer_name",
-                                                e.target.value
-                                            )
-                                        }
-                                    />
-                                </Grid>
+                                {user.role && user.role === "super_admin" && (
+                                    <Grid item xs={12} md={12}>
+                                        <TextField
+                                            variant="outlined"
+                                            required
+                                            fullWidth
+                                            label="Customer Title"
+                                            name="customerTitle"
+                                            value={customer.customer_name}
+                                            onChange={(e) =>
+                                                handleCustomerInputChange(
+                                                    "customer_name",
+                                                    e.target.value
+                                                )
+                                            }
+                                        />
+                                    </Grid>
+                                )}
                             </Grid>
                             <Grid container mt={1} spacing={2}>
                                 <Grid item xs={12} md={6} className="z-2">
@@ -265,36 +267,38 @@ export default function Settings() {
                                         placeholder="Country"
                                     />
                                 </Grid>
-                                <Grid item xs={12} md={6} className="z-2">
-                                    <Select
-                                        options={categories}
-                                        getOptionLabel={(option) =>
-                                            option["title"]
-                                        }
-                                        getOptionValue={(option) =>
-                                            option["id"]
-                                        }
-                                        value={
-                                            customer.category_id
-                                                ? categories.find(
-                                                      (cat) =>
-                                                          cat.id ===
-                                                          customer.category_id
-                                                  )
-                                                : null
-                                        }
-                                        styles={ReactSelectDarkMode}
-                                        onChange={(selectedOption) =>
-                                            handleCustomerInputChange(
-                                                "category_id",
-                                                selectedOption
-                                                    ? selectedOption.id
+                                {user.role && user.role === "super_admin" && (
+                                    <Grid item xs={12} md={6} className="z-2">
+                                        <Select
+                                            options={categories}
+                                            getOptionLabel={(option) =>
+                                                option["title"]
+                                            }
+                                            getOptionValue={(option) =>
+                                                option["id"]
+                                            }
+                                            value={
+                                                customer.category_id
+                                                    ? categories.find(
+                                                          (cat) =>
+                                                              cat.id ===
+                                                              customer.category_id
+                                                      )
                                                     : null
-                                            )
-                                        }
-                                        placeholder="Category"
-                                    />
-                                </Grid>
+                                            }
+                                            styles={ReactSelectDarkMode}
+                                            onChange={(selectedOption) =>
+                                                handleCustomerInputChange(
+                                                    "category_id",
+                                                    selectedOption
+                                                        ? selectedOption.id
+                                                        : null
+                                                )
+                                            }
+                                            placeholder="Category"
+                                        />
+                                    </Grid>
+                                )}
                             </Grid>
                         </Box>
                     </TabPanel>
