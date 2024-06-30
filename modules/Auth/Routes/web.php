@@ -23,4 +23,12 @@ Route::group(['middleware' => ['tenant']], function () {
     Route::get('/settings', function () {
         return Inertia::render('Settings/Settings');
     });
+
+    Route::get('/login-attempts', function () {
+        return Inertia::render('Auth/Attempts');
+    });
+
+    Route::get('/activity-log', function () {
+        return Inertia::render('Auth/ActivityLog');
+    });
 });

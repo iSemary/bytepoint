@@ -12,10 +12,12 @@ use Laravel\Passport\HasApiTokens;
 use Laravel\Passport\Token;
 use Modules\Auth\Entities\EmailToken;
 use Spatie\Permission\Traits\HasRoles;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, SoftDeletes;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, SoftDeletes, LogsActivity;
 
     protected $connection = 'tenant';
 
@@ -135,5 +137,12 @@ class User extends Authenticatable
             return $token->user;
         }
         return false;
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logAll()
+            ->logOnlyDirty();
     }
 }

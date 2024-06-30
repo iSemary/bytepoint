@@ -28,6 +28,8 @@ Route::group(['prefix' => 'auth'], function () {
         Route::post("send/verify/email", [AuthController::class, "sendVerifyEmail"]);
         // Get Login Attempt
         Route::get('attempts', [AuthController::class, "attempts"]);
+        // Get Activity Log
+        Route::get('activity-logs', [AuthController::class, "activityLogs"]);
         // Generate 2Fa QR Code
         Route::post('2fa/generate', [AuthController::class, "generate2FACode"]);
         // Verify 2Fa QR Code

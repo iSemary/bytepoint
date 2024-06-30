@@ -5,6 +5,7 @@ namespace Modules\Auth\Http\Controllers\Api;
 use App\Http\Controllers\Api\ApiController;
 use App\Models\Customer;
 use Modules\Auth\Services\RegistrationService;
+use Modules\Auth\Services\ActivityLogService;
 use Modules\Auth\Http\Requests\ForgetPasswordRequest;
 use Modules\Auth\Http\Requests\LoginUserRequest;
 use Modules\Auth\Http\Requests\RegisterUserRequest;
@@ -23,15 +24,16 @@ use Carbon\Carbon;
 use stdClass;
 use Exception;
 use Modules\Tenant\Helper\TenantHelper;
-use Spatie\Multitenancy\Models\Tenant;
 
 class AuthController extends ApiController
 {
     protected $registrationService;
+    protected $activityLogService;
 
-    public function __construct(RegistrationService $registrationService)
+    public function __construct(RegistrationService $registrationService, ActivityLogService $activityLogService)
     {
         $this->registrationService = $registrationService;
+        $this->activityLogService = $activityLogService;
     }
 
     /**
@@ -329,8 +331,8 @@ class AuthController extends ApiController
      */
     public function attempts(): JsonResponse
     {
-        $attempts = LoginAttempt::select(['ip', 'agent', 'created_at'])->where('user_id', auth()->guard('api')->id())->orderBy('id', 'DESC')->paginate(5);
-        return $this->return(200, 'Attempts fetched successfully', ['data' => $attempts]);
+        $attempts = LoginAttempt::select(['id', 'ip', 'agent', 'created_at'])->where('user_id', auth()->guard('api')->id())->orderBy('id', 'DESC')->paginate(5);
+        return $this->return(200, 'Attempts fetched successfully', ['attempts' => $attempts]);
     }
 
     /**
@@ -436,6 +438,11 @@ class AuthController extends ApiController
         return $this->return(200, "Account deactivated successfully");
     }
 
+    /**
+     * Generate 2FA QrCode After registration
+     *
+     * @return void
+     */
     public function generate2FACode()
     {
         $user = auth()->guard('api')->user();
@@ -448,6 +455,12 @@ class AuthController extends ApiController
         return $this->return(200, "QR Code Generated Successfully", ['qr_code' => $qrCode, 'secret_key' => $googleSecretKey]);
     }
 
+    /**
+     * Verify 2FA After registration
+     *
+     * @param Request $request
+     * @return void
+     */
     public function verify2FA(Request $request)
     {
         $user = auth()->guard('api')->user();
@@ -464,6 +477,12 @@ class AuthController extends ApiController
         return $this->return(400, "Invalid OTP number");
     }
 
+    /**
+     * Validate 2fa after login
+     *
+     * @param Request $request
+     * @return void
+     */
     public function validate2FA(Request $request)
     {
         $user = auth()->guard('api')->user();
@@ -479,6 +498,12 @@ class AuthController extends ApiController
         return $this->return(400, "Invalid OTP number");
     }
 
+    /**
+     * Update user details [settings page]
+     *
+     * @param Request $request
+     * @return void
+     */
     public function updateUserDetails(Request $request)
     {
         $user = auth()->guard('api')->user();
@@ -507,5 +532,16 @@ class AuthController extends ApiController
         }
 
         return $this->return(200, "Profile updated successfully");
+    }
+
+    /**
+     * Return activity logs
+     *
+     * @return JsonResponse
+     */
+    public function activityLogs(): JsonResponse
+    {
+        $activityLogs = $this->activityLogService->get();
+        return $this->return(200, "Activity Log Fetched successfully", ['activity_logs' => $activityLogs]);
     }
 }

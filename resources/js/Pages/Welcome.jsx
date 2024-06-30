@@ -10,7 +10,6 @@ import {
     IconButton,
 } from "@mui/material";
 import { Link } from "@inertiajs/react";
-import DashboardIcon from "@mui/icons-material/Dashboard";
 import ApiIcon from "@mui/icons-material/Api";
 import MockupIcon from "@mui/icons-material/Mouse";
 import TemplateIcon from "@mui/icons-material/Description";
@@ -22,6 +21,7 @@ import ApiKeyIcon from "@mui/icons-material/VpnKey";
 import UserIcon from "@mui/icons-material/People";
 import SettingsIcon from "@mui/icons-material/Settings";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 
 const menuItems = [
     {
@@ -83,6 +83,12 @@ const menuItems = [
         link: "/user-management",
         icon: <UserIcon />,
         description: "Administer user accounts and permissions.",
+    },
+    {
+        text: "Login Attempts",
+        link: "/login-attempts",
+        icon: <WarningAmberIcon />,
+        description: "View failed login attempts.",
     },
     {
         text: "Settings",
