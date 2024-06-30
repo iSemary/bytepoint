@@ -18,8 +18,8 @@ Route::group(['prefix' => 'auth'], function () {
         Route::get("check", [AuthController::class, "checkAuthentication"]);
         // Profile Route
         Route::get("user/profile", [AuthController::class, "getUserDetails"]);
-        // Get authenticated user details
-        Route::get("user", [AuthController::class, "getUser"]);
+        // Update Settings
+        Route::patch("user/update", [AuthController::class, "updateUserDetails"]);
         // Logout / Logout All Devices
         Route::post("logout", [AuthController::class, "logout"]);
         // Verify Email
@@ -28,10 +28,12 @@ Route::group(['prefix' => 'auth'], function () {
         Route::post("send/verify/email", [AuthController::class, "sendVerifyEmail"]);
         // Get Login Attempt
         Route::get('attempts', [AuthController::class, "attempts"]);
-        // Change password [From settings]
-        Route::post('update-password', [AuthController::class, "updatePassword"]);
-        // toggle 2 factor authenticate [From settings]
-        Route::post('toggle-factor-authenticate', [AuthController::class, "toggleFactorAuthenticate"]);
+        // Generate 2Fa QR Code
+        Route::post('2fa/generate', [AuthController::class, "generate2FACode"]);
+        // Verify 2Fa QR Code
+        Route::post('2fa/verify', [AuthController::class, "verify2FA"]);
+        // Validate 2Fa OTP
+        Route::post('2fa/validate', [AuthController::class, "validate2FA"]);
         // deactivate account [From settings]
         Route::post('deactivate', [AuthController::class, "deactivate"]);
     });

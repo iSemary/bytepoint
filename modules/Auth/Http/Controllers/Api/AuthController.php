@@ -25,10 +25,12 @@ use Exception;
 use Modules\Tenant\Helper\TenantHelper;
 use Spatie\Multitenancy\Models\Tenant;
 
-class AuthController extends ApiController {
+class AuthController extends ApiController
+{
     protected $registrationService;
 
-    public function __construct(RegistrationService $registrationService) {
+    public function __construct(RegistrationService $registrationService)
+    {
         $this->registrationService = $registrationService;
     }
 
@@ -43,16 +45,20 @@ class AuthController extends ApiController {
      * 
      * @return JsonResponse a JsonResponse object.
      */
-    public function register(RegisterUserRequest $request): JsonResponse {
+    public function register(RegisterUserRequest $request): JsonResponse
+    {
         /* Requested data passed the validation */
         try {
             $validatedRequest = $request->validated();
             // Register new user / customer / tenant
             $registrationService = $this->registrationService->register($validatedRequest);
             // collect user details to return in the json response
-            $user = $this->collectUserDetails($registrationService['user']);
+            $user = $this->collectUserDetails($registrationService['user'], true, true);
             // Return Success Json Response
-            return $this->return(200, 'Owner Registered Successfully', ['user' => $user, 'redirect' => $registrationService['redirect']]);
+            return $this->return(200, 'Owner Registered Successfully', [
+                'user' => $user,
+                'redirect' => $registrationService['redirect'] . "/2fa/generate"
+            ]);
         } catch (\Exception $e) {
             return $this->return(400, 'Something went wrong', debug: $e->getMessage());
         }
@@ -68,7 +74,8 @@ class AuthController extends ApiController {
      * 
      * @return JsonResponse a JsonResponse.
      */
-    public function login(LoginUserRequest $request): JsonResponse {
+    public function login(LoginUserRequest $request): JsonResponse
+    {
         $tenant = TenantHelper::makeCurrent($request->subdomain);
 
         if ($this->attemptLogin($request)) {
@@ -78,24 +85,27 @@ class AuthController extends ApiController {
         return $this->handleFailedLogin($request, $tenant);
     }
 
-    private function attemptLogin(LoginUserRequest $request): bool {
+    private function attemptLogin(LoginUserRequest $request): bool
+    {
         return auth()->attempt([
             'email' => $request->email,
             'password' => $request->password
         ]);
     }
 
-    private function handleSuccessfulLogin(LoginUserRequest $request): JsonResponse {
+    private function handleSuccessfulLogin(LoginUserRequest $request): JsonResponse
+    {
         $user = auth()->user();
         $response = $this->collectUserDetails($user);
 
         return $this->return(200, 'User Logged in Successfully', [
             'user' => $response,
-            'redirect' => TenantHelper::generateURL($request->subdomain)
+            'redirect' => TenantHelper::generateURL($request->subdomain) . "/2fa/generate"
         ]);
     }
 
-    private function handleFailedLogin(LoginUserRequest $request, $tenant): JsonResponse {
+    private function handleFailedLogin(LoginUserRequest $request, $tenant): JsonResponse
+    {
         $user = User::where("email", $request->email)->first();
 
         if ($user) {
@@ -105,14 +115,16 @@ class AuthController extends ApiController {
         return $this->handleNonExistentUserLogin($request);
     }
 
-    private function handleExistingUserFailedLogin(User $user, LoginUserRequest $request, $tenant): JsonResponse {
+    private function handleExistingUserFailedLogin(User $user, LoginUserRequest $request, $tenant): JsonResponse
+    {
         $loginAttempt = $this->createLoginAttempt($user, $request);
         AttemptMailJob::dispatchAfterResponse($user, $loginAttempt, $tenant->id);
 
         return $this->return(400, 'Invalid credentials');
     }
 
-    private function createLoginAttempt(User $user, LoginUserRequest $request): LoginAttempt {
+    private function createLoginAttempt(User $user, LoginUserRequest $request): LoginAttempt
+    {
         return LoginAttempt::create([
             'user_id' => $user->id,
             'agent' => $request->userAgent(),
@@ -120,7 +132,8 @@ class AuthController extends ApiController {
         ]);
     }
 
-    private function handleNonExistentUserLogin(LoginUserRequest $request): JsonResponse {
+    private function handleNonExistentUserLogin(LoginUserRequest $request): JsonResponse
+    {
         $trashedUser = User::where("email", $request->email)->withTrashed()->first();
 
         if ($trashedUser) {
@@ -130,7 +143,8 @@ class AuthController extends ApiController {
         return $this->return(400, 'Invalid credentials');
     }
 
-    private function attemptAccountRecovery(LoginUserRequest $request, User $trashedUser): JsonResponse {
+    private function attemptAccountRecovery(LoginUserRequest $request, User $trashedUser): JsonResponse
+    {
         User::where("email", $request->email)->withTrashed()->restore();
 
         if ($this->attemptLogin($request)) {
@@ -141,7 +155,8 @@ class AuthController extends ApiController {
         return $this->return(400, 'Invalid credentials');
     }
 
-    private function handleSuccessfulRecovery(LoginUserRequest $request): JsonResponse {
+    private function handleSuccessfulRecovery(LoginUserRequest $request): JsonResponse
+    {
         $user = auth()->user();
         $response = $this->collectUserDetails($user);
 
@@ -151,7 +166,8 @@ class AuthController extends ApiController {
         ]);
     }
 
-    private function rollbackRecovery(User $trashedUser): void {
+    private function rollbackRecovery(User $trashedUser): void
+    {
         User::where("email", $trashedUser->email)->update(['deleted_at' => $trashedUser->deleted_at]);
     }
 
@@ -162,22 +178,27 @@ class AuthController extends ApiController {
      * 
      * @return User the updated User object with the added access_token property.
      */
-    public function collectUserDetails(User $user, bool $generateToken = true): User {
+    public function collectUserDetails(User $user, bool $generateToken = true): User
+    {
         if ($generateToken) {
             $accessToken = $this->generateAccessToken($user);
         }
+
         $userData = $this->selectUserData($user);
         if ($generateToken) {
             $userData['access_token'] = $accessToken;
         }
+
         return $userData;
     }
 
-    private function generateAccessToken(User $user): string {
+    private function generateAccessToken(User $user): string
+    {
         return $user->createToken('web-app')->accessToken;
     }
 
-    private function selectUserData(User $user): User {
+    private function selectUserData(User $user): User
+    {
         return $user->where("id", $user->id)->select('name', 'email', 'username', 'created_at')->first();
     }
     /**
@@ -191,7 +212,8 @@ class AuthController extends ApiController {
      * 
      * @return JsonResponse a JsonResponse.
      */
-    public function logout(Request $request): JsonResponse {
+    public function logout(Request $request): JsonResponse
+    {
         $user = auth()->guard('api')->user();
         try {
             if ($request->type == 1) {
@@ -220,7 +242,8 @@ class AuthController extends ApiController {
      * 
      * @return JsonResponse a JsonResponse.
      */
-    public function verifyEmail(string $token): JsonResponse {
+    public function verifyEmail(string $token): JsonResponse
+    {
         if (isset($token)) {
             try {
                 $verifyToken = User::verifyToken($token);
@@ -248,7 +271,8 @@ class AuthController extends ApiController {
      * @return JsonResponse a JsonResponse with a status code of 200 and a message "Reset email has been
      * sent successfully".
      */
-    public function forgetPassword(ForgetPasswordRequest $request): JsonResponse {
+    public function forgetPassword(ForgetPasswordRequest $request): JsonResponse
+    {
         $user = User::select(['id', 'name', 'email'])->where("email", $request->email)->first();
         $token = $user->createResetToken();
         // Send reset password link
@@ -265,7 +289,8 @@ class AuthController extends ApiController {
      * 
      * @return JsonResponse a JsonResponse.
      */
-    public function resetPassword(ResetPasswordRequest $request): JsonResponse {
+    public function resetPassword(ResetPasswordRequest $request): JsonResponse
+    {
         // Fetch the user by the token from the database
         $user = User::join("password_reset_tokens", "password_reset_tokens.user_id", "users.id")
             ->select(['users.id'])
@@ -288,24 +313,12 @@ class AuthController extends ApiController {
      * 
      * @return JsonResponse A JsonResponse object is being returned.
      */
-    public function checkAuthentication(): JsonResponse {
+    public function checkAuthentication(): JsonResponse
+    {
         if (auth()->guard('api')->check()) {
             return $this->return(200, "Authenticated successfully");
         }
         return $this->return(400, "Session expired");
-    }
-
-    /**
-     * The function retrieves the authenticated user details and returns a JSON response with the user
-     * information.
-     * 
-     * @return JsonResponse a JsonResponse object.
-     */
-    public function getUser(): JsonResponse {
-        $auth = auth()->guard('api')->user();
-        $user = $this->collectUserDetails($auth, false);
-        $extra = $this->collectExtraDetails($auth);
-        return $this->return(200, "User fetched successfully", ['user' => $user, 'extra' => $extra]);
     }
 
     /**
@@ -314,7 +327,8 @@ class AuthController extends ApiController {
      * 
      * @return JsonResponse A JsonResponse object is being returned.
      */
-    public function attempts(): JsonResponse {
+    public function attempts(): JsonResponse
+    {
         $attempts = LoginAttempt::select(['ip', 'agent', 'created_at'])->where('user_id', auth()->guard('api')->id())->orderBy('id', 'DESC')->paginate(5);
         return $this->return(200, 'Attempts fetched successfully', ['data' => $attempts]);
     }
@@ -325,7 +339,8 @@ class AuthController extends ApiController {
      * 
      * @return JsonResponse A JsonResponse object is being returned.
      */
-    public function sendVerifyEmail(): JsonResponse {
+    public function sendVerifyEmail(): JsonResponse
+    {
         $user = auth()->guard('api')->user();
         // Create email token
         $token = EmailToken::createToken($user->id);
@@ -344,7 +359,8 @@ class AuthController extends ApiController {
      * 
      * @return JsonResponse A JsonResponse object is being returned.
      */
-    public function updatePassword(UpdatePasswordRequest $updatePasswordRequest): JsonResponse {
+    public function updatePassword(UpdatePasswordRequest $updatePasswordRequest): JsonResponse
+    {
         $userId = auth()->guard('api')->id();
 
         User::where("id", $userId)->update([
@@ -357,18 +373,6 @@ class AuthController extends ApiController {
 
 
     /**
-     * The function toggles the factor authentication status of the currently authenticated user and
-     * returns a JSON response with a success message.
-     * 
-     * @return JsonResponse a JsonResponse.
-     */
-    public function toggleFactorAuthenticate(): JsonResponse {
-        $user = auth()->guard('api')->user();
-        User::where("id", $user->id)->update(['factor_authenticate' => !$user->factor_authenticate]);
-        return $this->return(200, "Factor Authenticate updated successfully");
-    }
-
-    /**
      * The getUserDetails function retrieves the user details, including the user object and returns them in a JSON response.
      * 
      * @return JsonResponse a JsonResponse with the following data:
@@ -376,11 +380,12 @@ class AuthController extends ApiController {
      * - Message: "User details fetched successfully"
      * - Data: An object containing the user details
      */
-    public function getUserDetails(): JsonResponse {
+    public function getUserDetails(): JsonResponse
+    {
         $user = auth()->guard('api')->user();
         $response = new stdClass();
 
-        $response->user = $user;
+        $response->user = $this->prepareUserData($user);
         $response->user->role = $user->role()->name;
 
         $customer = $this->getCustomerDetails($user->customer_id);
@@ -388,9 +393,28 @@ class AuthController extends ApiController {
         return $this->return(200, "User details fetched successfully", ['data' => $response]);
     }
 
+    private function prepareUserData(User $user)
+    {
+        $data = [
+            'customer_id' => $user->customer_id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'username' => $user->username,
+            'country_id' => $user->country_id,
+            'language_id' => $user->language_id,
+            'theme_mode' => $user->theme_mode,
+            'factor_authenticate' => $user->factor_authenticate,
+            'last_password_at' => $user->last_password_at,
+            'email_verified_at' => $user->email_verified_at,
+        ];
 
-    private function getCustomerDetails(int $customerId) {
-        return DB::connection("landlord")->table("customers")->where("id", $customerId)->first();
+        return (object) $data;
+    }
+
+
+    private function getCustomerDetails(int $customerId)
+    {
+        return Customer::select(['id', 'name as customer_name', 'username', 'category_id'])->where("id", $customerId)->first();
     }
 
     /**
@@ -400,7 +424,8 @@ class AuthController extends ApiController {
      * @return JsonResponse A JsonResponse with a status code of 200 and a message "Account deactivated
      * successfully" is being returned.
      */
-    public function deactivate(): JsonResponse {
+    public function deactivate(): JsonResponse
+    {
         $user = auth()->guard('api')->user();
         // Revoke all tokens
         $user->tokens->each(function ($token, $key) {
@@ -409,5 +434,76 @@ class AuthController extends ApiController {
         // set user as soft deleted 
         $user->delete();
         return $this->return(200, "Account deactivated successfully");
+    }
+
+    public function generate2FACode()
+    {
+        $user = auth()->guard('api')->user();
+
+        $google2fa = app('pragmarx.google2fa');
+        $googleSecretKey = $google2fa->generateSecretKey();
+
+        $qrCode = $google2fa->getQRCodeInline(config('app.name'), $user['email'], $googleSecretKey);
+
+        return $this->return(200, "QR Code Generated Successfully", ['qr_code' => $qrCode, 'secret_key' => $googleSecretKey]);
+    }
+
+    public function verify2FA(Request $request)
+    {
+        $user = auth()->guard('api')->user();
+        $request->validate(['code' => 'required|string|max:6', 'secret_key' => 'required|string']);
+
+        // Verify the 2FA code
+        $google2fa = app('pragmarx.google2fa');
+        $isValid = $google2fa->verifyKey($request->secret_key, $request->code);
+
+        if ($isValid) {
+            $user->update(["google2fa_secret" => $request->secret_key]);
+            return $this->return(200, "2FA Verified Successfully");
+        }
+        return $this->return(400, "Invalid OTP number");
+    }
+
+    public function validate2FA(Request $request)
+    {
+        $user = auth()->guard('api')->user();
+        $request->validate(['code' => 'required|string|max:6']);
+
+        // Validate the 2FA code
+        $google2fa = app('pragmarx.google2fa');
+        $isValid = $google2fa->verifyKey($user->google2fa_secret, $request->code);
+
+        if ($isValid) {
+            return $this->return(200, "2FA Verified Successfully");
+        }
+        return $this->return(400, "Invalid OTP number");
+    }
+
+    public function updateUserDetails(Request $request)
+    {
+        $user = auth()->guard('api')->user();
+
+        // Update the user model
+        $user->country_id = $request->country_id;
+        $user->email = $request->email;
+        $user->name = $request->name;
+        $user->theme_mode = $request->theme_mode;
+        $user->factor_authenticate = $request->factor_authenticate;
+
+        if (!empty($request->password)) {
+            if ($request->password == $request->password_confirmation) {
+                $user->password = bcrypt($request->password);
+            } else {
+                return $this->return(400, "Password not match");
+            }
+        }
+        $user->save();
+
+        $client = $this->getCustomerDetails($user->customer_id);
+        $client->category_id = $request->category_id;
+        $client->name = $request->customer_name;
+        $client->save();
+
+        return $this->return(200, "Profile updated successfully");
     }
 }

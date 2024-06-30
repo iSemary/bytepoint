@@ -84,6 +84,12 @@ const menuItems = [
         icon: <UserIcon />,
         description: "Administer user accounts and permissions.",
     },
+    {
+        text: "Settings",
+        link: "/settings",
+        icon: <SettingsIcon />,
+        description: "Configure application settings and preferences.",
+    },
 ];
 
 function Welcome() {

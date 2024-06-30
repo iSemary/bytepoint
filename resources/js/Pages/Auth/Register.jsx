@@ -12,6 +12,7 @@ import axiosConfig from "../../configs/AxiosConfig";
 import { Token } from "../../configs/Token";
 import Alert from "../../configs/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
+import ReactSelectDarkMode from "../../configs/styles/ReactSelectDarkMode";
 
 const Register = () => {
     const [loading, setLoading] = useState(false);
@@ -27,8 +28,6 @@ const Register = () => {
     const [customerTitle, setCustomerTitle] = useState("");
     const [customerUsername, setCustomerUsername] = useState("");
     const [categoryId, setCategoryId] = useState("");
-    const [countryDialCode, setCountryDialCode] = useState("");
-    const [phone, setPhone] = useState("");
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -159,6 +158,7 @@ const Register = () => {
                                 <Grid item xs={12} md={6} className="z-2">
                                     <Select
                                         options={countries}
+                                        styles={ReactSelectDarkMode}
                                         getOptionLabel={(option) =>
                                             option["name"]
                                         }
@@ -175,6 +175,7 @@ const Register = () => {
                                 <Grid item xs={12} md={6} className="z-2">
                                     <Select
                                         options={categories}
+                                        styles={ReactSelectDarkMode}
                                         getOptionLabel={(option) =>
                                             option["title"]
                                         }
