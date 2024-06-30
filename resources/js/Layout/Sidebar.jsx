@@ -22,6 +22,7 @@ import ApiKeyIcon from "@mui/icons-material/VpnKey";
 import UserIcon from "@mui/icons-material/People";
 import SettingsIcon from "@mui/icons-material/Settings";
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import { Link } from "@inertiajs/react";
 
 export default function Sidebar({ user, userLoading, open, setOpen }) {
@@ -119,6 +120,11 @@ export default function Sidebar({ user, userLoading, open, setOpen }) {
                         text: "User Management",
                         link: "/user-management",
                         icon: <UserIcon />,
+                    },
+                    {
+                        text: "Login Attempts",
+                        link: "/login-attempts",
+                        icon: <WarningAmberIcon />,
                     },
                     {
                         text: "Settings",
