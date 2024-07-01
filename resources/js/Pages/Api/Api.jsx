@@ -13,6 +13,9 @@ export default function Apis() {
     const [loading, setLoading] = useState(false);
     const [apis, setApis] = useState([]);
     const [api, setApi] = useState({});
+    const [page, setPage] = useState(0);
+    const [pageSize, setPageSize] = useState(25);
+    const [totalRows, setTotalRows] = useState(0);
 
     const handleCloseDrawer = () => {
         setDrawerOpen(false);
@@ -90,17 +93,19 @@ export default function Apis() {
     const fetchApis = useCallback(() => {
         setLoading(true);
         axiosConfig
-            .get("apis")
+            .get(`apis?page=${page + 1}&per_page=${pageSize}`)
             .then((response) => {
                 setApis(response.data.data.apis);
+                setTotalRows(response.data.data.apis.total || 0);
             })
             .catch((error) => {
+                setTotalRows(0);
                 console.error(error);
             })
             .finally(() => {
                 setLoading(false);
             });
-    }, []);
+    }, [page, pageSize]);
 
     const handleRefresh = () => {
         fetchApis();
@@ -144,8 +149,21 @@ export default function Apis() {
                             paginationModel: { page: 0, pageSize: 10 },
                         },
                     }}
-                    pageSizeOptions={[5, 10]}
                     loading={loading}
+                    pagination
+                    paginationMode="server"
+                    rowCount={totalRows}
+                    page={page}
+                    autoPageSize
+                    onPageChange={(newPage) => setPage(newPage)}
+                    onPageSizeChange={(newPageSize) => {
+                        setPageSize(newPageSize);
+                        setPage(0);
+                    }}
+                    onPaginationModelChange={(params) => {
+                        setPage(params.page);
+                        setPageSize(params.pageSize);
+                    }}
                 />
                 <ApiModal
                     drawerOpen={drawerOpen}

@@ -100,60 +100,53 @@ const menuItems = [
 
 function AuthHome() {
     return (
-        <Layout>
-            <Box sx={{ padding: 2 }}>
-                <Grid container spacing={2}>
-                    {menuItems.map((item, index) => (
-                        <Grid
-                            key={index}
-                            item
-                            xs={12}
-                            sm={3}
-                            className={"animate__animated animate__fadeIn"}
-                            style={{ animationDelay: `${index * 0.06}s` }}
-                        >
-                            <Card>
-                                <CardActionArea
-                                    component={Link}
-                                    href={item.link}
+        <Box sx={{ padding: 2 }}>
+            <Grid container spacing={2}>
+                {menuItems.map((item, index) => (
+                    <Grid
+                        key={index}
+                        item
+                        xs={12}
+                        sm={3}
+                        className={"animate__animated animate__fadeIn"}
+                        style={{ animationDelay: `${index * 0.06}s` }}
+                    >
+                        <Card>
+                            <CardActionArea component={Link} href={item.link}>
+                                <CardContent
+                                    sx={{
+                                        minHeight: 120,
+                                        maxHeight: 120,
+                                        display: "grid",
+                                        alignItems: "center",
+                                    }}
                                 >
-                                    <CardContent
-                                        sx={{
-                                            minHeight: 120,
-                                            maxHeight: 120,
-                                            display: "grid",
-                                            alignItems: "center",
-                                        }}
-                                    >
-                                        <Grid container alignItems="center">
-                                            <Grid item xs={2}>
-                                                <IconButton>
-                                                    {item.icon}
-                                                </IconButton>
-                                            </Grid>
-                                            <Grid item xs={10}>
-                                                <Typography
-                                                    variant="h5"
-                                                    component="div"
-                                                >
-                                                    {item.text}
-                                                </Typography>
-                                                <Typography
-                                                    variant="body2"
-                                                    color="text.secondary"
-                                                >
-                                                    {item.description}
-                                                </Typography>
-                                            </Grid>
+                                    <Grid container alignItems="center">
+                                        <Grid item xs={2}>
+                                            <IconButton>{item.icon}</IconButton>
                                         </Grid>
-                                    </CardContent>
-                                </CardActionArea>
-                            </Card>
-                        </Grid>
-                    ))}
-                </Grid>
-            </Box>
-        </Layout>
+                                        <Grid item xs={10}>
+                                            <Typography
+                                                variant="h5"
+                                                component="div"
+                                            >
+                                                {item.text}
+                                            </Typography>
+                                            <Typography
+                                                variant="body2"
+                                                color="text.secondary"
+                                            >
+                                                {item.description}
+                                            </Typography>
+                                        </Grid>
+                                    </Grid>
+                                </CardContent>
+                            </CardActionArea>
+                        </Card>
+                    </Grid>
+                ))}
+            </Grid>
+        </Box>
     );
 }
 

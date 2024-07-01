@@ -8,21 +8,26 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 export default function Attempts() {
     const [loading, setLoading] = useState(false);
     const [attempts, setAttempts] = useState([]);
+    const [page, setPage] = useState(0);
+    const [pageSize, setPageSize] = useState(25);
+    const [totalRows, setTotalRows] = useState(0);
 
     const fetchAttempts = useCallback(() => {
         setLoading(true);
         axiosConfig
-            .get("auth/attempts")
+            .get(`auth/attempts?page=${page + 1}&per_page=${pageSize}`)
             .then((response) => {
                 setAttempts(response.data.data.attempts.data);
+                setTotalRows(response.data.data.attempts.total || 0);
             })
             .catch((error) => {
+                setTotalRows(0);
                 console.error(error);
             })
             .finally(() => {
                 setLoading(false);
             });
-    }, []);
+    }, [page, pageSize]);
 
     const handleRefresh = () => {
         fetchAttempts();
@@ -70,8 +75,21 @@ export default function Attempts() {
                             paginationModel: { page: 0, pageSize: 10 },
                         },
                     }}
-                    pageSizeOptions={[5, 10]}
                     loading={loading}
+                    pagination
+                    paginationMode="server"
+                    rowCount={totalRows}
+                    page={page}
+                    autoPageSize
+                    onPageChange={(newPage) => setPage(newPage)}
+                    onPageSizeChange={(newPageSize) => {
+                        setPageSize(newPageSize);
+                        setPage(0);
+                    }}
+                    onPaginationModelChange={(params) => {
+                        setPage(params.page);
+                        setPageSize(params.pageSize);
+                    }}
                 />
             </Box>
         </Layout>

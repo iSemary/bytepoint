@@ -331,7 +331,7 @@ class AuthController extends ApiController
      */
     public function attempts(): JsonResponse
     {
-        $attempts = LoginAttempt::select(['id', 'ip', 'agent', 'created_at'])->where('user_id', auth()->guard('api')->id())->orderBy('id', 'DESC')->paginate(5);
+        $attempts = LoginAttempt::select(['id', 'ip', 'agent', 'created_at'])->where('user_id', auth()->guard('api')->id())->orderBy('id', 'DESC')->paginate(25);
         return $this->return(200, 'Attempts fetched successfully', ['attempts' => $attempts]);
     }
 

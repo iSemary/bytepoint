@@ -12,6 +12,9 @@ export default function Logs() {
     const [logs, setLogs] = useState([]);
     const [log, setLog] = useState({});
     const [loading, setLoading] = useState(false);
+    const [page, setPage] = useState(0);
+    const [pageSize, setPageSize] = useState(25);
+    const [totalRows, setTotalRows] = useState(0);
 
     const handleOpenDrawer = (row) => {
         setDrawerOpen(true);
@@ -73,17 +76,20 @@ export default function Logs() {
     const fetchLogs = useCallback(() => {
         setLoading(true);
         axiosConfig
-            .get("logs")
+            .get(`logs?page=${page + 1}&per_page=${pageSize}`)
             .then((response) => {
-                setLogs(response.data.data.logs.data);
+                setLogs(response.data.data.logs.data || []);
+                setTotalRows(response.data.data.logs.total || 0);
             })
             .catch((error) => {
                 console.error(error);
+                setLogs([]);
+                setTotalRows(0);
             })
             .finally(() => {
                 setLoading(false);
             });
-    }, []);
+    }, [page, pageSize]);
 
     const handleRefresh = () => {
         fetchLogs();
@@ -129,12 +135,20 @@ export default function Logs() {
                               }
                             : column
                     )}
-                    initialState={{
-                        pagination: {
-                            paginationModel: { page: 0, pageSize: 10 },
-                        },
+                    pagination
+                    paginationMode="server"
+                    rowCount={totalRows}
+                    page={page}
+                    autoPageSize
+                    onPageChange={(newPage) => setPage(newPage)}
+                    onPageSizeChange={(newPageSize) => {
+                        setPageSize(newPageSize);
+                        setPage(0);
                     }}
-                    pageSizeOptions={[5, 10]}
+                    onPaginationModelChange={(params) => {
+                        setPage(params.page);
+                        setPageSize(params.pageSize);
+                    }}
                 />
                 <LogModal
                     drawerOpen={drawerOpen}

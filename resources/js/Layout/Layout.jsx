@@ -43,7 +43,7 @@ export default function Layout({
     title = null,
 }) {
     const [open, setOpen] = useState(false);
-    const { user, userLoading } = useAuth();
+    const { user, loading } = useAuth();
 
     const [userTheme, setUserTheme] = useState(false);
     const [leaving, setLeaving] = useState(null);
@@ -61,13 +61,13 @@ export default function Layout({
             <Box display="flex" flexDirection="column" minHeight="100vh">
                 <Header
                     user={user}
-                    userLoading={userLoading}
+                    userLoading={loading}
                     open={open}
                     setOpen={setOpen}
                 />
                 <Sidebar
                     user={user}
-                    userLoading={userLoading}
+                    userLoading={loading}
                     open={open}
                     setOpen={setOpen}
                 />
