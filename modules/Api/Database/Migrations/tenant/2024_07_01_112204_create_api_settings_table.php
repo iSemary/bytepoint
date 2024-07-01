@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('api_parameters', function (Blueprint $table) {
+        Schema::create('api_settings', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('api_id');
-            $table->unsignedBigInteger('data_type_id');
-            $table->string('parameter_key');
-            $table->string('parameter_value');
+            $table->integer('api_id');
+            $table->boolean('allow_counter')->default(1);
+            $table->boolean('allow_paginator')->default(1);
             $table->softDeletes();
             $table->timestamps();
         });
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('api_parameters');
+        Schema::dropIfExists('api_settings');
     }
 };

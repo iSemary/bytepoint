@@ -1,61 +1,45 @@
-import React, { useState } from "react";
-import { Box } from "@mui/material";
+import React from "react";
+import CreationType from "../../Layout/Elements/CreationType";
+import { Construction } from "@mui/icons-material";
 import Layout from "../../Layout/Layout";
-import { Grid } from "@mui/material";
-import ApiBuilder from "./Elements/ApiBuilder";
-import ApiController from "./Elements/ApiController";
-import SaveIcon from "@mui/icons-material/Save";
+import { Grid, Typography } from "@mui/material";
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 
-const Create = () => {
+export default function Create({ id }) {
     const links = [
         { label: "Home", href: "/", icon: "home" },
-        { label: "Apis", href: "/apis", icon: "whatshot" },
+        {
+            label: "APIs",
+            href: "/apis",
+            icon: "whatshot",
+        },
         { label: "Create", icon: "grain" },
     ];
 
-    const [purpose, setPurpose] = useState("1");
-    const [saveLoading, setSaveLoading] = useState(false);
-
-    const handleSaveAPI = () => {
-        setSaveLoading(true);
-
-        axiosConfig
-            .post(`apis`)
-            .then((response) => {
-                
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-    };
-
-    const actionButtons = [
-        {
-            label: "Save",
-            onClick: handleSaveAPI,
-            icon: <SaveIcon />,
-            loading: saveLoading,
-        },
-    ];
-
     return (
-        <Layout
-            links={links}
-            actionButtons={actionButtons}
-            title="Create New API"
-        >
-            <Box container>
-                <Grid container spacing={4}>
-                    <Grid item xs={6}>
-                        <ApiBuilder purpose={purpose} setPurpose={setPurpose} />
-                    </Grid>
-                    <Grid item xs={6}>
-                        <ApiController purpose={purpose} />
-                    </Grid>
-                </Grid>
-            </Box>
+        <Layout links={links}>
+            <Typography variant="h3" gutterBottom>
+                Choose API Creation Method
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+                Select the creation type that suits your needs.
+            </Typography>
+            <Grid container spacing={3}>
+                <CreationType
+                    text="Manual"
+                    sm="3"
+                    description="Create your own API using the API builder"
+                    url={`/apis/editor/`}
+                    icon={<Construction />}
+                />
+                <CreationType
+                    text="AI Copilot"
+                    sm="3"
+                    description="Unleash your creativity with our AI Copilot"
+                    url={`/editor/copilot/`}
+                    icon={<AutoAwesomeIcon />}
+                />
+            </Grid>
         </Layout>
     );
-};
-
-export default Create;
+}

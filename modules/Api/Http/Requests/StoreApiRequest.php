@@ -4,11 +4,13 @@ namespace Modules\Api\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreApiRequest extends FormRequest {
+class StoreApiRequest extends FormRequest
+{
     /**
      * Determine if the user is authorized to make this request.
      */
-    public function authorize(): bool {
+    public function authorize(): bool
+    {
         return true;
     }
 
@@ -17,10 +19,20 @@ class StoreApiRequest extends FormRequest {
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
      */
-    public function rules(): array {
+    public function rules(): array
+    {
         return [
             'title' => 'required|max:255',
             'description' => 'nullable|max:5000',
+            'purpose_id' => 'required|numeric',
+            'method_id' => 'required|numeric',
+            'end_point' => 'required|string|min:3|max:255',
+            'data_repository_id' => 'required|numeric|exists:data_repositories,id',
+            'body_type_id' => 'required|numeric|exists:body_types,id',
+            'headers' => 'array',
+            'body' => 'array',
+            'settings' => 'array',
+            'parameters' => 'array',
         ];
     }
 }

@@ -87,6 +87,7 @@ export default function DataRepositorySelector({
                 placeholder="Select a data repository..."
                 isClearable
                 isSearchable
+                required
             />
             {dataRepository && dataRepository.id && (
                 <Box mt={2} textAlign={"right"}>

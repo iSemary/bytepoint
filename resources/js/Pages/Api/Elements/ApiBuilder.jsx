@@ -23,19 +23,26 @@ function ApiBuilder({
     showPurposes = true,
     purpose,
     setPurpose,
+    title,
+    setTitle,
+    description,
+    setDescription,
+    method,
+    setMethod,
+    endpoint,
+    setEndpoint,
+    headers,
+    setHeaders,
+    parameters,
+    setParameters,
+    bodyType,
+    setBodyType,
+    body,
+    setBody,
+    jsonBody,
+    setJsonBody,
 }) {
     const [baseURL, setBaseURL] = useState("/");
-
-    const [title, setTitle] = useState("");
-    const [description, setDescription] = useState("");
-
-    const [endpoint, setEndpoint] = useState("");
-    const [method, setMethod] = useState("");
-    const [headers, setHeaders] = useState([{ key: "", value: "" }]);
-    const [parameters, setParameters] = useState([{ key: "", value: "" }]);
-    const [bodyType, setBodyType] = useState(1);
-    const [body, setBody] = useState([{ key: "", value: "" }]);
-    const [jsonBody, setJsonBody] = useState({});
     const [tabIndex, setTabIndex] = useState(0);
 
     const [methods, setMethods] = useState([]);
@@ -139,6 +146,7 @@ function ApiBuilder({
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
                             fullWidth
+                            required
                         />
                     </Grid>
                     <Grid item xs={6}>
@@ -147,6 +155,7 @@ function ApiBuilder({
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
                             fullWidth
+                            required
                         />
                     </Grid>
                 </Grid>
@@ -158,6 +167,7 @@ function ApiBuilder({
                                 onChange={(e) => setPurpose(e.target.value)}
                                 displayEmpty
                                 fullWidth
+                                required
                             >
                                 <MenuItem value="" disabled>
                                     Select Purpose
@@ -189,6 +199,7 @@ function ApiBuilder({
                             value={endpoint}
                             onChange={(e) => setEndpoint(e.target.value)}
                             fullWidth
+                            required
                             InputProps={{
                                 startAdornment: (
                                     <InputAdornment position="start">
@@ -204,6 +215,7 @@ function ApiBuilder({
                             onChange={(e) => setMethod(e.target.value)}
                             displayEmpty
                             fullWidth
+                            required
                         >
                             <MenuItem value="" disabled>
                                 Method

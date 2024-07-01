@@ -8,15 +8,15 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
-class ApiParameter extends Model
+class ApiSetting extends Model
 {
     use HasFactory, SoftDeletes, LogsActivity;
 
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['api_id', 'data_type_id', 'parameter_key', 'parameter_value'];
-    
+    protected $fillable = ['api_id', 'allow_counter', 'allow_paginator'];
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
