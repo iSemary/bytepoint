@@ -9,7 +9,11 @@ Route::group(['middleware' => ['tenant']], function () {
         return Inertia::render('Api/Api');
     });
 
-    Route::get('/apis/create', function () {
+    Route::get('/apis/editor/{id?}', function ($id = null) {
+        return Inertia::render('Api/Editor', ['id' => $id]);
+    });
+
+    Route::get('/apis/create/', function () {
         return Inertia::render('Api/Create');
     });
 });

@@ -41,7 +41,7 @@ class UserManagementController extends ApiController
         if ($keyword) {
             $query->where('title', 'like', '%' . $keyword . '%');
         }
-        $users = $query->paginate(10);
+        $users = $query->paginate(25);
         return $this->return(200, "Users Fetched Successfully", ['users' => $users]);
     }
 

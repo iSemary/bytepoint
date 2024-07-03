@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('api_parameters', function (Blueprint $table) {
+        Schema::create('api_bodies', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('api_id');
             $table->unsignedBigInteger('data_type_id');
-            $table->string('parameter_key');
-            $table->string('parameter_value');
+            $table->string('body_key');
+            $table->string('body_value');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('api_parameters');
+        Schema::dropIfExists('api_bodies');
     }
 };

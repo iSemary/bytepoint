@@ -10,6 +10,9 @@ import Swal from "sweetalert2";
 export default function UserManagement() {
     const [loading, setLoading] = useState(false);
     const [users, setUsers] = useState([]);
+    const [page, setPage] = useState(0);
+    const [pageSize, setPageSize] = useState(25);
+    const [totalRows, setTotalRows] = useState(0);
 
     const handleDeleteUser = useCallback((userId) => {
         Swal.fire({
@@ -106,14 +109,23 @@ export default function UserManagement() {
                         variant="contained"
                         component={Link}
                         href={`/user-management/editor/${params.row.id}`}
-                        color="secondary"
+                        color="primary"
                         style={{ marginRight: 8 }}
+                        disabled={
+                            params.row.deleted_at
+                                ? true
+                                : false
+                        }
                     >
                         Modify
                     </Button>
                     <Button
                         variant="contained"
-                        color="secondary"
+                        color={
+                            params.row.deleted_at
+                                ? "secondary"
+                                : "error"
+                        }
                         style={{ marginRight: 8 }}
                         onClick={() =>
                             params.row.deleted_at
@@ -131,17 +143,19 @@ export default function UserManagement() {
     const fetchUsers = useCallback(() => {
         setLoading(true);
         axiosConfig
-            .get("users")
+            .get(`users?page=${page + 1}&per_page=${pageSize}`)
             .then((response) => {
                 setUsers(response.data.data.users.data);
+                setTotalRows(response.data.data.users.total || 0);
             })
             .catch((error) => {
+                setTotalRows(0);
                 console.error(error);
             })
             .finally(() => {
                 setLoading(false);
             });
-    }, []);
+    }, [page, pageSize]);
 
     useEffect(() => {
         fetchUsers();
@@ -171,8 +185,21 @@ export default function UserManagement() {
                             paginationModel: { page: 0, pageSize: 10 },
                         },
                     }}
-                    pageSizeOptions={[5, 10]}
                     loading={loading}
+                    pagination
+                    paginationMode="server"
+                    rowCount={totalRows}
+                    page={page}
+                    autoPageSize
+                    onPageChange={(newPage) => setPage(newPage)}
+                    onPageSizeChange={(newPageSize) => {
+                        setPageSize(newPageSize);
+                        setPage(0);
+                    }}
+                    onPaginationModelChange={(params) => {
+                        setPage(params.page);
+                        setPageSize(params.pageSize);
+                    }}
                 />
             </Box>
         </Layout>

@@ -13,13 +13,20 @@ import DataObjectIcon from "@mui/icons-material/DataObject";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import SettingsInputComponentIcon from "@mui/icons-material/SettingsInputComponent";
 
-function Retrieve({ dataRepository, dataRepositoryValues, loading }) {
+function Retrieve({
+    dataRepository,
+    dataRepositoryValues,
+    settings,
+    setSettings,
+    loading,
+}) {
     const [dataRepositoryResponse, setDataRepositoryResponse] = useState({});
     const [jsonLoading, setJsonLoading] = useState(false);
-    const [responseSettings, setResponseSettings] = useState({
-        count: false,
-        paginate: false,
-    });
+
+    const handleSettingChange = (event) => {
+        const { name, checked } = event.target;
+        setSettings({ ...settings, [name]: checked });
+    };
 
     const handleDataRepositoryResponse = () => {
         if (dataRepositoryValues && dataRepositoryValues.length) {
@@ -66,7 +73,9 @@ function Retrieve({ dataRepository, dataRepositoryValues, loading }) {
                                 <FormControlLabel
                                     control={
                                         <Switch
-                                            checked={responseSettings.count}
+                                            checked={settings.allow_counter}
+                                            onChange={handleSettingChange}
+                                            name="allow_counter"
                                         />
                                     }
                                     label="Count Data Set"
@@ -76,7 +85,9 @@ function Retrieve({ dataRepository, dataRepositoryValues, loading }) {
                                 <FormControlLabel
                                     control={
                                         <Switch
-                                            checked={responseSettings.paginate}
+                                            checked={settings.allow_paginator}
+                                            onChange={handleSettingChange}
+                                            name="allow_paginator"
                                         />
                                     }
                                     label="Paginate Data Set"

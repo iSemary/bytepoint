@@ -14,6 +14,9 @@ export default function DataRepository() {
     const [dataRepositories, setDataRepositories] = useState([]);
     const [dataRepository, setDataRepository] = useState({});
     const [dataRepositoryValues, setDataRepositoryValues] = useState([]);
+    const [page, setPage] = useState(0);
+    const [pageSize, setPageSize] = useState(25);
+    const [totalRows, setTotalRows] = useState(0);
 
     const handleCloseDrawer = () => {
         setDrawerOpen(false);
@@ -26,7 +29,9 @@ export default function DataRepository() {
             .get(`data-repositories/${row.id}`)
             .then((response) => {
                 setDataRepository(response.data.data.data_repository);
-                setDataRepositoryValues(response.data.data.data_repository_values);
+                setDataRepositoryValues(
+                    response.data.data.data_repository_values
+                );
             })
             .catch((error) => {
                 console.error(error);
@@ -85,17 +90,19 @@ export default function DataRepository() {
     const fetchDataRepositories = useCallback(() => {
         setLoading(true);
         axiosConfig
-            .get("data-repositories")
+            .get(`data-repositories?page=${page + 1}&per_page=${pageSize}`)
             .then((response) => {
                 setDataRepositories(response.data.data.data_repositories.data);
+                setTotalRows(response.data.data.data_repositories.total || 0);
             })
             .catch((error) => {
+                setTotalRows(0);
                 console.error(error);
             })
             .finally(() => {
                 setLoading(false);
             });
-    }, []);
+    }, [page, pageSize]);
 
     const handleRefresh = () => {
         fetchDataRepositories();
@@ -139,8 +146,21 @@ export default function DataRepository() {
                             paginationModel: { page: 0, pageSize: 10 },
                         },
                     }}
-                    pageSizeOptions={[5, 10]}
                     loading={loading}
+                    pagination
+                    paginationMode="server"
+                    rowCount={totalRows}
+                    page={page}
+                    autoPageSize
+                    onPageChange={(newPage) => setPage(newPage)}
+                    onPageSizeChange={(newPageSize) => {
+                        setPageSize(newPageSize);
+                        setPage(0);
+                    }}
+                    onPaginationModelChange={(params) => {
+                        setPage(params.page);
+                        setPageSize(params.pageSize);
+                    }}
                 />
                 <DataRepositoryModal
                     drawerOpen={drawerOpen}

@@ -14,6 +14,7 @@ export default function DataRepositorySelector({
     setDataRepositoryValues,
     loading,
     setLoading,
+    defaultDataRepository,
 }) {
     const [keyword, setKeyword] = useState("");
     const [dataRepositories, setDataRepositories] = useState([]);
@@ -29,7 +30,6 @@ export default function DataRepositorySelector({
 
     const handleOpenDrawer = (id) => {
         setDrawerOpen(true);
-        
     };
 
     const fetchDataRepositories = () => {
@@ -54,6 +54,14 @@ export default function DataRepositorySelector({
     useEffect(() => {
         fetchDataRepositories();
     }, [keyword, page]);
+
+    useEffect(() => {
+        if (defaultDataRepository.id) {
+            handleRepositoryChange(defaultDataRepository);
+        } else {
+            setDataRepositoryValues([]);
+        }
+    }, [defaultDataRepository]);
 
     const handleRepositoryChange = (selectedOption) => {
         axiosConfig
@@ -87,6 +95,7 @@ export default function DataRepositorySelector({
                 placeholder="Select a data repository..."
                 isClearable
                 isSearchable
+                required
             />
             {dataRepository && dataRepository.id && (
                 <Box mt={2} textAlign={"right"}>

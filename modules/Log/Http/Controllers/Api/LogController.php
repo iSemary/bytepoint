@@ -9,7 +9,7 @@ use Modules\Log\Entities\Log;
 
 class LogController extends ApiController {
     public function index(Request $request): JsonResponse {
-        $logs = Log::paginate(10);
+        $logs = Log::orderByDesc('created_at')->paginate(25);
         return $this->return(200, "Logs Fetched Successfully", ['logs' => $logs]);
     }
 

@@ -4,10 +4,17 @@ import Retrieve from "./Controller/Retrieve";
 import Store from "./Controller/Store";
 import DataRepositorySelector from "./Controller/DataRepositorySelector";
 
-function ApiController({ purpose }) {
-    const [dataRepository, setDataRepository] = useState({});
+function ApiController({
+    purpose,
+    dataRepository,
+    setDataRepository,
+    settings,
+    setSettings,
+    defaultDataRepository
+}) {
     const [dataRepositoryValues, setDataRepositoryValues] = useState({});
     const [loading, setLoading] = useState(false);
+
 
     return (
         <Box>
@@ -20,12 +27,15 @@ function ApiController({ purpose }) {
                         setDataRepositoryValues={setDataRepositoryValues}
                         loading={loading}
                         setLoading={setLoading}
+                        defaultDataRepository={defaultDataRepository}
                         title="Choose on which data repository you want to retrieve the data from"
                     />
                     <Box mt={2}>
                         <Retrieve
                             dataRepository={dataRepository}
                             dataRepositoryValues={dataRepositoryValues}
+                            settings={settings}
+                            setSettings={setSettings}
                             loading={loading}
                         />
                     </Box>
@@ -39,6 +49,7 @@ function ApiController({ purpose }) {
                         setDataRepositoryValues={setDataRepositoryValues}
                         loading={loading}
                         setLoading={setLoading}
+                        defaultDataRepository={defaultDataRepository}
                         title="Choose on which data repository you want to store your data"
                     />
                     <Box mt={2}>

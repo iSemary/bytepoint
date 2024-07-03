@@ -1,5 +1,6 @@
 import {
     Box,
+    CircularProgress,
     Divider,
     Drawer,
     List,
