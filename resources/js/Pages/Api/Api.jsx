@@ -67,7 +67,7 @@ export default function Apis() {
     const handleDelete = useCallback((id) => {
         Swal.fire({
             title: "Are you sure you want to delete this API?",
-            text: "You can also restore this user again.",
+            text: "You can also restore this api again.",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",

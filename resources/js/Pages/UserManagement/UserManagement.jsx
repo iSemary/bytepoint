@@ -163,7 +163,7 @@ export default function UserManagement() {
 
     const links = [
         { label: "Home", href: "/", icon: "home" },
-        { label: "User Management", icon: "whatshot" },
+        { label: "Users Management", icon: "whatshot" },
     ];
 
     const buttons = [
