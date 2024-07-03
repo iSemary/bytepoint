@@ -6,5 +6,6 @@
     "DataRepository": true,
     "GPT": true,
     "Api": true,
-    "UserManagement": true
+    "UserManagement": true,
+    "Key": true
 }

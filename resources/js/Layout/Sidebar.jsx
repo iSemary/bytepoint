@@ -113,12 +113,12 @@ export default function Sidebar({ user, userLoading, open, setOpen }) {
                         icon: <ManageAccountsIcon />,
                     },
                     {
-                        text: "API Key Management",
-                        link: "/api-key-management",
+                        text: "Keys Management",
+                        link: "/key-management",
                         icon: <ApiKeyIcon />,
                     },
                     {
-                        text: "User Management",
+                        text: "Users Management",
                         link: "/user-management",
                         icon: <UserIcon />,
                     },

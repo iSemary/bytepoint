@@ -53,12 +53,12 @@ const features = [
         description: "Organize and upload files for your application.",
     },
     {
-        text: "API Key Management",
+        text: "Keys Management",
         icon: <ApiKeyIcon />,
         description: "Manage and secure API keys for your services.",
     },
     {
-        text: "User Management",
+        text: "Users Management",
         icon: <UserIcon />,
         description: "Administer user accounts and permissions.",
     },

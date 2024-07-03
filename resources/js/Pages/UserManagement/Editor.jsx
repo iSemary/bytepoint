@@ -138,7 +138,7 @@ export default function Editor({ id }) {
     const links = [
         { label: "Home", href: "/", icon: "home" },
         {
-            label: "User Management",
+            label: "Users Management",
             href: "/user-management",
             icon: "whatshot",
         },

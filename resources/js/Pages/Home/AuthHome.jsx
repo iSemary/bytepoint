@@ -61,13 +61,13 @@ const menuItems = [
         description: "Organize and upload files for your application.",
     },
     {
-        text: "API Key Management",
-        link: "/api-key-management",
+        text: "Keys Management",
+        link: "/key-management",
         icon: <ApiKeyIcon />,
         description: "Manage and secure API keys for your services.",
     },
     {
-        text: "User Management",
+        text: "Users Management",
         link: "/user-management",
         icon: <UserIcon />,
         description: "Administer user accounts and permissions.",

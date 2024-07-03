@@ -113,8 +113,8 @@ class ApiController extends ApiControllerHandler
      */
     public function destroy(int $id): JsonResponse
     {
-        $dataRepository = Api::findOrFail($id);
-        $dataRepository->delete();
+        $api = Api::findOrFail($id);
+        $api->delete();
 
         return $this->return(200, "Api Deleted Successfully");
     }
@@ -127,10 +127,10 @@ class ApiController extends ApiControllerHandler
      */
     public function restore(int $id): JsonResponse
     {
-        $dataRepository = Api::withTrashed()->findOrFail($id);
+        $api = Api::withTrashed()->findOrFail($id);
 
-        if ($dataRepository->trashed()) {
-            $dataRepository->restore();
+        if ($api->trashed()) {
+            $api->restore();
 
             return $this->return(200, "Api Restored Successfully");
         }
