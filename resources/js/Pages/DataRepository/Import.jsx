@@ -114,11 +114,11 @@ export default function Import({ id }) {
         {
             label: "Data Repository",
             href: "/data-repository",
-            icon: "whatshot",
+            icon: "data_repository",
         },
-        { label: "Create", icon: "whatshot" },
+        { label: "Create"},
         { label: dataRepository?.title },
-        { label: "Import", icon: "grain" },
+        { label: "Import" },
     ];
 
     const actionButtons = [

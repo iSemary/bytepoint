@@ -128,14 +128,13 @@ export default function KeyManagement() {
 
     const links = [
         { label: "Home", href: "/", icon: "home" },
-        { label: "Keys Management", icon: "whatshot" },
+        { label: "Keys Management", icon: "key_management" },
     ];
 
     const buttons = [
         {
             label: "Create new key",
             href: "/key-management/create",
-            icon: "grain",
         },
     ];
 

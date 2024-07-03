@@ -246,14 +246,13 @@ export default function Apis() {
 
     const links = [
         { label: "Home", href: "/", icon: "home" },
-        { label: "Apis", icon: "whatshot" },
+        { label: "Apis", icon: "apis" },
     ];
 
     const buttons = [
         {
             label: "Create new API",
             href: "/apis/create",
-            icon: "grain",
         },
     ];
 

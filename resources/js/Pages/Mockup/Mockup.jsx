@@ -86,11 +86,11 @@ const rows = [
 
 const links = [
     { label: "Home", href: "/", icon: "home" },
-    { label: "Mockups", icon: "whatshot" },
+    { label: "Mockups", icon: "mock_ups" },
 ];
 
 const buttons = [
-    { label: "Create new mockup", href: "/mock-ups/create", icon: "grain" },
+    { label: "Create new mockup", href: "/mock-ups/create"},
 ];
 
 const Mockup = () => {

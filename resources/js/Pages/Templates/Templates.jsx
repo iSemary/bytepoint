@@ -8,7 +8,7 @@ import { Grid, Typography } from "@mui/material";
 export default function Templates() {
     const links = [
         { label: "Home", href: "/", icon: "home" },
-        { label: "Templates", icon: "whatshot" },
+        { label: "Templates", icon: "templates" },
     ];
 
     return (

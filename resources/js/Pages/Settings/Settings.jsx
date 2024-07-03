@@ -154,7 +154,7 @@ export default function Settings() {
 
     const links = [
         { label: "Home", href: "/", icon: "home" },
-        { label: "Settings", icon: "whatshot" },
+        { label: "Settings", icon: "settings" },
     ];
 
     const actionButtons = [

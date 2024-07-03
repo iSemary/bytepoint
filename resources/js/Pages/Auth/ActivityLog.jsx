@@ -53,7 +53,7 @@ export default function ActivityLog() {
 
     const links = [
         { label: "Home", href: "/", icon: "home" },
-        { label: "Activity Log", icon: "whatshot" },
+        { label: "Activity Log", icon: "activity_log" },
     ];
 
     const columns = [

@@ -10,9 +10,9 @@ const Copilot = () => {
 
     const links = [
         { label: "Home", href: "/", icon: "home" },
-        { label: "Mockups", href: "/mock-ups", icon: "whatshot" },
-        { label: "Create", href: "/mock-ups/create", icon: "grain" },
-        { label: "Copilot", icon: "grain" },
+        { label: "Mockups", href: "/mock-ups", icon: "mock_ups" },
+        { label: "Create", href: "/mock-ups/create" },
+        { label: "Copilot"},
     ];
     return (
         <Layout links={links} title="Create New Mockup | Using AI">

@@ -2,18 +2,10 @@ import React from "react";
 import Typography from "@mui/material/Typography";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import { Link } from "@inertiajs/react";
-import HomeIcon from "@mui/icons-material/Home";
-import WhatshotIcon from "@mui/icons-material/Whatshot";
-import GrainIcon from "@mui/icons-material/Grain";
 import Button from "@mui/material/Button";
 import { Box } from "@mui/material";
 import Grid from "@mui/material/Grid";
-
-const iconMap = {
-    home: <HomeIcon sx={{ mr: 0.5 }} fontSize="inherit" />,
-    whatshot: <WhatshotIcon sx={{ mr: 0.5 }} fontSize="inherit" />,
-    grain: <GrainIcon sx={{ mr: 0.5 }} fontSize="inherit" />,
-};
+import AppIcons from "../../configs/styles/AppIcons";
 
 export default function BreadcrumbsElement({ links, buttons, mb }) {
     return (
@@ -23,7 +15,7 @@ export default function BreadcrumbsElement({ links, buttons, mb }) {
                     <Breadcrumbs aria-label="breadcrumb">
                         {links.map((link, index) => {
                             const isLast = index === links.length - 1;
-                            const Icon = iconMap[link.icon];
+                            const Icon = AppIcons[link.icon];
 
                             return isLast ? (
                                 <Typography
@@ -34,7 +26,7 @@ export default function BreadcrumbsElement({ links, buttons, mb }) {
                                     }}
                                     color="text.primary"
                                 >
-                                    {Icon}
+                                    {Icon && React.cloneElement(Icon, { sx: { mr: 0.5 }, fontSize: "inherit" })}
                                     {link.label}
                                 </Typography>
                             ) : (
@@ -48,7 +40,7 @@ export default function BreadcrumbsElement({ links, buttons, mb }) {
                                     }}
                                     href={link.href}
                                 >
-                                    {Icon}
+                                    {Icon && React.cloneElement(Icon, { sx: { mr: 0.5 }, fontSize: "inherit" })}
                                     {link.label}
                                 </Link>
                             );

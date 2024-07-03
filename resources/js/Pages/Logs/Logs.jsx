@@ -66,7 +66,7 @@ export default function Logs() {
 
     const links = [
         { label: "Home", href: "/", icon: "home" },
-        { label: "Logs", icon: "whatshot" },
+        { label: "Logs", icon: "logs" },
     ];
 
     function getRowId(row) {
