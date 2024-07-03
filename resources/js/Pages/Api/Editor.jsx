@@ -37,6 +37,41 @@ const Editor = ({ id }) => {
     const [jsonBody, setJsonBody] = useState({});
 
     const [dataRepository, setDataRepository] = useState({});
+    const [defaultDataRepository, setDefaultDataRepository] = useState({});
+
+    const handleFetchAPIDetails = (id) => {
+        axiosConfig
+            .get(`apis/${id}`)
+            .then((response) => {
+                setTitle(response.data.data.api.title);
+                setDescription(response.data.data.api.description);
+                setPurpose(response.data.data.api.type);
+                setEndpoint(response.data.data.api.end_point);
+                setMethod(response.data.data.api.method_id);
+
+                setSettings(response.data.data.api.settings);
+
+                setDataRepository(response.data.data.api.data_repository);
+                setDefaultDataRepository(
+                    response.data.data.api.data_repository
+                );
+
+                // setHeaders(response.data.data.api.headers);
+
+
+                if (response.data.data.api.parameters.length)
+                    setParameters(response.data.data.api.parameters);
+                setBodyType(response.data.data.api.body_type_id);
+                if (response.data.data.api.body.length)
+                    setBody(response.data.data.api.body);
+                
+                // TODO add json body
+                setJsonBody({});
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    };
 
     const handleSaveAPI = () => {
         setSaveLoading(true);
@@ -75,6 +110,12 @@ const Editor = ({ id }) => {
             router.visit(`/apis?id=${newId}`);
         }
     }, [newId]);
+
+    useEffect(() => {
+        if (id) {
+            handleFetchAPIDetails(id);
+        }
+    }, [id]);
 
     const actionButtons = [
         {
@@ -126,6 +167,7 @@ const Editor = ({ id }) => {
                             setDataRepository={setDataRepository}
                             settings={settings}
                             setSettings={setSettings}
+                            defaultDataRepository={defaultDataRepository}
                         />
                     </Grid>
                 </Grid>

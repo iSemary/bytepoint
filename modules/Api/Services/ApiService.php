@@ -11,10 +11,28 @@ use Modules\Api\Entities\ApiBody;
 use Modules\Api\Entities\ApiResponse;
 use Modules\Api\Entities\ApiSetting;
 use Modules\Api\Entities\ApiVersion;
+use Modules\Api\Services\Api\BodyService;
+use Modules\Api\Services\Api\HeaderService;
+use Modules\Api\Services\Api\ParameterService;
 use Modules\DataRepository\Entities\DataRepositoryKey;
 
 class ApiService
 {
+    public $headerService;
+    public $parameterService;
+    public $bodyService;
+
+    public function __construct(
+        HeaderService $headerService,
+        ParameterService $parameterService,
+        BodyService $bodyService
+    ) {
+        $this->headerService = $headerService;
+        $this->parameterService = $parameterService;
+        $this->bodyService = $bodyService;
+    }
+
+
     public function store($request)
     {
         try {
@@ -24,7 +42,7 @@ class ApiService
 
             $this->saveHeaders($api->id, $request['headers']);
             $this->saveParameters($api->id, $request['parameters']);
-            $this->saveBody($api->id, $request['body']);
+            $this->saveBody($api->id, $request['body_type_id'], $request['body']);
             $this->saveSettings($api->id, $request['settings']);
 
             // retrieve data
@@ -52,7 +70,7 @@ class ApiService
 
             $this->updateHeaders($api->id, $request['headers']);
             $this->updateParameters($api->id, $request['parameters']);
-            $this->updateBody($api->id, $request['body']);
+            $this->updateBody($api->id, $request['body_type_id'], $request['body']);
             $this->updateSettings($api->id, $request['settings']);
 
             DB::commit();
@@ -89,44 +107,17 @@ class ApiService
 
     private function saveHeaders($apiId, $headers)
     {
-        foreach ($headers as $header) {
-            if (isset($header['key']['label']) && !empty($header['key']['label']) && !empty($header['key']['value'])) {
-                ApiHeader::create([
-                    'api_id' => $apiId,
-                    'data_type_id' => DataTypes::STRING,
-                    'header_key' => $header['key']['label'],
-                    'header_value' => $header['value'],
-                ]);
-            }
-        }
+        $this->headerService->store($apiId, $headers);
     }
 
     private function saveParameters($apiId, $parameters)
     {
-        foreach ($parameters as $parameter) {
-            if (isset($parameter['key']) && $parameter['value'] != '') {
-                ApiParameter::create([
-                    'api_id' => $apiId,
-                    'data_type_id' => DataTypes::STRING,
-                    'parameter_key' => $parameter['key'],
-                    'parameter_value' => $parameter['value'],
-                ]);
-            }
-        }
+        $this->parameterService->store($apiId, $parameters);
     }
 
-    private function saveBody($apiId, $body)
+    private function saveBody($apiId, $type, $body)
     {
-        foreach ($body as $item) {
-            if (isset($item['key']) && $item['value'] != '') {
-                ApiBody::create([
-                    'api_id' => $apiId,
-                    'data_type_id' => DataTypes::STRING,
-                    'body_key' => $item['key'],
-                    'body_value' => $item['value'],
-                ]);
-            }
-        }
+        $this->bodyService->store($apiId, $type, $body);
     }
 
     private function saveResponse($apiId, $dataRepositoryId)
@@ -165,10 +156,10 @@ class ApiService
         $this->saveParameters($apiId, $parameters);
     }
 
-    private function updateBody($apiId, $body)
+    private function updateBody($apiId, $type, $body)
     {
         ApiBody::where('api_id', $apiId)->delete();
-        $this->saveBody($apiId, $body);
+        $this->saveBody($apiId, $type, $body);
     }
 
     private function updateSettings($apiId, $settings)

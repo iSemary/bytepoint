@@ -9,10 +9,14 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import AccountCircle from "@mui/icons-material/AccountCircle";
-import { Link } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
+import axiosConfig from "../configs/AxiosConfig";
+import { Box } from "@mui/material";
+import { Token } from "../configs/Token";
 
 const Header = ({ user, userLoading, open, setOpen }) => {
     const [anchorEl, setAnchorEl] = useState(null);
+    const [logoutLoading, setLogoutLoading] = useState(false);
 
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
@@ -20,6 +24,26 @@ const Header = ({ user, userLoading, open, setOpen }) => {
 
     const handleClose = () => {
         setAnchorEl(null);
+    };
+
+    const handleLogout = () => {
+        handleClose();
+        setLogoutLoading(true);
+
+        axiosConfig
+            .post("auth/logout")
+            .then((response) => {
+                Token.explode();
+                setTimeout(() => {
+                    setLogoutLoading(false);
+                    window.location.href = '/';
+                }, 2000);
+            })
+            .catch((error) => {
+                Alert(error.response.data.message, "error", 5000);
+                console.error(error);
+                setLogoutLoading(false);
+            });
     };
 
     return (
@@ -83,11 +107,7 @@ const Header = ({ user, userLoading, open, setOpen }) => {
                             >
                                 Settings
                             </MenuItem>
-                            <MenuItem
-                                onClick={handleClose}
-                                component={Link}
-                                href="/logout"
-                            >
+                            <MenuItem onClick={handleLogout} href="/logout">
                                 Logout
                             </MenuItem>
                         </Menu>
@@ -107,6 +127,19 @@ const Header = ({ user, userLoading, open, setOpen }) => {
                     </>
                 )}
             </Toolbar>
+            {logoutLoading ? (
+                <Box className="logout-loader">
+                    <Box>
+                        <CircularProgress
+                            size={150}
+                            style={{ color: "#ffffff91" }}
+                        />
+                        <Typography variant="h4">Logging out</Typography>
+                    </Box>
+                </Box>
+            ) : (
+                ""
+            )}
         </AppBar>
     );
 };

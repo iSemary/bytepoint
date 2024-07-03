@@ -109,14 +109,23 @@ export default function UserManagement() {
                         variant="contained"
                         component={Link}
                         href={`/user-management/editor/${params.row.id}`}
-                        color="secondary"
+                        color="primary"
                         style={{ marginRight: 8 }}
+                        disabled={
+                            params.row.deleted_at
+                                ? true
+                                : false
+                        }
                     >
                         Modify
                     </Button>
                     <Button
                         variant="contained"
-                        color="secondary"
+                        color={
+                            params.row.deleted_at
+                                ? "secondary"
+                                : "error"
+                        }
                         style={{ marginRight: 8 }}
                         onClick={() =>
                             params.row.deleted_at

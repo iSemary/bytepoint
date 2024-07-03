@@ -10,9 +10,11 @@ function ApiController({
     setDataRepository,
     settings,
     setSettings,
+    defaultDataRepository
 }) {
     const [dataRepositoryValues, setDataRepositoryValues] = useState({});
     const [loading, setLoading] = useState(false);
+
 
     return (
         <Box>
@@ -25,6 +27,7 @@ function ApiController({
                         setDataRepositoryValues={setDataRepositoryValues}
                         loading={loading}
                         setLoading={setLoading}
+                        defaultDataRepository={defaultDataRepository}
                         title="Choose on which data repository you want to retrieve the data from"
                     />
                     <Box mt={2}>
@@ -46,6 +49,7 @@ function ApiController({
                         setDataRepositoryValues={setDataRepositoryValues}
                         loading={loading}
                         setLoading={setLoading}
+                        defaultDataRepository={defaultDataRepository}
                         title="Choose on which data repository you want to store your data"
                     />
                     <Box mt={2}>

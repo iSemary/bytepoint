@@ -7,10 +7,12 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Modules\Api\Entities\Api;
 use Modules\Api\Entities\ApiPurpose;
+use Modules\Api\Entities\ApiSetting;
 use Modules\Api\Http\Requests\StoreApiRequest;
 use Modules\Api\Http\Requests\UpdateApiRequest;
 use Modules\Api\Services\ApiService;
 use Modules\Api\Services\ApiPreparationService;
+use Modules\DataRepository\Entities\DataRepository;
 
 class ApiController extends ApiControllerHandler
 {
@@ -36,7 +38,7 @@ class ApiController extends ApiControllerHandler
             ->select(['apis.*', 'methods.title as method'])
             ->orderByDesc('id')->paginate(25);
 
-        foreach ($apis as $key => $api) {
+        foreach ($apis as $api) {
             $api->type = ApiPurpose::find($api->type)->title;
         }
 
@@ -52,7 +54,15 @@ class ApiController extends ApiControllerHandler
     public function show(string $id): JsonResponse
     {
         $api = Api::leftJoin("methods", "methods.id", "apis.method_id")->select(['apis.*', 'methods.title as method'])->where("apis.id", $id)->first();
-        $api->type = ApiPurpose::find($api->type)->title;
+        $api->purpose = ApiPurpose::find($api->type)->title;
+        $api->data_repository = DataRepository::find($api->data_repository_id);
+        $api->settings = ApiSetting::where("api_id", $api->id)->first();
+
+        // Prepare Api Details for Modify
+        $api->headers = $this->apiService->headerService->prepareForModify($api->id);
+        $api->parameters = $this->apiService->parameterService->prepareForModify($api->id);
+        $api->body = $this->apiService->bodyService->prepareForModify($api->id);
+
         return $this->return(200, "Api Fetched Successfully", ['api' => $api]);
     }
 
