@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('api_id');
             $table->unsignedBigInteger('data_type_id');
+            $table->unsignedBigInteger('body_type_id');
             $table->string('body_key');
             $table->string('body_value');
             $table->softDeletes();

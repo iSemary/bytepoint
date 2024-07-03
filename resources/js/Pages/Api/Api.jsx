@@ -144,7 +144,13 @@ export default function Apis() {
         { field: "method", headerName: "Method", flex: 1, minWidth: 100 },
         {
             field: "type",
-            headerName: "type",
+            headerName: "Type",
+            flex: 0.5,
+            minWidth: 200,
+        },
+        {
+            field: "data_repository_title",
+            headerName: "Data Repository",
             flex: 0.5,
             minWidth: 200,
         },

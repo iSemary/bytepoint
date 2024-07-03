@@ -7,21 +7,24 @@ function Parameters({
     handleParameterChange,
     addParameter,
     removeParameter,
+    disabled = false,
 }) {
     return (
         <Box mt={1}>
-            <Grid container justifyContent={"end"} mb={2} spacing={1}>
-                <Grid item xs={3}>
-                    <Button
-                        onClick={addParameter}
-                        sx={{ marginTop: 1 }}
-                        variant="contained"
-                        fullWidth
-                    >
-                        Add Parameter
-                    </Button>
+            {addParameter && (
+                <Grid container justifyContent={"end"} mb={2} spacing={1}>
+                    <Grid item xs={3}>
+                        <Button
+                            onClick={addParameter}
+                            sx={{ marginTop: 1 }}
+                            variant="contained"
+                            fullWidth
+                        >
+                            Add Parameter
+                        </Button>
+                    </Grid>
                 </Grid>
-            </Grid>
+            )}
             {parameters.map((param, index) => (
                 <Box my={2} key={index}>
                     <Grid container spacing={2}>
@@ -36,6 +39,7 @@ function Parameters({
                                         param.value
                                     )
                                 }
+                                disabled={disabled}
                                 fullWidth
                             />
                         </Grid>
@@ -53,14 +57,16 @@ function Parameters({
                                 fullWidth
                             />
                         </Grid>
-                        <Grid item xs={2}>
-                            <IconButton
-                                onClick={() => removeParameter(index)}
-                                aria-label="delete"
-                            >
-                                <DeleteIcon />
-                            </IconButton>
-                        </Grid>
+                        {removeParameter && (
+                            <Grid item xs={2}>
+                                <IconButton
+                                    onClick={() => removeParameter(index)}
+                                    aria-label="delete"
+                                >
+                                    <DeleteIcon />
+                                </IconButton>
+                            </Grid>
+                        )}
                     </Grid>
                 </Box>
             ))}

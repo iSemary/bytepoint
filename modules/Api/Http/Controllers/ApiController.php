@@ -40,6 +40,7 @@ class ApiController extends ApiControllerHandler
 
         foreach ($apis as $api) {
             $api->type = ApiPurpose::find($api->type)->title;
+            $api->data_repository_title = DataRepository::withTrashed()->find($api->data_repository_id)->title;
         }
 
         return $this->return(200, "Apis Fetched Successfully", ['apis' => $apis]);
@@ -53,15 +54,7 @@ class ApiController extends ApiControllerHandler
      */
     public function show(string $id): JsonResponse
     {
-        $api = Api::leftJoin("methods", "methods.id", "apis.method_id")->select(['apis.*', 'methods.title as method'])->where("apis.id", $id)->first();
-        $api->purpose = ApiPurpose::find($api->type)->title;
-        $api->data_repository = DataRepository::find($api->data_repository_id);
-        $api->settings = ApiSetting::where("api_id", $api->id)->first();
-
-        // Prepare Api Details for Modify
-        $api->headers = $this->apiService->headerService->prepareForModify($api->id);
-        $api->parameters = $this->apiService->parameterService->prepareForModify($api->id);
-        $api->body = $this->apiService->bodyService->prepareForModify($api->id);
+        $api = $this->prepareAPIResponse($id);
 
         return $this->return(200, "Api Fetched Successfully", ['api' => $api]);
     }
@@ -146,8 +139,24 @@ class ApiController extends ApiControllerHandler
 
     public function sample(int $id): JsonResponse
     {
-        $api = Api::leftJoin("methods", "methods.id", "apis.method_id")->select(['apis.*', 'methods.title as method'])->where("apis.id", $id)->first();
-        $api->type = ApiPurpose::find($api->type)->title;
+        $api = $this->prepareAPIResponse($id);
         return $this->return(200, "Api Sample Fetched Successfully", ['api' => $api]);
+    }
+
+    private function prepareAPIResponse($id)
+    {
+        $api = Api::leftJoin("methods", "methods.id", "apis.method_id")->select(['apis.*', 'methods.title as method'])->where("apis.id", $id)->first();
+        $api->purpose = ApiPurpose::find($api->type)->title;
+        $api->data_repository = DataRepository::find($api->data_repository_id);
+        $api->settings = ApiSetting::where("api_id", $api->id)->first();
+
+        // Prepare Api Details
+        $api->headers = $this->apiService->headerService->prepareForModify($api->id);
+        $api->parameters = $this->apiService->parameterService->prepareForModify($api->id);
+        $api->body = $this->apiService->bodyService->prepareForModify($api->id, $api->body_type_id);
+
+        $api->url = $this->apiPreparationService->returnBaseURL() . $api->end_point;
+
+        return $api;
     }
 }

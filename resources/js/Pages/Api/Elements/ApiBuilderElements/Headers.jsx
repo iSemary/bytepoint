@@ -10,13 +10,14 @@ function Headers({
     handleHeaderChange,
     addHeader,
     removeHeader,
+    disabled = false
 }) {
     const handleChange = (index, newValue, actionMeta) => {
         if (actionMeta.action === "create-option") {
             const createdHeader = {
                 id: new Date().toISOString(),
                 key: newValue.value,
-                value: "", // Assuming you need to initialize value
+                value: "",
             };
             handleHeaderChange(index, createdHeader);
         } else {
@@ -31,29 +32,37 @@ function Headers({
 
     return (
         <Box mt={1}>
-            <Grid container mb={2} justifyContent={"end"} spacing={1}>
-                <Grid item xs={3}>
-                    <Button
-                        onClick={addHeader}
-                        sx={{ marginTop: 1 }}
-                        variant="contained"
-                        fullWidth
-                    >
-                        Add Header
-                    </Button>
+            {addHeader && (
+                <Grid container mb={2} justifyContent={"end"} spacing={1}>
+                    <Grid item xs={3}>
+                        <Button
+                            onClick={addHeader}
+                            sx={{ marginTop: 1 }}
+                            variant="contained"
+                            fullWidth
+                        >
+                            Add Header
+                        </Button>
+                    </Grid>
                 </Grid>
-            </Grid>
+            )}
             {headers.map((header, index) => (
-                <Grid container my={2} spacing={1} alignItems="center" key={index}>
+                <Grid
+                    container
+                    my={2}
+                    spacing={1}
+                    alignItems="center"
+                    key={index}
+                >
                     <Grid item xs={6}>
                         <CreatableSelect
-                        
                             value={options.find(
-                                (option) => option.value === header.key
+                                (option) => option.label === header.key.label
                             )}
                             onChange={(newValue, actionMeta) =>
                                 handleChange(index, newValue, actionMeta)
                             }
+                            isDisabled={disabled}
                             options={options}
                             placeholder="Key"
                             isClearable
@@ -74,14 +83,16 @@ function Headers({
                             fullWidth
                         />
                     </Grid>
-                    <Grid item xs={2}>
-                        <IconButton
-                            onClick={() => removeHeader(index)}
-                            aria-label="delete"
-                        >
-                            <DeleteIcon />
-                        </IconButton>
-                    </Grid>
+                    {removeHeader && (
+                        <Grid item xs={2}>
+                            <IconButton
+                                onClick={() => removeHeader(index)}
+                                aria-label="delete"
+                            >
+                                <DeleteIcon />
+                            </IconButton>
+                        </Grid>
+                    )}
                 </Grid>
             ))}
         </Box>

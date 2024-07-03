@@ -13,13 +13,14 @@ const Editor = ({ id }) => {
     const links = [
         { label: "Home", href: "/", icon: "home" },
         { label: "Apis", href: "/apis", icon: "apis" },
-        { label: "Create"},
+        { label: "Create" },
     ];
 
     const [newId, setNewId] = useState(null);
 
     const [purpose, setPurpose] = useState("");
     const [saveLoading, setSaveLoading] = useState(false);
+    const [fetchAPILoading, setFetchAPILoading] = useState(false);
 
     // Add new state variables
     const [title, setTitle] = useState("");
@@ -56,15 +57,14 @@ const Editor = ({ id }) => {
                     response.data.data.api.data_repository
                 );
 
-                // setHeaders(response.data.data.api.headers);
-
+                setHeaders(response.data.data.api.headers);
 
                 if (response.data.data.api.parameters.length)
                     setParameters(response.data.data.api.parameters);
                 setBodyType(response.data.data.api.body_type_id);
                 if (response.data.data.api.body.length)
                     setBody(response.data.data.api.body);
-                
+
                 // TODO add json body
                 setJsonBody({});
             })

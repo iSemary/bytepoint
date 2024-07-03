@@ -14,6 +14,7 @@ class BodyService
                 ApiBody::create([
                     'api_id' => $apiId,
                     'data_type_id' => DataTypes::STRING,
+                    'body_type_id' => $type,
                     'body_key' => $item['key'],
                     'body_value' => $item['value'],
                 ]);
@@ -21,8 +22,10 @@ class BodyService
         }
     }
 
-    public function prepareForModify($apiId)
+    public function prepareForModify($apiId, $type)
     {
-        return ApiBody::select(['id', 'data_type_id', 'body_key AS key', 'body_value AS value'])->where('api_id', $apiId)->get();
+        return ApiBody::select(['id', 'data_type_id', 'body_key AS key', 'body_value AS value'])
+            ->where("body_type_id", $type)
+            ->where('api_id', $apiId)->get();
     }
 }

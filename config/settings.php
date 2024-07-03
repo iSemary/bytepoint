@@ -7,5 +7,5 @@ return [
 
     'protocol' => env('APP_PROTOCOL', 'http'),
 
-    'tenant_api_prefix' => env('APP_TENANT_API_PREFIX', '/external/api/'),
+    'tenant_api_prefix' => env('APP_TENANT_API_PREFIX', 'api/external'),
 ];

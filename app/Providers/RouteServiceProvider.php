@@ -29,6 +29,9 @@ class RouteServiceProvider extends ServiceProvider {
         $this->routes(function () {
             Route::middleware('api')->prefix('api/v1.0')->group(base_path('routes/v1.0/api.php'));
 
+            // External API calls
+            Route::middleware('api')->prefix(config('settings.tenant_api_prefix'))->group(base_path('routes/v1.0/external.php'));
+
             Route::middleware('api')->prefix('api/v1.0')->group(base_path('routes/v1.0/modules.php'));
 
             Route::middleware('web')->group(base_path('routes/web.php'));
