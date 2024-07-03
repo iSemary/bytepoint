@@ -12,8 +12,8 @@ import { router } from "@inertiajs/react";
 const Editor = ({ id }) => {
     const links = [
         { label: "Home", href: "/", icon: "home" },
-        { label: "Apis", href: "/apis", icon: "whatshot" },
-        { label: "Create", icon: "grain" },
+        { label: "Apis", href: "/apis", icon: "apis" },
+        { label: "Create"},
     ];
 
     const [newId, setNewId] = useState(null);

@@ -1,3 +1,4 @@
+import React from "react";
 import {
     Box,
     CircularProgress,
@@ -10,21 +11,8 @@ import {
     ListItemText,
     Typography,
 } from "@mui/material";
-import React from "react";
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import ApiIcon from "@mui/icons-material/Api";
-import MockupIcon from "@mui/icons-material/Mouse";
-import TemplateIcon from "@mui/icons-material/Description";
-import CloudIcon from "@mui/icons-material/Cloud";
-import DataIcon from "@mui/icons-material/DataUsage";
-import FileManagerIcon from "@mui/icons-material/Folder";
-import LogsIcon from "@mui/icons-material/History";
-import ApiKeyIcon from "@mui/icons-material/VpnKey";
-import UserIcon from "@mui/icons-material/People";
-import SettingsIcon from "@mui/icons-material/Settings";
-import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
-import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import { Link } from "@inertiajs/react";
+import AppIcons from "../configs/styles/AppIcons";
 
 export default function Sidebar({ user, userLoading, open, setOpen }) {
     const toggleDrawer = (newOpen) => () => {
@@ -79,63 +67,63 @@ export default function Sidebar({ user, userLoading, open, setOpen }) {
             <Divider />
             <List>
                 {[
-                    { text: "Dashboard", link: "/", icon: <DashboardIcon /> },
-                    { text: "APIs", link: "/apis", icon: <ApiIcon /> },
+                    { text: "Dashboard", link: "/", icon: "home" },
+                    { text: "APIs", link: "/apis", icon: "apis" },
                     {
                         text: "Mock-Ups",
                         link: "/mock-ups",
-                        icon: <MockupIcon />,
+                        icon: "mock_ups",
                     },
                     {
                         text: "Templates",
                         link: "/templates",
-                        icon: <TemplateIcon />,
+                        icon: "templates",
                     },
                     {
                         text: "Cloud Services",
                         link: "/cloud-services",
-                        icon: <CloudIcon />,
+                        icon: "cloud_services",
                     },
                     {
                         text: "Data Repository",
                         link: "/data-repository",
-                        icon: <DataIcon />,
+                        icon: "data_repository",
                     },
                     {
                         text: "File Manager",
                         link: "/file-manager",
-                        icon: <FileManagerIcon />,
+                        icon: "file_manager",
                     },
-                    { text: "Logs", link: "/logs", icon: <LogsIcon /> },
+                    { text: "Logs", link: "/logs", icon: "logs" },
                     {
                         text: "Activity Log",
                         link: "/activity-log",
-                        icon: <ManageAccountsIcon />,
+                        icon: "activity_log",
                     },
                     {
                         text: "Keys Management",
                         link: "/key-management",
-                        icon: <ApiKeyIcon />,
+                        icon: "key_management",
                     },
                     {
                         text: "Users Management",
                         link: "/user-management",
-                        icon: <UserIcon />,
+                        icon: "user_management",
                     },
                     {
                         text: "Login Attempts",
                         link: "/login-attempts",
-                        icon: <WarningAmberIcon />,
+                        icon: "login_attempts",
                     },
                     {
                         text: "Settings",
                         link: "/settings",
-                        icon: <SettingsIcon />,
+                        icon: "settings",
                     },
                 ].map((item, index) => (
                     <ListItem key={index} disablePadding>
                         <ListItemButton component={Link} href={item.link}>
-                            <ListItemIcon>{item.icon}</ListItemIcon>
+                            <ListItemIcon>{AppIcons[item.icon]}</ListItemIcon>
                             <ListItemText primary={item.text} />
                         </ListItemButton>
                     </ListItem>

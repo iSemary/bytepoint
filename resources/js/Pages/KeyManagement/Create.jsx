@@ -46,9 +46,9 @@ export default function Create() {
         {
             label: "Keys Management",
             href: "/key-management",
-            icon: "whatshot",
+            icon: "key_management",
         },
-        { label: "Create", icon: "whatshot" },
+        { label: "Create" },
     ];
 
     const actionButtons = [

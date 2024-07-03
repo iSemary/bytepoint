@@ -12,8 +12,8 @@ const Manual = () => {
 
     const links = [
         { label: "Home", href: "/", icon: "home" },
-        { label: "Mockups", href: "/mock-ups", icon: "whatshot" },
-        { label: "Create", icon: "grain" },
+        { label: "Mockups", href: "/mock-ups", icon: "mock_ups" },
+        { label: "Create" },
     ];
     return (
         <Layout links={links} title="Create New Mockup">

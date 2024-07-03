@@ -8,8 +8,8 @@ import { Grid, Typography } from "@mui/material";
 export default function Create() {
     const links = [
         { label: "Home", href: "/", icon: "home" },
-        { label: "Mock-Ups", href: "/mock-ups", icon: "whatshot" },
-        { label: "Create", icon: "grain" },
+        { label: "Mock-Ups", href: "/mock-ups", icon: "mock_ups" },
+        { label: "Create" },
     ];
 
     return (

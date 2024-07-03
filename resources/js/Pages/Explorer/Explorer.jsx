@@ -8,7 +8,7 @@ export default function Explorer() {
 
     const links = [
         { label: "Home", href: "/", icon: "home" },
-        { label: "File Manager", href: "/file-manager", icon: "whatshot" },
+        { label: "File Manager", href: "/file-manager", icon: "file_manager" },
     ];
 
     const files = [

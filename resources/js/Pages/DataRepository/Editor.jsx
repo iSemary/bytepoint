@@ -75,9 +75,9 @@ export default function Editor({ id }) {
         {
             label: "Data Repository",
             href: "/data-repository",
-            icon: "whatshot",
+            icon: "data_repository",
         },
-        { label: "Editor", icon: "whatshot" },
+        { label: "Editor" },
     ];
 
     useEffect(() => {

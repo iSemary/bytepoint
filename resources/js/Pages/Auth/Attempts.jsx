@@ -39,7 +39,7 @@ export default function Attempts() {
 
     const links = [
         { label: "Home", href: "/", icon: "home" },
-        { label: "Attempts", icon: "whatshot" },
+        { label: "Attempts", icon: "login_attempts" },
     ];
 
     const columns = [

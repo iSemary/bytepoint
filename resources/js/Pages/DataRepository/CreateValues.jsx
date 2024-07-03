@@ -12,9 +12,9 @@ export default function CreateValues({ id }) {
         {
             label: "Data Repository",
             href: "/data-repository",
-            icon: "whatshot",
+            icon: "data_repository",
         },
-        { label: "Create Values", icon: "grain" },
+        { label: "Create Values" },
     ];
 
     return (

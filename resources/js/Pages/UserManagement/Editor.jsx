@@ -140,9 +140,9 @@ export default function Editor({ id }) {
         {
             label: "Users Management",
             href: "/user-management",
-            icon: "whatshot",
+            icon: "user_management",
         },
-        { label: "Editor", icon: "whatshot" },
+        { label: "Editor" },
     ];
 
     const actionButtons = [

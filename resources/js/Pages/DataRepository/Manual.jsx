@@ -278,11 +278,11 @@ export default function Manual({ id }) {
         {
             label: "Data Repository",
             href: "/data-repository",
-            icon: "whatshot",
+            icon: "data_repository",
         },
-        { label: "Create", icon: "whatshot" },
+        { label: "Create"},
         { label: dataRepository?.title },
-        { label: "Manual", icon: "grain" },
+        { label: "Manual" },
     ];
 
     return (

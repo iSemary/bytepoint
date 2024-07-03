@@ -114,14 +114,13 @@ export default function DataRepository() {
 
     const links = [
         { label: "Home", href: "/", icon: "home" },
-        { label: "Data Repository", icon: "whatshot" },
+        { label: "Data Repository", icon: "data_repository" },
     ];
 
     const buttons = [
         {
             label: "Create new data repository",
             href: "/data-repository/editor",
-            icon: "grain",
         },
     ];
 

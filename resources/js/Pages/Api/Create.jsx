@@ -11,9 +11,9 @@ export default function Create({ id }) {
         {
             label: "APIs",
             href: "/apis",
-            icon: "whatshot",
+            icon: "apis",
         },
-        { label: "Create", icon: "grain" },
+        { label: "Create" },
     ];
 
     return (
