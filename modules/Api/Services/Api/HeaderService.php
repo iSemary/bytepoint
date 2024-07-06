@@ -31,6 +31,7 @@ class HeaderService
     {
         return ApiHeader::leftJoin('headers', 'headers.title', 'api_headers.header_key')
             ->select(['api_headers.id', 'headers.id as header_id', 'data_type_id', 'header_key AS key', 'header_value AS value'])
+            ->groupBy("api_headers.id")
             ->where('api_id', $apiId)->get()->map(function ($header) {
                 return [
                     'id' => $header->id,

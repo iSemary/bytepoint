@@ -73,9 +73,36 @@ const Editor = ({ id }) => {
             });
     };
 
-    const handleSaveAPI = () => {
-        setSaveLoading(true);
+    const handleUpdateAPI = () => {
+        const data = {
+            title: title,
+            description: description,
+            purpose_id: purpose,
+            method_id: method,
+            end_point: endpoint,
+            body_type_id: bodyType,
+            headers: headers,
+            parameters: parameters,
+            data_repository_id: dataRepository?.id,
+            body: bodyType === 1 ? body : jsonBody,
+            settings: settings,
+        };
 
+        axiosConfig
+            .put(`apis/${id}`, data)
+            .then((response) => {
+                Alert(response.data.message, "success", 3000);
+            })
+            .catch((error) => {
+                Alert(error.response.data.message, "error", 5000);
+                console.error(error);
+            })
+            .finally(() => {
+                setSaveLoading(false);
+            });
+    };
+
+    const handleStoreAPI = () => {
         const data = {
             title: title,
             description: description,
@@ -103,6 +130,15 @@ const Editor = ({ id }) => {
             .finally(() => {
                 setSaveLoading(false);
             });
+    };
+
+    const handleSaveAPI = () => {
+        setSaveLoading(true);
+        if (id) {
+            handleUpdateAPI();
+        } else {
+            handleStoreAPI();
+        }
     };
 
     useEffect(() => {

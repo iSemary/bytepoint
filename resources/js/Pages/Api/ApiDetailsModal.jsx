@@ -24,7 +24,7 @@ const CustomDrawer = styled(Drawer)(({ theme, width }) => ({
 }));
 
 export default function ApiDetailsModal({
-  detailsDrawerOpen,
+    detailsDrawerOpen,
     api,
     handleCloseDetailsDrawer,
 }) {
@@ -91,6 +91,36 @@ export default function ApiDetailsModal({
                                     <td>
                                         <Typography variant="body1">
                                             {api.id}
+                                        </Typography>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <Typography
+                                            variant="subtitle1"
+                                            color="textSecondary"
+                                        >
+                                            Title
+                                        </Typography>
+                                    </td>
+                                    <td>
+                                        <Typography variant="body1">
+                                            {api.title}
+                                        </Typography>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <Typography
+                                            variant="subtitle1"
+                                            color="textSecondary"
+                                        >
+                                            Description
+                                        </Typography>
+                                    </td>
+                                    <td>
+                                        <Typography variant="body1">
+                                            {api.description}
                                         </Typography>
                                     </td>
                                 </tr>

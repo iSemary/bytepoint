@@ -101,6 +101,7 @@ function Body({
                                     <Grid item xs={5}>
                                         <TextField
                                             label="Key"
+                                            disabled={disabled}
                                             value={item.key}
                                             onChange={(e) =>
                                                 handleBodyChange(

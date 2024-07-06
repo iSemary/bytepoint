@@ -15,29 +15,8 @@ Route::get('/', function () {
     return Inertia::render('Welcome');
 });
 
-Route::prefix('mock-ups')->group(function () {
-    Route::get('/', function () {
-        return Inertia::render('Mockup/Mockup');
+Route::group(['middleware' => ['tenant']], function () {
+    Route::get('/file-manager', function () {
+        return Inertia::render('Explorer/Explorer');
     });
-    Route::prefix('create')->group(function () {
-        Route::get('/', function () {
-            return Inertia::render('Mockup/Create');
-        });
-
-        Route::get('/manual', function () {
-            return Inertia::render('Mockup/Manual');
-        });
-
-        Route::get('/copilot', function () {
-            return Inertia::render('Mockup/Copilot');
-        });
-    });
-});
-
-Route::get('/file-manager', function () {
-    return Inertia::render('Explorer/Explorer');
-});
-
-Route::get('/templates', function () {
-    return Inertia::render('Templates/Templates');
 });

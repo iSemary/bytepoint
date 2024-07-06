@@ -1,13 +1,20 @@
-<?php
-
+<?php 
 
 use Illuminate\Support\Facades\Route;
 
+$modules = [
+    'Auth',
+    'Log',
+    'DataRepository',
+    'GPT',
+    'Api',
+    'UserManagement',
+    'Key',
+    'Template',
+    'CloudService',
+    'Mockup',
+];
 
-Route::group([], base_path('modules/Auth/Routes/api.php'));
-Route::group([], base_path('modules/Log/Routes/api.php'));
-Route::group([], base_path('modules/DataRepository/Routes/api.php'));
-Route::group([], base_path('modules/GPT/Routes/api.php'));
-Route::group([], base_path('modules/Api/Routes/api.php'));
-Route::group([], base_path('modules/UserManagement/Routes/api.php'));
-Route::group([], base_path('modules/Key/Routes/api.php'));
+foreach ($modules as $module) {
+    Route::group([], base_path("modules/{$module}/Routes/api.php"));
+}

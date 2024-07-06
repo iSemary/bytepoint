@@ -1,0 +1,10 @@
+{
+    "name": "Template",
+    "alias": "template",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+    ],
+    "files": []
+}

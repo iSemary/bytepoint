@@ -8,12 +8,14 @@ use Modules\Api\Entities\Api;
 use Modules\Api\Entities\ApiHeader;
 use Modules\Api\Entities\ApiParameter;
 use Modules\Api\Entities\ApiBody;
+use Modules\Api\Entities\ApiPurpose;
 use Modules\Api\Entities\ApiResponse;
 use Modules\Api\Entities\ApiSetting;
 use Modules\Api\Entities\ApiVersion;
 use Modules\Api\Services\Api\BodyService;
 use Modules\Api\Services\Api\HeaderService;
 use Modules\Api\Services\Api\ParameterService;
+use Modules\DataRepository\Entities\DataRepository;
 use Modules\DataRepository\Entities\DataRepositoryKey;
 
 class ApiService
@@ -21,17 +23,36 @@ class ApiService
     public $headerService;
     public $parameterService;
     public $bodyService;
+    public $apiPreparationService;
 
     public function __construct(
         HeaderService $headerService,
         ParameterService $parameterService,
-        BodyService $bodyService
+        BodyService $bodyService,
+        ApiPreparationService $apiPreparationService,
     ) {
         $this->headerService = $headerService;
         $this->parameterService = $parameterService;
         $this->bodyService = $bodyService;
+        $this->apiPreparationService = $apiPreparationService;
     }
 
+    public function prepare(int $id)
+    {
+        $api = Api::leftJoin("methods", "methods.id", "apis.method_id")->select(['apis.*', 'methods.title as method'])->where("apis.id", $id)->first();
+        $api->purpose = ApiPurpose::find($api->type)->title;
+        $api->data_repository = DataRepository::find($api->data_repository_id);
+        $api->settings = ApiSetting::where("api_id", $api->id)->first();
+
+        // Prepare Api Details
+        $api->headers = $this->headerService->prepareForModify($api->id);
+        $api->parameters = $this->parameterService->prepareForModify($api->id);
+        $api->body = $this->bodyService->prepareForModify($api->id, $api->body_type_id);
+
+        $api->url = $this->apiPreparationService->returnBaseURL() . $api->end_point;
+
+        return $api;
+    }
 
     public function store($request)
     {

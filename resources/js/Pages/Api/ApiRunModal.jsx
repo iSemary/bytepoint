@@ -30,6 +30,7 @@ import Body from "./Elements/ApiBuilderElements/Body";
 import Headers from "./Elements/ApiBuilderElements/Headers";
 import Parameters from "./Elements/ApiBuilderElements/Parameters";
 import axiosConfig from "../../configs/AxiosConfig";
+import Alert from "../../configs/Alert";
 
 const CustomDrawer = styled(Drawer)(({ theme, width }) => ({
     "& .MuiDrawer-paper": {
@@ -50,11 +51,15 @@ export default function ApiRunModal({
     const [allowBody, setAllowBody] = useState(true);
     const [allowParameters, setAllowParameters] = useState(true);
     const [allowHeaders, setAllowHeaders] = useState(true);
-    
-    const [response, setResponse] = useState({"message": "Run your awesome API first!"});
+
+    const [response, setResponse] = useState({
+        message: "Run your awesome API first!",
+    });
 
     const [dataTypes, setDataTypes] = useState([]);
     const [bodyTypes, setBodyTypes] = useState([]);
+
+    const [apiHeaders, setApiHeaders] = useState([]);
 
     const [drawerWidth, setDrawerWidth] = useState(baseWidth);
     const [runLoading, setRunLoading] = useState(false);
@@ -67,7 +72,6 @@ export default function ApiRunModal({
         );
     };
 
-    const [apiHeaders, setApiHeaders] = useState([]);
     const fetchAPIPreparation = () => {
         axiosConfig
             .get("apis/prepare")
@@ -82,12 +86,32 @@ export default function ApiRunModal({
     };
 
     const handleRunAPI = () => {
-        setResponse({message:"Running your awesome API..."});
+        setResponse({ message: "Running your awesome API..." });
         setRunLoading(true);
+
+        const data = {
+            parameters: api.parameters,
+            headers: api.headers,
+            body: api.body,
+        };
+
+        axiosConfig
+            .post(`run/${api.id}`, data)
+            .then((response) => {
+                setResponse(response.data.data.response);
+            })
+            .catch((error) => {
+                Alert(error.response.data.message, "error", 5000);
+                setResponse({ message: "Internal Server Error" });
+                console.error(error);
+            })
+            .finally(() => {
+                setRunLoading(false);
+            });
     };
 
     const handleCancelAPI = () => {
-        setResponse({message:"Ops you canceled the API from running..."});
+        setResponse({ message: "Ops you canceled the API from running..." });
         setRunLoading(false);
     };
 
@@ -195,14 +219,12 @@ export default function ApiRunModal({
                                             variant="standard"
                                             value={api.url}
                                             disabled={true}
+                                            onClick={() =>
+                                                handleCopyToClipboard(api.url)
+                                            }
                                         />
                                     </Grid>
-                                    <Grid
-                                        item
-                                        md={2}
-                                        display={"grid"}
-                                        placeItems={"center"}
-                                    >
+                                    <Grid item md={2} display={"grid"}>
                                         <Button
                                             variant="contained"
                                             onClick={() =>
@@ -293,7 +315,11 @@ export default function ApiRunModal({
                         <Typography variant="h6" gutterBottom>
                             Response
                         </Typography>
-                        <ReactJson theme={"monokai"} name={false} src={response} />
+                        <ReactJson
+                            theme={"monokai"}
+                            name={false}
+                            src={response}
+                        />
                     </Box>
                 )}
                 {/* Review Details Section */}
@@ -325,6 +351,36 @@ export default function ApiRunModal({
                                             <td>
                                                 <Typography variant="body1">
                                                     {api.id}
+                                                </Typography>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    color="textSecondary"
+                                                >
+                                                    Title
+                                                </Typography>
+                                            </td>
+                                            <td>
+                                                <Typography variant="body1">
+                                                    {api.title}
+                                                </Typography>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    color="textSecondary"
+                                                >
+                                                    Description
+                                                </Typography>
+                                            </td>
+                                            <td>
+                                                <Typography variant="body1">
+                                                    {api.description}
                                                 </Typography>
                                             </td>
                                         </tr>
