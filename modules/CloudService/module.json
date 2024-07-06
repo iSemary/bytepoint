@@ -1,0 +1,10 @@
+{
+    "name": "CloudService",
+    "alias": "cloudservice",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+    ],
+    "files": []
+}

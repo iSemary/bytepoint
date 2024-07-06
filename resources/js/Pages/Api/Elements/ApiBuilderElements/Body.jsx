@@ -26,12 +26,15 @@ function Body({
     handleJsonBodyChange,
     addBody,
     removeBody,
+    disabled = false,
 }) {
     return (
         <Box mt={1}>
             <Tabs
                 value={bodyType}
-                onChange={(e, newValue) => handleBodyTypeChange(newValue)}
+                onChange={(e, newValue) =>
+                    disabled ? "" : handleBodyTypeChange(newValue)
+                }
                 variant="scrollable"
                 scrollButtons="auto"
                 sx={{ marginTop: 2 }}
@@ -39,6 +42,7 @@ function Body({
                 {bodyTypes.map((type) => (
                     <Tab
                         key={type.id}
+                        disabled={disabled && bodyType !== type.id ? true : false}
                         label={
                             <Box>
                                 {type.title.replace(
@@ -62,7 +66,7 @@ function Body({
                 ))}
             </Tabs>
             <Box mt={2}>
-                {bodyType === 3 ? (
+                {bodyType === 3 && jsonBody ? (
                     <ReactJson
                         theme={"monokai"}
                         src={jsonBody}
@@ -72,29 +76,32 @@ function Body({
                     />
                 ) : (
                     <>
-                        <Grid
-                            container
-                            justifyContent={"end"}
-                            mb={2}
-                            spacing={1}
-                        >
-                            <Grid item xs={3}>
-                                <Button
-                                    onClick={addBody}
-                                    sx={{ marginTop: 1 }}
-                                    variant="contained"
-                                    fullWidth
-                                >
-                                    Add Body Item
-                                </Button>
+                        {addBody && (
+                            <Grid
+                                container
+                                justifyContent={"end"}
+                                mb={2}
+                                spacing={1}
+                            >
+                                <Grid item xs={3}>
+                                    <Button
+                                        onClick={addBody}
+                                        sx={{ marginTop: 1 }}
+                                        variant="contained"
+                                        fullWidth
+                                    >
+                                        Add Body Item
+                                    </Button>
+                                </Grid>
                             </Grid>
-                        </Grid>
+                        )}
                         {body.map((item, index) => (
                             <Box my={2} key={index}>
                                 <Grid container spacing={2}>
                                     <Grid item xs={5}>
                                         <TextField
                                             label="Key"
+                                            disabled={disabled}
                                             value={item.key}
                                             onChange={(e) =>
                                                 handleBodyChange(
@@ -120,14 +127,18 @@ function Body({
                                             fullWidth
                                         />
                                     </Grid>
-                                    <Grid item xs={2}>
-                                        <IconButton
-                                            onClick={() => removeBody(index)}
-                                            aria-label="delete"
-                                        >
-                                            <DeleteIcon />
-                                        </IconButton>
-                                    </Grid>
+                                    {removeBody && (
+                                        <Grid item xs={2}>
+                                            <IconButton
+                                                onClick={() =>
+                                                    removeBody(index)
+                                                }
+                                                aria-label="delete"
+                                            >
+                                                <DeleteIcon />
+                                            </IconButton>
+                                        </Grid>
+                                    )}
                                 </Grid>
                             </Box>
                         ))}

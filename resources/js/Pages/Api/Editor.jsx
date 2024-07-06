@@ -13,13 +13,14 @@ const Editor = ({ id }) => {
     const links = [
         { label: "Home", href: "/", icon: "home" },
         { label: "Apis", href: "/apis", icon: "apis" },
-        { label: "Create"},
+        { label: "Create" },
     ];
 
     const [newId, setNewId] = useState(null);
 
     const [purpose, setPurpose] = useState("");
     const [saveLoading, setSaveLoading] = useState(false);
+    const [fetchAPILoading, setFetchAPILoading] = useState(false);
 
     // Add new state variables
     const [title, setTitle] = useState("");
@@ -56,15 +57,14 @@ const Editor = ({ id }) => {
                     response.data.data.api.data_repository
                 );
 
-                // setHeaders(response.data.data.api.headers);
-
+                setHeaders(response.data.data.api.headers);
 
                 if (response.data.data.api.parameters.length)
                     setParameters(response.data.data.api.parameters);
                 setBodyType(response.data.data.api.body_type_id);
                 if (response.data.data.api.body.length)
                     setBody(response.data.data.api.body);
-                
+
                 // TODO add json body
                 setJsonBody({});
             })
@@ -73,9 +73,36 @@ const Editor = ({ id }) => {
             });
     };
 
-    const handleSaveAPI = () => {
-        setSaveLoading(true);
+    const handleUpdateAPI = () => {
+        const data = {
+            title: title,
+            description: description,
+            purpose_id: purpose,
+            method_id: method,
+            end_point: endpoint,
+            body_type_id: bodyType,
+            headers: headers,
+            parameters: parameters,
+            data_repository_id: dataRepository?.id,
+            body: bodyType === 1 ? body : jsonBody,
+            settings: settings,
+        };
 
+        axiosConfig
+            .put(`apis/${id}`, data)
+            .then((response) => {
+                Alert(response.data.message, "success", 3000);
+            })
+            .catch((error) => {
+                Alert(error.response.data.message, "error", 5000);
+                console.error(error);
+            })
+            .finally(() => {
+                setSaveLoading(false);
+            });
+    };
+
+    const handleStoreAPI = () => {
         const data = {
             title: title,
             description: description,
@@ -103,6 +130,15 @@ const Editor = ({ id }) => {
             .finally(() => {
                 setSaveLoading(false);
             });
+    };
+
+    const handleSaveAPI = () => {
+        setSaveLoading(true);
+        if (id) {
+            handleUpdateAPI();
+        } else {
+            handleStoreAPI();
+        }
     };
 
     useEffect(() => {

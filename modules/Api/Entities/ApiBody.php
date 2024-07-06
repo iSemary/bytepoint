@@ -15,7 +15,7 @@ class ApiBody extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['api_id', 'data_type_id', 'body_key', 'body_value'];
+    protected $fillable = ['api_id', 'data_type_id', 'body_type_id', 'body_key', 'body_value'];
 
     public function getActivitylogOptions(): LogOptions
     {

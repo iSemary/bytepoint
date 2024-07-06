@@ -3,6 +3,7 @@
 namespace Modules\Api\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateApiRequest extends FormRequest
 {
@@ -26,7 +27,13 @@ class UpdateApiRequest extends FormRequest
             'description' => 'nullable|max:5000',
             'purpose_id' => 'required|numeric',
             'method_id' => 'required|numeric',
-            'end_point' => 'required|string|min:3|max:255',
+            'end_point' => [
+                'required',
+                'string',
+                'min:3',
+                'max:255',
+                Rule::unique('apis')->ignore($this->api),
+            ],
             'data_repository_id' => 'required|numeric|exists:data_repositories,id',
             'body_type_id' => 'required|numeric|exists:body_types,id',
             'headers' => 'array',

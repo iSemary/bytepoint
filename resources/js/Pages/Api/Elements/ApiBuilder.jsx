@@ -123,7 +123,6 @@ function ApiBuilder({
                 setPurposes(response.data.data.data.api_purposes);
                 setApiHeaders(response.data.data.data.headers);
                 setDataTypes(response.data.data.data.data_types);
-                setDataTypes(response.data.data.data.data_types);
                 setBodyTypes(response.data.data.data.body_types);
                 setBaseURL(response.data.data.data.base_url);
             })

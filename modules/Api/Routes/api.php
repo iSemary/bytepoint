@@ -8,4 +8,5 @@ Route::group(['middleware' => ['tenant', 'tenancy.enforce', 'auth:api']], functi
     Route::put('apis/{id}/restore', [ApiController::class, 'restore']);
     Route::get('apis/{id}/sample', [ApiController::class, 'sample']);
     Route::apiResource('apis', ApiController::class);
+    Route::post('run/{id}', [ApiController::class, "run"]);
 });

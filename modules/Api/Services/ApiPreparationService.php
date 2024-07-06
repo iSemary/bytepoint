@@ -56,11 +56,11 @@ class ApiPreparationService
         return ApiPurpose::select(['id', 'title', 'description'])->get();
     }
 
-    private function returnBaseURL()
+    public function returnBaseURL()
     {
         $tenant = Tenant::current();
         $tenantURL = TenantHelper::generateURL($tenant->name);
-        $baseURL = $tenantURL . config("settings.tenant_api_prefix"); 
+        $baseURL = $tenantURL . '/' . config("settings.tenant_api_prefix") . '/';
         return $baseURL;
     }
 }

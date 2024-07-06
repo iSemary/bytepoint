@@ -21,9 +21,9 @@ const AppIcons = {
     cloud_services: <CloudIcon />,
     data_repository: <DataIcon />,
     file_manager: <FileManagerIcon />,
-    key_management: <LogsIcon />,
-    user_management: <ApiKeyIcon />,
-    logs: <UserIcon />,
+    key_management: <ApiKeyIcon />,
+    user_management: <UserIcon />,
+    logs: <LogsIcon />,
     activity_log: <ManageAccountsIcon />,
     login_attempts: <WarningAmberIcon />,
 };

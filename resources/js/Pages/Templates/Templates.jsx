@@ -1,9 +1,12 @@
 import React from "react";
 import CreationType from "../../Layout/Elements/CreationType";
-import { Construction } from "@mui/icons-material";
 import Layout from "../../Layout/Layout";
-import { Icon } from "@iconify/react";
 import { Grid, Typography } from "@mui/material";
+import Lottie from "lottie-react";
+import contactUsAnimation from "../../assets/json/contact-us-animation.json";
+import newsletterAnimation from "../../assets/json/newsletter-animation.json";
+import locationAnimation from "../../assets/json/location-animation.json";
+import dataAnimation from "../../assets/json/data-animation.json";
 
 export default function Templates() {
     const links = [
@@ -17,36 +20,60 @@ export default function Templates() {
                 Templates
             </Typography>
             <Typography variant="body1" gutterBottom>
-                Select one of our API templates
+                Explore our API templates
             </Typography>
             <Grid container spacing={3}>
                 <CreationType
-                    text="Fetch Data"
-                    description="Create your own API using the API builder"
+                    text="Fetch Paginated Data"
+                    description="Fetch and manage paginated data with ease"
                     url="/templates/fetch-data"
-                    icon={<Construction />}
-                    sm={3}
+                    icon={
+                        <Lottie
+                            animationData={dataAnimation}
+                            style={{ height: 150 }}
+                            loop={true}
+                        />
+                    }
+                    sm={4}
                 />
                 <CreationType
                     text="Contact Us"
-                    description="Create your own API using the API builder"
+                    description="Set up a contact form quickly and efficiently"
                     url="/templates/contact-us"
-                    icon={<Construction />}
-                    sm={3}
+                    icon={
+                        <Lottie
+                            animationData={contactUsAnimation}
+                            style={{ height: 150 }}
+                            loop={true}
+                        />
+                    }
+                    sm={4}
                 />
                 <CreationType
                     text="News Letter"
-                    description="Unleash your creativity with our AI Copilot"
+                    description="Easily create and manage newsletters"
                     url="/templates/newsletter"
-                    icon={<Icon icon="material-symbols:magic-button-outline" />}
-                    sm={3}
+                    icon={
+                        <Lottie
+                            animationData={newsletterAnimation}
+                            style={{ height: 150 }}
+                            loop={true}
+                        />
+                    }
+                    sm={4}
                 />
                 <CreationType
                     text="IP to Location"
-                    description="Unleash your creativity with our AI Copilot"
+                    description="Determine the geographical location of an IP address"
                     url="/templates/ip-to-location"
-                    icon={<Icon icon="material-symbols:magic-button-outline" />}
-                    sm={3}
+                    icon={
+                        <Lottie
+                            animationData={locationAnimation}
+                            style={{ height: 150 }}
+                            loop={true}
+                        />
+                    }
+                    sm={4}
                 />
             </Grid>
         </Layout>

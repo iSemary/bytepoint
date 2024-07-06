@@ -1,12 +1,19 @@
 <?php
 
-
 use Illuminate\Support\Facades\Route;
 
+$modules = [
+    'Auth',
+    'Log',
+    'DataRepository',
+    'Api',
+    'UserManagement',
+    'Key',
+    'Template',
+    'CloudService',
+    'Mockup',
+];
 
-Route::group([], base_path('modules/Auth/Routes/web.php'));
-Route::group([], base_path('modules/Log/Routes/web.php'));
-Route::group([], base_path('modules/DataRepository/Routes/web.php'));
-Route::group([], base_path('modules/Api/Routes/web.php'));
-Route::group([], base_path('modules/UserManagement/Routes/web.php'));
-Route::group([], base_path('modules/Key/Routes/web.php'));
+foreach ($modules as $module) {
+    Route::group([], base_path("modules/{$module}/Routes/web.php"));
+}
