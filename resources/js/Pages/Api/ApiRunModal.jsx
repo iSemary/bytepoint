@@ -31,6 +31,7 @@ import Headers from "./Elements/ApiBuilderElements/Headers";
 import Parameters from "./Elements/ApiBuilderElements/Parameters";
 import axiosConfig from "../../configs/AxiosConfig";
 import Alert from "../../configs/Alert";
+import { saveAs } from "file-saver";
 
 const CustomDrawer = styled(Drawer)(({ theme, width }) => ({
     "& .MuiDrawer-paper": {
@@ -96,7 +97,7 @@ export default function ApiRunModal({
         };
 
         axiosConfig
-            .post(`run/${api.id}`, data)
+            .post(`apis/run/${api.id}`, data)
             .then((response) => {
                 setResponse(response.data.data.response);
             })
@@ -117,6 +118,20 @@ export default function ApiRunModal({
 
     const handleExportPostmanCollection = () => {
         setExportPostmanCollectionLoading(true);
+        axiosConfig
+            .post(`apis/export/${api.id}`)
+            .then((response) => {
+                const blob = new Blob([JSON.stringify(response.data)], {
+                    type: "application/json",
+                });
+                saveAs(blob, `${api.title}.json`);
+            })
+            .catch((error) => {
+                console.error(error);
+            })
+            .finally(() => {
+                setExportPostmanCollectionLoading(false);
+            });
     };
 
     const handleTabChange = (event, newIndex) => {

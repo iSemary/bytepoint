@@ -138,13 +138,13 @@ class UtilitySeeder extends Seeder
     private function seedApiPurpose()
     {
         $apiPurposes = [
-            ['title' => 'Retrieve Data', 'description' => 'Purpose to retrieve data from the data repository'],
-            ['title' => 'Store Data', 'description' => 'Purpose to store data into the data repository'],
+            ['title' => 'Retrieve Data', 'type' => 'retrieve', 'description' => 'Purpose to retrieve data from the data repository'],
+            ['title' => 'Store Data', 'type' => 'store', 'description' => 'Purpose to store data into the data repository'],
         ];
 
         foreach ($apiPurposes as $apiPurpose) {
             ApiPurpose::updateOrCreate(
-                ['title' => $apiPurpose['title']],
+                ['type' => $apiPurpose['type']],
                 $apiPurpose
             );
         }

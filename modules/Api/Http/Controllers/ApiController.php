@@ -167,6 +167,18 @@ class ApiController extends ApiControllerHandler
     }
 
     /**
+     * Export API
+     *
+     * @param integer $id
+     * @param Request $request
+     * @return void
+     */
+    public function export(int $id)
+    {
+        return $this->apiService->export($id);
+    }
+
+    /**
      * Test & Run The API
      *
      * @param integer $id

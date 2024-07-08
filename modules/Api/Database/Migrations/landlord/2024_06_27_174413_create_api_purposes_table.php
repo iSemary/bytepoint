@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string("title", 255);
             $table->string("description", 1024);
+            $table->enum('type', ['retrieve', 'store']);
             $table->softDeletes();
             $table->timestamps();
         });

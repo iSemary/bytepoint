@@ -32,7 +32,7 @@ class DataRepositoryController extends ApiController
         if ($keyword) {
             $query->where('title', 'like', '%' . $keyword . '%');
         }
-        $dataRepositories = $query->paginate(25);
+        $dataRepositories = $query->orderByDesc("id")->paginate(25);
         return $this->return(200, "Data Repositories Fetched Successfully", ['data_repositories' => $dataRepositories]);
     }
 
