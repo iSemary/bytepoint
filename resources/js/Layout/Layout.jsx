@@ -102,7 +102,7 @@ export default function Layout({
                                                 style={{
                                                     marginRight: "0.5rem",
                                                 }}
-                                                disabled={button.loading}
+                                                disabled={button.disabled ? true : (button.loading)}
                                                 onClick={button.onClick}
                                             >
                                                 {button.loading ? (

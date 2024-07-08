@@ -170,12 +170,23 @@ class ApiController extends ApiControllerHandler
      * Export API
      *
      * @param integer $id
-     * @param Request $request
      * @return void
      */
     public function export(int $id)
     {
         return $this->apiService->export($id);
+    }
+
+    /**
+     * Export Collection of multiple API
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function exportCollection(Request $request)
+    {
+        $collection = $this->apiService->exportCollection($request->ids);
+        return $this->return(200, 'Collection generated successfully', ['name' => date('Y-m-d-H_i_s'), 'collection' => $collection]);
     }
 
     /**

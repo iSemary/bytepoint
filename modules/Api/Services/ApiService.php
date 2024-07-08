@@ -241,4 +241,20 @@ class ApiService
         $api = $this->prepare($id);
         return $this->postmanService->export($api);
     }
+
+    /**
+     * Return postman json of collection
+     *
+     * @param integer $id
+     * @return JsonResponse
+     */
+    public function exportCollection(array $ids): JsonResponse
+    {
+        $apis = [];
+        foreach ($ids as $id) {
+            $apis[] = $this->prepare($id);
+        }
+
+        return $this->postmanService->collection($apis);
+    }
 }

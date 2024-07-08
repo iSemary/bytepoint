@@ -7,6 +7,20 @@ use Modules\Api\Entities\Api;
 
 class PostmanService
 {
+    public function collection(array $apis): JsonResponse
+    {
+        $postmanCollection = [
+            'info' => [
+                'name' => 'API Collection',
+                'description' => 'Generated API collection',
+                'schema' => 'https://schema.getpostman.com/json/collection/v2.1.0/collection.json'
+            ],
+            'item' => $this->formatApis($apis)
+        ];
+
+        return response()->json($postmanCollection);
+    }
+
     public function export(Api $api): JsonResponse
     {
         $postmanCollection = [
@@ -15,28 +29,37 @@ class PostmanService
                 'description' => $api->description,
                 'schema' => 'https://schema.getpostman.com/json/collection/v2.1.0/collection.json'
             ],
-            'item' => [
-                [
-                    'name' => $api->title,
-                    'request' => [
-                        'method' => $api->method,
-                        'header' => $this->formatHeaders($api->headers),
-                        'url' => $this->formatUrl($api->url, $api->parameters),
-                    ]
-                ]
-            ]
+            'item' => $this->formatApi($api)
         ];
-
-        // Only add body if it's not empty
-        $formattedBody = $this->formatBody($api->body, $api->body_type_id);
-        if (!empty($formattedBody)) {
-            $postmanCollection['item'][0]['request']['body'] = $formattedBody;
-        }
 
         return response()->json($postmanCollection);
     }
 
-    private function formatHeaders($headers)
+    private function formatApis(array $apis): array
+    {
+        return array_map([$this, 'formatApi'], $apis);
+    }
+
+    private function formatApi(Api $api): array
+    {
+        $item = [
+            'name' => $api->title,
+            'request' => [
+                'method' => $api->method,
+                'header' => $this->formatHeaders($api->headers),
+                'url' => $this->formatUrl($api->url, $api->parameters),
+            ]
+        ];
+
+        $formattedBody = $this->formatBody($api->body, $api->body_type_id);
+        if (!empty($formattedBody)) {
+            $item['request']['body'] = $formattedBody;
+        }
+
+        return $item;
+    }
+
+    private function formatHeaders($headers): array
     {
         return $headers->map(function ($header) {
             return [
@@ -47,7 +70,7 @@ class PostmanService
         })->toArray();
     }
 
-    private function formatBody($body, $bodyTypeId)
+    private function formatBody($body, $bodyTypeId): ?array
     {
         if (empty($body)) {
             return null;
@@ -72,7 +95,7 @@ class PostmanService
         return $formattedBody;
     }
 
-    private function getBodyMode($bodyTypeId)
+    private function getBodyMode($bodyTypeId): string
     {
         $bodyTypeModes = [
             1 => 'raw',
@@ -83,14 +106,14 @@ class PostmanService
         return $bodyTypeModes[$bodyTypeId] ?? 'raw';
     }
 
-    private function formatRawBody($body)
+    private function formatRawBody($body): array
     {
         return $body->mapWithKeys(function ($item) {
             return [$item['key'] => $item['value']];
         })->toArray();
     }
 
-    private function formatFormBody($body)
+    private function formatFormBody($body): array
     {
         return $body->map(function ($item) {
             return [
@@ -101,7 +124,7 @@ class PostmanService
         })->toArray();
     }
 
-    private function formatUrl($url, $parameters)
+    private function formatUrl($url, $parameters): array
     {
         $parsedUrl = parse_url($url);
         $formattedUrl = [
