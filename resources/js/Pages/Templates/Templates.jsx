@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import CreationType from "../../Layout/Elements/CreationType";
 import Layout from "../../Layout/Layout";
 import { Grid, Typography } from "@mui/material";
@@ -7,12 +7,34 @@ import contactUsAnimation from "../../assets/json/contact-us-animation.json";
 import newsletterAnimation from "../../assets/json/newsletter-animation.json";
 import locationAnimation from "../../assets/json/location-animation.json";
 import dataAnimation from "../../assets/json/data-animation.json";
+import axiosConfig from "../../configs/AxiosConfig";
+import LinearProgress from "@mui/material/LinearProgress";
 
 export default function Templates() {
+    const [templates, setTemplates] = useState([]);
+
     const links = [
         { label: "Home", href: "/", icon: "home" },
         { label: "Templates", icon: "templates" },
     ];
+
+    const animationMap = {
+        contactUsAnimation,
+        newsletterAnimation,
+        locationAnimation,
+        dataAnimation,
+    };
+
+    useEffect(() => {
+        axiosConfig
+            .get("templates?is_cloud=0")
+            .then((response) => {
+                setTemplates(response.data.data.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }, []);
 
     return (
         <Layout links={links}>
@@ -20,62 +42,30 @@ export default function Templates() {
                 Templates
             </Typography>
             <Typography variant="body1" gutterBottom>
-                Explore our API templates
+                Explore our pre-prepared API templates
             </Typography>
-            <Grid container spacing={3}>
-                <CreationType
-                    text="Fetch Paginated Data"
-                    description="Fetch and manage paginated data with ease"
-                    url="/templates/fetch-data"
-                    icon={
-                        <Lottie
-                            animationData={dataAnimation}
-                            style={{ height: 150 }}
-                            loop={true}
+            {templates && templates.length ? (
+                <Grid container spacing={3}>
+                    {templates.map((template, index) => (
+                        <CreationType
+                            text={template.title}
+                            description={template.description}
+                            url={`/templates/${template.slug}`}
+                            key={index}
+                            icon={
+                                <Lottie
+                                    animationData={animationMap[template.icon]}
+                                    style={{ height: 150 }}
+                                    loop={true}
+                                />
+                            }
+                            sm={4}
                         />
-                    }
-                    sm={4}
-                />
-                <CreationType
-                    text="Contact Us"
-                    description="Set up a contact form quickly and efficiently"
-                    url="/templates/contact-us"
-                    icon={
-                        <Lottie
-                            animationData={contactUsAnimation}
-                            style={{ height: 150 }}
-                            loop={true}
-                        />
-                    }
-                    sm={4}
-                />
-                <CreationType
-                    text="News Letter"
-                    description="Easily create and manage newsletters"
-                    url="/templates/newsletter"
-                    icon={
-                        <Lottie
-                            animationData={newsletterAnimation}
-                            style={{ height: 150 }}
-                            loop={true}
-                        />
-                    }
-                    sm={4}
-                />
-                <CreationType
-                    text="IP to Location"
-                    description="Determine the geographical location of an IP address"
-                    url="/templates/ip-to-location"
-                    icon={
-                        <Lottie
-                            animationData={locationAnimation}
-                            style={{ height: 150 }}
-                            loop={true}
-                        />
-                    }
-                    sm={4}
-                />
-            </Grid>
+                    ))}
+                </Grid>
+            ) : (
+                <LinearProgress />
+            )}
         </Layout>
     );
 }

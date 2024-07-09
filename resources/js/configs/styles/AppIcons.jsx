@@ -11,6 +11,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import HomeIcon from "@mui/icons-material/Home";
+import DataObjectIcon from '@mui/icons-material/DataObject';
 
 const AppIcons = {
     home: <HomeIcon />,
@@ -26,6 +27,7 @@ const AppIcons = {
     logs: <LogsIcon />,
     activity_log: <ManageAccountsIcon />,
     login_attempts: <WarningAmberIcon />,
+    json: <DataObjectIcon />,
 };
 
 export default AppIcons;
