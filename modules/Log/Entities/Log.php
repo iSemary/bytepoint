@@ -15,7 +15,7 @@ class Log extends Model {
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['service', 'type', 'title', 'body'];
+    protected $fillable = ['service', 'type', 'title', 'body', 'internal'];
 
     protected $dates = ['created_at', 'updated_at', 'deleted_at'];
 }

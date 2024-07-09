@@ -2,7 +2,7 @@
 
 namespace Modules\Api\Services;
 
-use App\Constants\DataTypes;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Modules\Api\Entities\Api;
 use Modules\Api\Entities\ApiHeader;
@@ -12,11 +12,12 @@ use Modules\Api\Entities\ApiPurpose;
 use Modules\Api\Entities\ApiResponse;
 use Modules\Api\Entities\ApiSetting;
 use Modules\Api\Entities\ApiVersion;
+use Modules\DataRepository\Entities\DataRepository;
+use Modules\DataRepository\Entities\DataRepositoryKey;
 use Modules\Api\Services\Api\BodyService;
 use Modules\Api\Services\Api\HeaderService;
 use Modules\Api\Services\Api\ParameterService;
-use Modules\DataRepository\Entities\DataRepository;
-use Modules\DataRepository\Entities\DataRepositoryKey;
+use Modules\Api\Services\PostmanService;
 
 class ApiService
 {
@@ -24,17 +25,20 @@ class ApiService
     public $parameterService;
     public $bodyService;
     public $apiPreparationService;
+    public $postmanService;
 
     public function __construct(
         HeaderService $headerService,
         ParameterService $parameterService,
         BodyService $bodyService,
         ApiPreparationService $apiPreparationService,
+        PostmanService $postmanService,
     ) {
         $this->headerService = $headerService;
         $this->parameterService = $parameterService;
         $this->bodyService = $bodyService;
         $this->apiPreparationService = $apiPreparationService;
+        $this->postmanService = $postmanService;
     }
 
     public function prepare(int $id)
@@ -51,6 +55,16 @@ class ApiService
 
         $api->url = $this->apiPreparationService->returnBaseURL() . $api->end_point;
 
+        $api->authorization_key = null;
+        if ($api->is_authenticated) {
+            $authorizationKey =  $api->headers->map(function ($header) {
+                if ($header['key']['label'] == "Authorization") {
+                    return $header['value'];
+                }
+            });
+
+            $api->authorization_key = $authorizationKey && count($authorizationKey) ? $authorizationKey[0] : null;
+        }
         return $api;
     }
 
@@ -214,5 +228,33 @@ class ApiService
             $newVersionNumber = $major . '.' . $minor;
         }
         return ApiVersion::create(['api_id' => $apiId, 'version_number' => $newVersionNumber]);
+    }
+
+    /**
+     * Return postman json for importing to postman
+     *
+     * @param integer $id
+     * @return JsonResponse
+     */
+    public function export(int $id): JsonResponse
+    {
+        $api = $this->prepare($id);
+        return $this->postmanService->export($api);
+    }
+
+    /**
+     * Return postman json of collection
+     *
+     * @param integer $id
+     * @return JsonResponse
+     */
+    public function exportCollection(array $ids): JsonResponse
+    {
+        $apis = [];
+        foreach ($ids as $id) {
+            $apis[] = $this->prepare($id);
+        }
+
+        return $this->postmanService->collection($apis);
     }
 }

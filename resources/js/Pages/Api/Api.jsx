@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Box, IconButton } from "@mui/material";
+import { Box, Checkbox, IconButton } from "@mui/material";
 import Layout from "../../Layout/Layout";
 import { DataGrid } from "@mui/x-data-grid";
 import { Button } from "@mui/material";
@@ -9,9 +9,13 @@ import axiosConfig from "../../configs/AxiosConfig";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { Link } from "@inertiajs/react";
 import Swal from "sweetalert2";
+import postmanLogo from "../../assets/images/icons/postman.svg";
 
-export default function Apis() {    
+export default function Apis() {
     const [urlId, setUrlId] = useState(null);
+
+    const [selectedIds, setSelectedIds] = useState([]);
+    const [exportLoading, setExportLoading] = useState(false);
 
     const [detailsDrawerOpen, setDetailsDrawerOpen] = useState(false);
     const [runDrawerOpen, setRunDrawerOpen] = useState(false);
@@ -24,6 +28,38 @@ export default function Apis() {
     const [page, setPage] = useState(0);
     const [pageSize, setPageSize] = useState(25);
     const [totalRows, setTotalRows] = useState(0);
+
+    /** Multiple Select for api collection export */
+    const handleSelectedIdsChange = (id) => (event) => {
+        setSelectedIds((prevSelectedIds) => {
+            if (event.target.checked) {
+                return [...prevSelectedIds, id];
+            } else {
+                return prevSelectedIds.filter(
+                    (selectedId) => selectedId !== id
+                );
+            }
+        });
+    };
+
+    // Export Multiple Api for postman collection
+    const handleExportPostmanCollection = () => {
+        setExportLoading(true);
+        axiosConfig
+            .post(`apis/export/collection`, {ids: selectedIds})
+            .then((response) => {
+                const blob = new Blob([JSON.stringify(response.data.data.collection.original)], {
+                    type: "application/json",
+                });
+                saveAs(blob, `${response.data.data.name}.json`);
+            })
+            .catch((error) => {
+                console.error(error);
+            })
+            .finally(() => {
+                setExportLoading(false);
+            });
+    };
 
     // Closes the details drawer and resets the API state
     const handleCloseDetailsDrawer = () => {
@@ -139,9 +175,20 @@ export default function Apis() {
     }, []);
 
     const columns = [
-        { field: "id", headerName: "ID", flex: 1, minWidth: 50 },
+        {
+            field: "#",
+            headerName: "#",
+
+            renderCell: (params) => (
+                <Checkbox
+                    checked={selectedIds.includes(params.row.id)}
+                    onChange={handleSelectedIdsChange(params.row.id)}
+                />
+            ),
+        },
+        { field: "id", headerName: "ID", minWidth: 50 },
         { field: "end_point", headerName: "End Point", flex: 1, minWidth: 150 },
-        { field: "method", headerName: "Method", flex: 1, minWidth: 100 },
+        { field: "method", headerName: "Method", minWidth: 100 },
         {
             field: "type",
             headerName: "Type",
@@ -237,7 +284,7 @@ export default function Apis() {
     // Parse URL and extract 'id' parameter on component mount
     useEffect(() => {
         const url = new URL(window.location.href);
-        const id = url.searchParams.get('id');
+        const id = url.searchParams.get("id");
         if (id) {
             setUrlId(id);
         }
@@ -262,8 +309,28 @@ export default function Apis() {
         },
     ];
 
+    const actionButtons = [
+        {
+            label: (
+                <>
+                    <img src={postmanLogo} />
+                    <span>&nbsp;Export Postman Collection</span>
+                </>
+            ),
+            onClick: handleExportPostmanCollection,
+            disabled: selectedIds.length === 0,
+            icon: "",
+            loading: exportLoading,
+        },
+    ];
+
     return (
-        <Layout links={links} buttons={buttons} title="APIs">
+        <Layout
+            links={links}
+            buttons={buttons}
+            actionButtons={actionButtons}
+            title="APIs"
+        >
             <Box my={4}>
                 <Box display="flex" justifyContent="flex-end" mb={2}>
                     <IconButton
