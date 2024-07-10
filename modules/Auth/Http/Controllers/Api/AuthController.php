@@ -23,7 +23,9 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use stdClass;
 use Exception;
+use Modules\Auth\Entities\FactorAuthenticateToken;
 use Modules\Tenant\Helper\TenantHelper;
+use Spatie\Multitenancy\Models\Tenant;
 
 class AuthController extends ApiController
 {
@@ -100,10 +102,42 @@ class AuthController extends ApiController
         $user = auth()->user();
         $response = $this->collectUserDetails($user);
 
+        $redirect = $this->handle2FARedirection($user, $request);
+
         return $this->return(200, 'User Logged in Successfully', [
             'user' => $response,
-            'redirect' => TenantHelper::generateURL($request->subdomain) . "/2fa/generate"
+            'redirect' => $redirect
         ]);
+    }
+
+    public function check2FA(Request $request)
+    {
+        $user = auth()->guard('api')->user();
+        $tokenId = $user->token()->id;
+
+        // Check if the user has an existing 2FA token
+        $existingToken = FactorAuthenticateToken::where('user_id', $user->id)->where('token_id', $tokenId)->first();
+        if (!$existingToken) {
+            $redirect = $this->handle2FARedirection($user, $request);
+            return $this->return(409, '2FA token is not valid.', ['redirect' => $redirect]);
+        }
+        return $this->return(200, '2FA token is valid.');
+    }
+
+
+    private function handle2FARedirection(User $user, Request $request)
+    {
+        $tenant = Tenant::current();
+        $redirect = TenantHelper::generateURL($tenant->name);
+
+        if ($user->factor_authenticate) {
+            if ($user->google2fa_secret) {
+                $redirect .= "/2fa/validate";
+            } else {
+                $redirect .= "/2fa/generate";
+            }
+        }
+        return $redirect;
     }
 
     private function handleFailedLogin(LoginUserRequest $request, $tenant): JsonResponse
@@ -471,6 +505,8 @@ class AuthController extends ApiController
         $isValid = $google2fa->verifyKey($request->secret_key, $request->code);
 
         if ($isValid) {
+            // Create a new 2FA token
+            FactorAuthenticateToken::create(['user_id' => $user->id, 'token_id' => $user->token()->id]);
             $user->update(["google2fa_secret" => $request->secret_key]);
             return $this->return(200, "2FA Verified Successfully");
         }
@@ -493,6 +529,8 @@ class AuthController extends ApiController
         $isValid = $google2fa->verifyKey($user->google2fa_secret, $request->code);
 
         if ($isValid) {
+            // Create a new 2FA token
+            FactorAuthenticateToken::create(['user_id' => $user->id, 'token_id' => $user->token()->id]);
             return $this->return(200, "2FA Verified Successfully");
         }
         return $this->return(400, "Invalid OTP number");

@@ -54,6 +54,7 @@ export default function Validate() {
                             <Grid container spacing={2} alignItems="center">
                                 <Grid item xs={9}>
                                     <TextField
+                                        autoComplete="off"
                                         type="text"
                                         value={code}
                                         onChange={(e) =>

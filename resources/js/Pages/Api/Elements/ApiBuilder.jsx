@@ -21,6 +21,8 @@ function ApiBuilder({
     allowParameters = true,
     allowHeaders = true,
     showPurposes = true,
+    showApiDetails = true,
+    showBaseURL = true,
     purpose,
     setPurpose,
     title,
@@ -138,26 +140,28 @@ function ApiBuilder({
     return (
         <form onSubmit={handleSubmit}>
             <Box mb={1}>
-                <Grid container spacing={1}>
-                    <Grid item xs={6}>
-                        <TextField
-                            label="Title"
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            fullWidth
-                            required
-                        />
+                {showApiDetails && (
+                    <Grid container spacing={1}>
+                        <Grid item xs={6}>
+                            <TextField
+                                label="Title"
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value)}
+                                fullWidth
+                                required
+                            />
+                        </Grid>
+                        <Grid item xs={6}>
+                            <TextField
+                                label="Description"
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                                fullWidth
+                                required
+                            />
+                        </Grid>
                     </Grid>
-                    <Grid item xs={6}>
-                        <TextField
-                            label="Description"
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                            fullWidth
-                            required
-                        />
-                    </Grid>
-                </Grid>
+                )}
                 {showPurposes && (
                     <Grid container my={2}>
                         <Grid item xs={12}>
@@ -199,13 +203,13 @@ function ApiBuilder({
                             onChange={(e) => setEndpoint(e.target.value)}
                             fullWidth
                             required
-                            InputProps={{
+                            InputProps={showBaseURL ? {
                                 startAdornment: (
                                     <InputAdornment position="start">
                                         {baseURL}
                                     </InputAdornment>
                                 ),
-                            }}
+                            } : ""}
                         />
                     </Grid>
                     <Grid item xs={3}>

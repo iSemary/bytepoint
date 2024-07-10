@@ -98,6 +98,12 @@ function AuthHome() {
                         sm={3}
                         className={"animate__animated animate__fadeIn"}
                         style={{ animationDelay: `${index * 0.06}s` }}
+                        sx={{
+                            transition: "transform 0.3s ease-in-out",
+                            "&:hover": {
+                                transform: "scale(1.02)",
+                            },
+                        }}
                     >
                         <Card>
                             <CardActionArea component={Link} href={item.link}>

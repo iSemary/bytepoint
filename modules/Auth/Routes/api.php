@@ -38,5 +38,7 @@ Route::group(['prefix' => 'auth'], function () {
         Route::post('2fa/validate', [AuthController::class, "validate2FA"]);
         // deactivate account [From settings]
         Route::post('deactivate', [AuthController::class, "deactivate"]);
+        // deactivate account [From settings]
+        Route::get('2fa-check', [AuthController::class, "check2FA"]);
     });
 });

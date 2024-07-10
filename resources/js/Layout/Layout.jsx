@@ -50,7 +50,6 @@ export default function Layout({
 
     useEffect(() => {
         setUserTheme(false);
-
         router.on("start", () => setLeaving(true));
         router.on("finish", () => setLeaving(false));
     }, [user]);
@@ -102,7 +101,11 @@ export default function Layout({
                                                 style={{
                                                     marginRight: "0.5rem",
                                                 }}
-                                                disabled={button.disabled ? true : (button.loading)}
+                                                disabled={
+                                                    button.disabled
+                                                        ? true
+                                                        : button.loading
+                                                }
                                                 onClick={button.onClick}
                                             >
                                                 {button.loading ? (
@@ -125,9 +128,7 @@ export default function Layout({
                     <div
                         className={
                             "animate__animated " +
-                            (leaving
-                                ? "animate__zoomOut"
-                                : "animate__fadeIn")
+                            (leaving ? "animate__zoomOut" : "animate__fadeIn")
                         }
                     >
                         {children}

@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { Token } from "../configs/Token";
+import { router } from "@inertiajs/react";
+import axiosConfig from "../configs/AxiosConfig";
 
 const AuthContext = createContext();
 
@@ -14,11 +16,19 @@ export const AuthProvider = ({ children }) => {
                 if (Token.check()) {
                     if (await Token.check()) {
                         setUser(await Token.getUser());
+                        axiosConfig
+                            .get("auth/2fa-check")
+                            .then((response) => {})
+                            .catch((error) => {
+                                router.visit(error.response.data.data.redirect);
+                                console.error(error);
+                            });
                     }
                 }
-                setLoading(false);
             } catch (error) {
+                router.visit(`/login`);
                 setError(error.message);
+            } finally {
                 setLoading(false);
             }
         };
