@@ -30,10 +30,9 @@ class ApiController extends ApiControllerHandler
     /**
      * Fetch all apis
      *
-     * @param Request $request
      * @return JsonResponse
      */
-    public function index(Request $request): JsonResponse
+    public function index(): JsonResponse
     {
         $apis = Api::withTrashed()
             ->leftJoin("methods", "methods.id", "apis.method_id")
