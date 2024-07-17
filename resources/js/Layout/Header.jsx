@@ -128,7 +128,7 @@ const Header = ({ user, userLoading, open, setOpen }) => {
                 )}
             </Toolbar>
             {logoutLoading ? (
-                <Box className="logout-loader">
+                <Box className="fixed-loader">
                     <Box>
                         <CircularProgress
                             size={150}

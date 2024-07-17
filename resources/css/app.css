@@ -42,7 +42,7 @@ body {
     font-size: 0.9em;
 }
 
-.logout-loader {
+.fixed-loader {
     position: fixed;
     background-color: #4e4e4e9f;
     width: 100%;
@@ -52,6 +52,7 @@ body {
     display: grid;
     align-items: center;
     justify-content: center;
+    top: 0;
 }
 
 .export-btn {

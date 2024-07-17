@@ -78,10 +78,12 @@ class ApiService
             $this->saveHeaders($api->id, $request['headers']);
             $this->saveParameters($api->id, $request['parameters']);
             $this->saveBody($api->id, $request['body_type_id'], $request['body']);
-            $this->saveSettings($api->id, $request['settings']);
+            if(isset($request['settings'])) {
+                $this->saveSettings($api->id, $request['settings']);
+            }
 
             // retrieve data
-            if ($request['purpose_id'] == 1) {
+            if ($request['purpose_id'] == 1 && isset($request['data_repository_id'])) {
                 $this->saveResponse($api->id, $request['data_repository_id']);
             }
 
@@ -91,7 +93,7 @@ class ApiService
             return ['success' => true, 'api' => $api];
         } catch (\Exception $e) {
             DB::rollBack();
-            return ['success' => false, 'message' => $e->getMessage() . " L" . $e->getLine()];
+            throw new \Exception($e->getMessage() . " L" . $e->getLine());
         }
     }
 
@@ -122,7 +124,7 @@ class ApiService
             'title' => $request['title'],
             'description' => $request['description'],
             'type' => $request['purpose_id'],
-            'data_repository_id' => $request['data_repository_id'],
+            'data_repository_id' => $request['data_repository_id'] ?? null,
             'end_point' => $request['end_point'],
             'method_id' => $request['method_id'],
             'body_type_id' => $request['body_type_id'],

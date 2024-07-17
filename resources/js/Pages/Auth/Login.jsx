@@ -14,6 +14,7 @@ import axiosConfig from "../../configs/AxiosConfig";
 
 const Login = () => {
     const [loading, setLoading] = useState(false);
+    const [loginLoading, setLoginLoading] = useState(false);
     const [isSubdomainFromURL, setIsSubdomainFromURL] = useState(false);
     const [subdomain, setSubDomain] = useState(null);
 
@@ -34,8 +35,10 @@ const Login = () => {
         axiosConfig
             .post("auth/login", data)
             .then((response) => {
-                Alert(response.data.message, "success", 3000);
                 Token.store(response.data.data.user.access_token);
+
+                setLoginLoading(true);
+
                 setTimeout(() => {
                     window.location.href = response.data.data.redirect;
                 }, 3000);
@@ -172,6 +175,19 @@ const Login = () => {
                     </Grid>
                 </Grid>
             </Box>
+            {loginLoading ? (
+                <Box className="fixed-loader">
+                    <Box>
+                        <CircularProgress
+                            size={150}
+                            style={{ color: "#ffffff91" }}
+                        />
+                        <Typography variant="h4">Logging in</Typography>
+                    </Box>
+                </Box>
+            ) : (
+                ""
+            )}
         </Layout>
     );
 };

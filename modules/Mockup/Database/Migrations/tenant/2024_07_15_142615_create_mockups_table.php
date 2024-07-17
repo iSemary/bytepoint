@@ -11,16 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('apis', function (Blueprint $table) {
+        Schema::create('mockups', function (Blueprint $table) {
             $table->id();
             $table->string('title');
             $table->text('description');
-            $table->tinyInteger('type');
-            $table->unsignedBigInteger('data_repository_id')->nullable();
-            $table->string('end_point');
-            $table->tinyInteger('method_id');
-            $table->unsignedBigInteger('body_type_id');
-            $table->boolean('is_authenticated');
+            $table->unsignedBigInteger('base_api_id');
+            $table->unsignedBigInteger('mocked_api_id');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -31,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('apis');
+        Schema::dropIfExists('mockups');
     }
 };

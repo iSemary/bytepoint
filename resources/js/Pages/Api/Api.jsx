@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Box, Checkbox, IconButton } from "@mui/material";
+import { Box, Checkbox, Grid, IconButton } from "@mui/material";
 import Layout from "../../Layout/Layout";
 import { DataGrid } from "@mui/x-data-grid";
 import { Button } from "@mui/material";
@@ -10,6 +10,8 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import { Link } from "@inertiajs/react";
 import Swal from "sweetalert2";
 import postmanLogo from "../../assets/images/icons/postman.svg";
+import LockIcon from "@mui/icons-material/Lock";
+import LockOpenIcon from "@mui/icons-material/LockOpen";
 
 export default function Apis() {
     const [urlId, setUrlId] = useState(null);
@@ -46,11 +48,14 @@ export default function Apis() {
     const handleExportPostmanCollection = () => {
         setExportLoading(true);
         axiosConfig
-            .post(`apis/export/collection`, {ids: selectedIds})
+            .post(`apis/export/collection`, { ids: selectedIds })
             .then((response) => {
-                const blob = new Blob([JSON.stringify(response.data.data.collection.original)], {
-                    type: "application/json",
-                });
+                const blob = new Blob(
+                    [JSON.stringify(response.data.data.collection.original)],
+                    {
+                        type: "application/json",
+                    }
+                );
                 saveAs(blob, `${response.data.data.name}.json`);
             })
             .catch((error) => {
@@ -178,7 +183,7 @@ export default function Apis() {
         {
             field: "#",
             headerName: "#",
-
+            flex: 0.1,
             renderCell: (params) => (
                 <Checkbox
                     checked={selectedIds.includes(params.row.id)}
@@ -189,6 +194,24 @@ export default function Apis() {
         { field: "id", headerName: "ID", minWidth: 50 },
         { field: "end_point", headerName: "End Point", flex: 1, minWidth: 150 },
         { field: "method", headerName: "Method", minWidth: 100 },
+        {
+            field: "is_authenticated",
+            headerName: "Authenticated",
+            renderCell: (params) => (
+                <Box
+                    display={"center"}
+                    pt={1}
+                    justifyContent={"center"}
+                    alignItems={"center"}
+                >
+                    {params.row.is_authenticated ? (
+                        <LockIcon color="warning" title="Authenticated" />
+                    ) : (
+                        <LockOpenIcon color="success" title="Unauthenticated" />
+                    )}
+                </Box>
+            ),
+        },
         {
             field: "type",
             headerName: "Type",
