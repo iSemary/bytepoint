@@ -2,6 +2,7 @@
 
 namespace Modules\Api\Http\Controllers;
 
+use App\Constants\ApiServices;
 use App\Http\Controllers\Api\ApiController as ApiControllerHandler;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -41,7 +42,8 @@ class ApiController extends ApiControllerHandler
 
         foreach ($apis as $api) {
             $api->type = ApiPurpose::find($api->type)->title;
-            $api->data_repository_title = DataRepository::withTrashed()->find($api->data_repository_id)->title;
+            $api->service = ApiServices::getTitle($api->service);
+            $api->data_repository_title = DataRepository::withTrashed()->find($api->data_repository_id)?->title;
         }
 
         return $this->return(200, "Apis Fetched Successfully", ['apis' => $apis]);
@@ -69,6 +71,7 @@ class ApiController extends ApiControllerHandler
     {
         // Validate the incoming request
         $validatedData = $storeApiRequest->validated();
+        $validatedData['service'] = ApiServices::API;
         $result = $this->apiService->store($validatedData);
 
         if ($result['success']) {

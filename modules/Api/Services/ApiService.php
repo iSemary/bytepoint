@@ -2,6 +2,7 @@
 
 namespace Modules\Api\Services;
 
+use App\Constants\ApiServices;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Modules\Api\Entities\Api;
@@ -45,6 +46,7 @@ class ApiService
     {
         $api = Api::leftJoin("methods", "methods.id", "apis.method_id")->select(['apis.*', 'methods.title as method'])->where("apis.id", $id)->first();
         $api->purpose = ApiPurpose::find($api->type)->title;
+        $api->service = ApiServices::getTitle($api->service);
         $api->data_repository = DataRepository::find($api->data_repository_id);
         $api->settings = ApiSetting::where("api_id", $api->id)->first();
 
@@ -124,6 +126,7 @@ class ApiService
             'title' => $request['title'],
             'description' => $request['description'],
             'type' => $request['purpose_id'],
+            'service' => $request['service'],
             'data_repository_id' => $request['data_repository_id'] ?? null,
             'end_point' => $request['end_point'],
             'method_id' => $request['method_id'],

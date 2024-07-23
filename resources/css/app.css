@@ -59,3 +59,25 @@ body {
     background-color: #FF6C3B !important;
     color: #fff !important;
 }
+
+.method-text {
+    background-color: #ff6c3b52;
+    padding: 5px;
+    border-radius: 5px;
+    color: #ffffffc2;
+    font-weight: bold;
+    text-align: center;
+    margin: 10px auto !important;
+    display: flex;
+    width: fit-content;
+    place-items: center;
+    height: 30px;
+}
+
+.api-text {
+    cursor: pointer;
+    transition: 0.25s ease-in-out;
+}
+.api-text:hover{
+    color: rgba(98, 41, 255, 0.761);
+}

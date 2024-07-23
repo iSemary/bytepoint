@@ -440,7 +440,22 @@ export default function ApiRunModal({
                                             </td>
                                             <td>
                                                 <Typography variant="body1">
-                                                    {api.type}
+                                                    {api.purpose}
+                                                </Typography>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    color="textSecondary"
+                                                >
+                                                    Service
+                                                </Typography>
+                                            </td>
+                                            <td>
+                                                <Typography variant="body1">
+                                                    {api.service}
                                                 </Typography>
                                             </td>
                                         </tr>
