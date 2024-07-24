@@ -17,6 +17,7 @@ return new class extends Migration
             $table->text('description');
             $table->tinyInteger('type');
             $table->tinyInteger('service');
+            $table->integer('template_id')->nullable();
             $table->unsignedBigInteger('data_repository_id')->nullable();
             $table->string('end_point');
             $table->tinyInteger('method_id');

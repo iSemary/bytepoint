@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Modules\Api\Http\Controllers\ApiController;
+use Modules\Api\Http\Controllers\ExplorerController;
 
 Route::group(['middleware' => ['tenant', 'tenancy.enforce', 'auth:api', '2fa']], function () {
     Route::get('apis/prepare', [ApiController::class, "prepare"]);
@@ -11,4 +12,6 @@ Route::group(['middleware' => ['tenant', 'tenancy.enforce', 'auth:api', '2fa']],
     Route::post('apis/export/collection', [ApiController::class, "exportCollection"]);
     Route::post('apis/export/{id}', [ApiController::class, "export"]);
     Route::apiResource('apis', ApiController::class);
+
+    Route::get("explorer", [ExplorerController::class, "index"]);
 });

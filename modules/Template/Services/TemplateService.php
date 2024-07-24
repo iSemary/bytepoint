@@ -42,6 +42,7 @@ class TemplateService
         $dataRepositoryKeys = $this->prepareDataRepositoryKeysTemplate($template);
         $this->dataRepositoryService->sync($dataRepository->id, $dataRepositoryKeys);
 
+        $request['template_id'] = $template->id;
         $request['data_repository_id'] = $dataRepository->id;
         $data = $this->prepareApiTemplate($template, $request);
         $api = $this->apiService->store($data);
@@ -55,6 +56,7 @@ class TemplateService
         $api['description'] = $request['api_description'];
         $api['end_point'] = $request['end_point'];
         $api['data_repository_id'] = $request['data_repository_id'];
+        $api['template_id'] = $request['template_id'];
 
 
         switch ($template->type) {
@@ -63,7 +65,15 @@ class TemplateService
                 $api['method_id'] = Method::whereTitle("GET")->first()->id;
                 $api['body_type_id'] = BodyType::whereTitle('multipart/form-data')->first()->id;
 
-                $api['parameters'] = [];
+                $api['parameters']['key'] = "page";
+                $api['parameters']['value'] = 1;
+                $api['parameters']['key'] = "per_page";
+                $api['parameters']['value'] = 10;
+                $api['parameters']['key'] = "sort_by";
+                $api['parameters']['value'] = "created_at";
+                $api['parameters']['key'] = "order";
+                $api['parameters']['value'] = "desc";
+
                 $api['headers'] = [];
                 $api['body'] = [];
 
@@ -75,8 +85,16 @@ class TemplateService
 
                 $api['parameters'] = [];
                 $api['headers'] = [];
-                $api['body'] = [];
+                $api['body'][0]['key'] = 'name';
+                $api['body'][0]['value'] = 'Your name';
+                $api['body'][1]['key'] = 'email';
+                $api['body'][1]['value'] = 'Your email address';
+                $api['body'][2]['key'] = 'message';
+                $api['body'][2]['value'] = 'Your message';
 
+                $api['response'][0]['key'] = 'message';
+                $api['response'][0]['value'] = 'You have successfully subscribed to the newsletter!';
+                
                 break;
             case 'newsletter':
                 $api['purpose_id'] = ApiPurpose::whereType("store")->first()->id;
@@ -85,8 +103,11 @@ class TemplateService
 
                 $api['parameters'] = [];
                 $api['headers'] = [];
-                $api['body']['key'] = 'email';
-                $api['body']['value'] = 'Your Email Address';
+                $api['body'][0]['key'] = 'email';
+                $api['body'][0]['value'] = 'Your email address';
+
+                $api['response'][0]['key'] = 'message';
+                $api['response'][0]['value'] = 'You have successfully subscribed to the newsletter!';
 
                 break;
             case 'ip_to_location':
@@ -96,7 +117,8 @@ class TemplateService
 
                 $api['parameters'] = [];
                 $api['headers'] = [];
-                $api['body'] = [];
+                $api['body'][0]['key'] = 'ip';
+                $api['body'][0]['value'] = '127.0.0.1';
 
                 break;
             case 'ocr':
@@ -107,6 +129,8 @@ class TemplateService
                 $api['parameters'] = [];
                 $api['headers'] = [];
                 $api['body'] = [];
+                $api['body'][0]['key'] = 'image';
+                $api['body'][0]['value'] = 'FILE';
                 break;
             default:
                 break;

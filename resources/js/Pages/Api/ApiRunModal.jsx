@@ -91,11 +91,29 @@ export default function ApiRunModal({
         setRunLoading(true);
 
         const data = {
-            parameters: api.parameters,
-            headers: api.headers,
-            body: api.body,
+            parameters: [],
+            headers: [],
+            body: [],
         };
-
+    
+        if (api.parameters) {
+            api.parameters.forEach((param) => {
+                data.parameters.push({ [param.key]: param.value });
+            });
+        }
+    
+        if (api.headers) {
+            api.headers.forEach((header) => {
+                data.headers.push({ [header.key]: header.value });
+            });
+        }
+    
+        if (api.body) {
+            api.body.forEach((bodyItem) => {
+                data.body.push({ [bodyItem.key]: bodyItem.value });
+            });
+        }
+    
         axiosConfig
             .post(`apis/run/${api.id}`, data)
             .then((response) => {

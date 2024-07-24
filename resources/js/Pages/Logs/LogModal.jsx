@@ -163,6 +163,7 @@ export default function LogModal({
                             </Typography>
                             <ReactJson
                                 theme={"monokai"}
+                                name={false}
                                 src={selectedRow.body}
                             />
                         </Box>

@@ -58,6 +58,7 @@ class ApiController extends ApiControllerHandler
     public function show(string $id): JsonResponse
     {
         $api = $this->prepareAPIResponse($id);
+        $api->service = ApiServices::getTitle($api->service);
         return $this->return(200, "Api Fetched Successfully", ['api' => $api]);
     }
 
@@ -154,6 +155,7 @@ class ApiController extends ApiControllerHandler
     public function sample(int $id): JsonResponse
     {
         $api = $this->prepareAPIResponse($id);
+        $api->service = ApiServices::getTitle($api->service);
         return $this->return(200, "Api Sample Fetched Successfully", ['api' => $api]);
     }
 

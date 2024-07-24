@@ -58,9 +58,9 @@ export default function CloudServiceBuilder({ slug }) {
         const data = {
             data_repository_title: dataRepository.title,
             data_repository_description: dataRepository.description,
-            end_point: api.title,
-            api_title: api.description,
-            api_description: api.end_point,
+            end_point: api.end_point,
+            api_title: api.title,
+            api_description: api.description,
         };
 
         axiosConfig

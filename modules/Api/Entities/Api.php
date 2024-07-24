@@ -20,6 +20,7 @@ class Api extends Model
         'description',
         'type',
         'service', // app/Constants/ApiServices.php
+        'template_id',
         'data_repository_id',
         'end_point',
         'method_id',
