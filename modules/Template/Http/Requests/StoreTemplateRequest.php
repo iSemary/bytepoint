@@ -25,9 +25,9 @@ class StoreTemplateRequest extends FormRequest
         return [
             'data_repository_title' => 'required|max:255',
             'data_repository_description' => 'nullable|max:5000',
+            'api_title' => 'required|max:255',
+            'api_description' => 'nullable|max:5000',
             'end_point' => 'required|string|min:3|max:255|unique:apis,end_point',
-            'api_title' => 'array',
-            'api_description' => 'array',
         ];
     }
 }

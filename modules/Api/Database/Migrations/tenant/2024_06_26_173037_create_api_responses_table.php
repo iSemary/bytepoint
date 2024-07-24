@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('api_id');
             $table->string('response_key');
+            $table->text('response_value')->nullable();
             $table->unsignedBigInteger('data_type_id');
             $table->softDeletes();
             $table->timestamps();

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Box, Checkbox, Grid, IconButton } from "@mui/material";
+import { Box, Checkbox, Grid, IconButton, Typography } from "@mui/material";
 import Layout from "../../Layout/Layout";
 import { DataGrid } from "@mui/x-data-grid";
 import { Button } from "@mui/material";
@@ -12,6 +12,7 @@ import Swal from "sweetalert2";
 import postmanLogo from "../../assets/images/icons/postman.svg";
 import LockIcon from "@mui/icons-material/Lock";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 export default function Apis() {
     const [urlId, setUrlId] = useState(null);
@@ -179,6 +180,21 @@ export default function Apis() {
         });
     }, []);
 
+    const handleCopy = (text) => {
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(text)
+                .then(() => {
+                    console.log("Copied to clipboard!");
+                })
+                .catch(err => {
+                    console.error('Failed to copy: ', err);
+                });
+        } else {
+            console.error('Clipboard API not available');
+        }
+    };
+    
+    
     const columns = [
         {
             field: "#",
@@ -191,16 +207,39 @@ export default function Apis() {
                 />
             ),
         },
-        { field: "id", headerName: "ID", minWidth: 50 },
-        { field: "end_point", headerName: "End Point", flex: 1, minWidth: 150 },
-        { field: "method", headerName: "Method", minWidth: 100 },
+        { field: "id", headerName: "ID", flex: 0.1, minWidth: 50 },
+        {
+            field: "end_point",
+            headerName: "End Point",
+            flex: 1,
+            minWidth: 150,
+            renderCell: (params) => (
+                <Typography variant="body2" title="Click to copy to clipboard" pt={1.5}
+                onClick={() => handleCopy(params.row.end_point)}
+
+                 className="api-text">
+                   <ContentCopyIcon style={{ fontSize:"14px" }} /> {params.row.end_point}
+                </Typography>
+            ),
+        },
+        {
+            field: "method",
+            headerName: "Method",
+            flex: 0.2,
+            minWidth: 100,
+            renderCell: (params) => (
+                <span display={"grid"} pt={1.5} className="method-text">
+                    {params.row.method}
+                </span>
+            ),
+        },
         {
             field: "is_authenticated",
             headerName: "Authenticated",
             renderCell: (params) => (
                 <Box
-                    display={"center"}
-                    pt={1}
+                    display={"grid"}
+                    pt={1.5}
                     justifyContent={"center"}
                     alignItems={"center"}
                 >
@@ -216,7 +255,13 @@ export default function Apis() {
             field: "type",
             headerName: "Type",
             flex: 0.5,
-            minWidth: 200,
+            minWidth: 150,
+        },
+        {
+            field: "service",
+            headerName: "Service",
+            flex: 0.2,
+            minWidth: 150,
         },
         {
             field: "data_repository_title",
@@ -228,7 +273,7 @@ export default function Apis() {
             field: "action",
             headerName: "Action",
             sortable: false,
-            flex: 3,
+            flex: 2,
             minWidth: 250,
             renderCell: (params) => (
                 <>
@@ -236,6 +281,7 @@ export default function Apis() {
                         disabled={params.row.deleted_at ? true : false}
                         variant="contained"
                         color="success"
+                        size="small"
                         style={{ marginRight: 8 }}
                         onClick={() => handleOpenRunDrawer(params.row.id)}
                     >
@@ -244,6 +290,7 @@ export default function Apis() {
                     <Button
                         disabled={params.row.deleted_at ? true : false}
                         color="primary"
+                        size="small"
                         variant="contained"
                         style={{ marginRight: 8 }}
                         onClick={() => handleOpenDetailsDrawer(params.row.id)}
@@ -254,6 +301,7 @@ export default function Apis() {
                         disabled={params.row.deleted_at ? true : false}
                         variant="contained"
                         color="primary"
+                        size="small"
                         component={Link}
                         href={`/apis/editor/${params.row.id}`}
                         style={{ marginRight: 8 }}
@@ -262,6 +310,7 @@ export default function Apis() {
                     </Button>
                     <Button
                         variant="contained"
+                        size="small"
                         color={params.row.deleted_at ? "secondary" : "error"}
                         style={{ marginRight: 8 }}
                         onClick={() =>

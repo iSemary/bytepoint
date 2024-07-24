@@ -33,6 +33,6 @@ class TemplateController extends ApiController
     public function store(int $id, StoreTemplateRequest $storeTemplateRequest) {
         $validatedData = $storeTemplateRequest->validated();
         $api = $this->templateService->store($id, $validatedData);
-        return $this->return(200, 'Api Template saved successfully', ['api' => $api]);
+        return $this->return(200, 'Api Template saved successfully', ['api' => $api['api']]);
     }
 }

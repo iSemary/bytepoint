@@ -2,7 +2,7 @@
 
 namespace Modules\Api\Services;
 
-use Exception;
+use App\Constants\ApiServices;
 use Illuminate\Http\JsonResponse;
 use Modules\Api\Entities\Api;
 use Illuminate\Http\Request;
@@ -11,20 +11,31 @@ use Modules\Api\Entities\ApiPurpose;
 use Modules\DataRepository\Entities\DataRepositoryValue;
 use Modules\DataRepository\Services\DataRepositoryService;
 use Modules\Log\Services\LogService;
+use Modules\Template\Entities\Template;
+use Exception;
 
 class ExternalApiService
 {
     protected $apiService;
     protected $apiValidatorService;
     protected $dataRepositoryService;
+    protected $apiTemplateProcessor;
     protected $logService;
+    protected $service;
 
-    public function __construct(ApiService $apiService, ApiValidatorService $apiValidatorService, DataRepositoryService $dataRepositoryService, LogService $logService)
-    {
+    public function __construct(
+        ApiService $apiService,
+        ApiValidatorService $apiValidatorService,
+        DataRepositoryService $dataRepositoryService,
+        ApiTemplateProcessor $apiTemplateProcessor,
+        LogService $logService
+    ) {
         $this->apiService = $apiService;
         $this->apiValidatorService = $apiValidatorService;
         $this->dataRepositoryService = $dataRepositoryService;
+        $this->apiTemplateProcessor = $apiTemplateProcessor;
         $this->logService = $logService;
+        $this->service = "API";
     }
 
     public function run(int $id, Request $request): JsonResponse
@@ -37,11 +48,11 @@ class ExternalApiService
             // Process the api functionality based on it's purpose 
             $response = $this->process($api, $request);
             // Log the data
-            $this->logService->log("API", $api->title, "INFO", ['request' => $this->formatRequest($request), 'response' => $response], false);
+            $this->logService->log($this->service, $api->title, "INFO", ['request' => $this->formatRequest($request), 'response' => $response], false);
             return response()->json($response, 200);
         } catch (Exception $e) {
             $this->logService->log("API", $api->title, "ERROR", ['message' => $e->getMessage()], true);
-            return response()->json(['message' => "Internal Server Error"], 400);
+            return response()->json(['message' =>  $e->getMessage()], 400);
         }
     }
 
@@ -94,15 +105,22 @@ class ExternalApiService
             $dataRepositoryKeys = $this->dataRepositoryService->returnKeys($api->data_repository_id);
 
             foreach ($dataRepositoryKeys as $dataRepositoryKey) {
-                DataRepositoryValue::create([
-                    'data_repository_key_id' => $dataRepositoryKey->id,
-                    'data_repository_value' => $request->input($dataRepositoryKey->data_repository_key)
-                ]);
+                if ($request->input($dataRepositoryKey->data_repository_key)) {
+                    DataRepositoryValue::create([
+                        'data_repository_key_id' => $dataRepositoryKey->id,
+                        'data_repository_value' => $request->input($dataRepositoryKey->data_repository_key)
+                    ]);
+                }
+            }
+
+            if (in_array($api->service, [ApiServices::Template, ApiServices::CloudService])) {
+                $response = $this->processApiTemplate($api, $request);
+                $this->service = ApiServices::getTitle($api->service);
             }
 
             $response['status'] = Response::HTTP_OK;
             $response['success'] = true;
-            $response['message'] = "Data Stored Successfully";
+            $response['message'] = $this->returnMessageResponse($api, "Data Stored Successfully");
         } else {
             $response['status'] = Response::HTTP_NOT_FOUND;
             $response['success'] = false;
@@ -111,7 +129,7 @@ class ExternalApiService
 
         return $response;
     }
-    
+
     private function formatRequest(Request $request): array
     {
         return [
@@ -123,5 +141,30 @@ class ExternalApiService
             'headers' => $request->headers->all(),
         ];
     }
-    
+
+    private function processApiTemplate(Api $api, Request $request): array
+    {
+        $response = [];
+
+        $template = Template::where("id", $api->template_id)->first();
+
+        switch ($template->type) {
+            case 'ip_to_location':
+                $response = $this->apiTemplateProcessor->ipToLocation($request);
+                break;
+            case 'ocr':
+                $response = $this->apiTemplateProcessor->ocr($api, $request);
+                break;
+            default:
+                break;
+        }
+
+        return $response;
+    }
+
+    private function returnMessageResponse($api, $defaultMessage = "")
+    {
+        $apiResponseMessage = $this->apiService->prepareResponses($api, "message");
+        return $apiResponseMessage ? $apiResponseMessage->response_value : $defaultMessage;
+    }
 }

@@ -164,7 +164,7 @@ class DataRepositoryService
         $dataTypes = [];
         $dataValues = [];
 
-        $requestData = $request->json()->all();
+        $requestData = is_array($request) ?  $request : $request->json()->all();
 
         foreach ($requestData['data'] as $item) {
             $key = $item['key'];

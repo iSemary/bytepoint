@@ -2,6 +2,8 @@
 
 namespace Modules\Api\Services;
 
+use App\Constants\ApiServices;
+use App\Constants\DataTypes;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Modules\Api\Entities\Api;
@@ -78,13 +80,17 @@ class ApiService
             $this->saveHeaders($api->id, $request['headers']);
             $this->saveParameters($api->id, $request['parameters']);
             $this->saveBody($api->id, $request['body_type_id'], $request['body']);
-            if(isset($request['settings'])) {
+            if (isset($request['settings'])) {
                 $this->saveSettings($api->id, $request['settings']);
+            }
+
+            if (isset($request['response'])) {
+                $this->saveResponse($api->id, $request['response']);
             }
 
             // retrieve data
             if ($request['purpose_id'] == 1 && isset($request['data_repository_id'])) {
-                $this->saveResponse($api->id, $request['data_repository_id']);
+                $this->saveDataRepositoryResponse($api->id, $request['data_repository_id']);
             }
 
             $this->saveVersion($api->id);
@@ -124,6 +130,8 @@ class ApiService
             'title' => $request['title'],
             'description' => $request['description'],
             'type' => $request['purpose_id'],
+            'service' => $request['service'],
+            'template_id' => $request['template_id'] ?? null,
             'data_repository_id' => $request['data_repository_id'] ?? null,
             'end_point' => $request['end_point'],
             'method_id' => $request['method_id'],
@@ -157,7 +165,7 @@ class ApiService
         $this->bodyService->store($apiId, $type, $body);
     }
 
-    private function saveResponse($apiId, $dataRepositoryId)
+    private function saveDataRepositoryResponse($apiId, $dataRepositoryId)
     {
         $keys = DataRepositoryKey::where("data_repository_id", $dataRepositoryId)->get();
 
@@ -167,6 +175,20 @@ class ApiService
                     'api_id' => $apiId,
                     'response_key' => $key['data_repository_key'],
                     'data_type_id' => $key['data_type_id'],
+                ]);
+            }
+        }
+    }
+
+    private function saveResponse($apiId, $responses)
+    {
+        foreach ($responses as $response) {
+            if ($response['key'] && $response['key'] != '') {
+                ApiResponse::create([
+                    'api_id' => $apiId,
+                    'response_key' => $response['key'],
+                    'response_value' => $response['value'],
+                    'data_type_id' => DataTypes::STRING,
                 ]);
             }
         }
@@ -258,5 +280,11 @@ class ApiService
         }
 
         return $this->postmanService->collection($apis);
+    }
+
+    public function prepareResponses(Api $api, $key = null)
+    {
+        return $key ? ApiResponse::where("api_id", $api->id)->where("response_key", $key)->first()
+            : ApiResponse::where("api_id", $api->id)->get();
     }
 }

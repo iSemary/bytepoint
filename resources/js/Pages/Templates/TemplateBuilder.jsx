@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import Layout from "../../Layout/Layout";
 import axiosConfig from "../../configs/AxiosConfig";
+import Alert from "../../configs/Alert";
 import LinearProgress from "@mui/material/LinearProgress";
-import { Box, Divider, Grid, TextField, Typography } from "@mui/material";
+import { Box, Grid, TextField, Typography } from "@mui/material";
 import AppIcons from "../../configs/styles/AppIcons";
 import SaveIcon from "@mui/icons-material/Save";
 import ReactJson from "react-json-view";
 import LoginIcon from "@mui/icons-material/Login";
 import LogoutIcon from "@mui/icons-material/Logout";
+import { router } from "@inertiajs/react";
 
 export default function TemplateBuilder({ slug }) {
     const [template, setTemplate] = useState({});
@@ -48,6 +50,29 @@ export default function TemplateBuilder({ slug }) {
 
     const handleSubmit = () => {
         setLoading(true);
+
+        const data = {
+            data_repository_title: dataRepository.title,
+            data_repository_description: dataRepository.description,
+            end_point: api.end_point,
+            api_title: api.title,
+            api_description: api.description,
+        };
+
+        axiosConfig
+            .post(`templates/${template.id}/store`, data)
+            .then((response) => {
+                Alert(response.data.message, "success", 5000);
+                if (response.data.data.api.id)
+                    router.visit(`/apis?id=${response.data.data.api.id}`);
+            })
+            .catch((error) => {
+                Alert(error.response.data.message, "error", 5000);
+                console.error(error);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
     };
 
     const actionButtons = [

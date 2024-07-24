@@ -15,7 +15,7 @@ class ApiResponse extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['api_id', 'response_key', 'data_type_id'];
+    protected $fillable = ['api_id', 'response_key', 'response_value', 'data_type_id'];
 
     public function getActivitylogOptions(): LogOptions
     {

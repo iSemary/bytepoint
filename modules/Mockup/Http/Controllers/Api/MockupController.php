@@ -2,6 +2,7 @@
 
 namespace Modules\Mockup\Http\Controllers\Api;
 
+use App\Constants\ApiServices;
 use App\Http\Controllers\Api\ApiController;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -48,6 +49,7 @@ class MockupController extends ApiController
     public function store(StoreMockupRequest $storeMockupRequest): JsonResponse
     {
         $validatedData = $storeMockupRequest->validated();
+        $validatedData['service'] = ApiServices::Mockup;
         $result = $this->mockupService->store($validatedData);
 
         if ($result['success']) {
