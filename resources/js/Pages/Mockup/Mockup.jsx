@@ -135,12 +135,6 @@ const Mockup = () => {
         }
     }, []);
 
-    // Open run drawer when urlId is set
-    useEffect(() => {
-        if (urlId) {
-            handleOpenRunDrawer(urlId);
-        }
-    }, [urlId]);
     const columns = [
         { field: "id", headerName: "ID" },
         { field: "title", headerName: "Title", width: 550, flex: 2 },

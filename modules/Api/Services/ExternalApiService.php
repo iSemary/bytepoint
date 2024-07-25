@@ -12,6 +12,7 @@ use Modules\DataRepository\Entities\DataRepositoryValue;
 use Modules\DataRepository\Services\DataRepositoryService;
 use Modules\Log\Services\LogService;
 use Modules\Template\Entities\Template;
+use Modules\Mockup\Services\MockupService;
 use Exception;
 
 class ExternalApiService
@@ -20,6 +21,7 @@ class ExternalApiService
     protected $apiValidatorService;
     protected $dataRepositoryService;
     protected $apiTemplateProcessor;
+    protected $mockupService;
     protected $logService;
     protected $service;
 
@@ -28,12 +30,14 @@ class ExternalApiService
         ApiValidatorService $apiValidatorService,
         DataRepositoryService $dataRepositoryService,
         ApiTemplateProcessor $apiTemplateProcessor,
+        MockupService $mockupService,
         LogService $logService
     ) {
         $this->apiService = $apiService;
         $this->apiValidatorService = $apiValidatorService;
         $this->dataRepositoryService = $dataRepositoryService;
         $this->apiTemplateProcessor = $apiTemplateProcessor;
+        $this->mockupService = $mockupService;
         $this->logService = $logService;
         $this->service = "API";
     }
@@ -75,24 +79,28 @@ class ExternalApiService
     {
         $response = [];
 
-        if ($this->dataRepositoryService->hasKeys($api->data_repository_id) && $this->dataRepositoryService->hasValues($api->data_repository_id)) {
-            if ($api->settings->allow_paginator) {
-                $dataRepositoryValues = $this->dataRepositoryService->paginate($api->data_repository_id);
-            } else {
-                $dataRepositoryValues = $this->dataRepositoryService->all($api->data_repository_id);
-            }
-
-            $response = $dataRepositoryValues;
-
-            if ($api->settings->allow_counter) {
-                $response['total'] = $this->dataRepositoryService->count($api->data_repository_id);
-            }
-            $response['status'] = Response::HTTP_OK;
-            $response['success'] = true;
+        if ($api->service == ApiServices::Mockup) {
+            $response = $this->mockupService->simulate($api, $request);
         } else {
-            $response['status'] = Response::HTTP_NOT_FOUND;
-            $response['success'] = false;
-            $response['message'] = "There's no data found in the repository.";
+            if ($this->dataRepositoryService->hasKeys($api->data_repository_id) && $this->dataRepositoryService->hasValues($api->data_repository_id)) {
+                if ($api->settings->allow_paginator) {
+                    $dataRepositoryValues = $this->dataRepositoryService->paginate($api->data_repository_id);
+                } else {
+                    $dataRepositoryValues = $this->dataRepositoryService->all($api->data_repository_id);
+                }
+
+                $response = $dataRepositoryValues;
+
+                if ($api->settings->allow_counter) {
+                    $response['total'] = $this->dataRepositoryService->count($api->data_repository_id);
+                }
+                $response['status'] = Response::HTTP_OK;
+                $response['success'] = true;
+            } else {
+                $response['status'] = Response::HTTP_NOT_FOUND;
+                $response['success'] = false;
+                $response['message'] = "There's no data found in the repository.";
+            }
         }
 
         return $response;

@@ -2,14 +2,16 @@
 
 namespace Modules\Mockup\Services;
 
+use App\Constants\ApiServices;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Modules\Api\Entities\Api;
+use Modules\Api\Entities\ApiResponse;
 use Modules\Api\Entities\Method;
 use Modules\Api\Services\ApiService;
 use Modules\Mockup\Entities\Mockup;
-use stdClass;
 
 class MockupService
 {
@@ -64,11 +66,17 @@ class MockupService
         }
     }
 
-
-    private function prepareBaseApiData($request)
+    /**
+     * Return prepared api data
+     *
+     * @param [type] $request
+     * @return array
+     */
+    private function prepareBaseApiData($request): array
     {
         $api = [];
         $api['title'] = $request['title'] . " Base";
+        $api['service'] = ApiServices::Mockup;
         $api['purpose_id'] = $request['purpose_id'];
         $api['description'] = $request['description'] . " Base";
         $api['method_id'] = $request['base_method_id'];
@@ -80,10 +88,18 @@ class MockupService
 
         return $api;
     }
-    private function prepareMockupApiData($request)
+
+    /**
+     * Return prepared api data
+     *
+     * @param [type] $request
+     * @return array
+     */
+    private function prepareMockupApiData($request): array
     {
         $api = [];
         $api['title'] = $request['title'] . " Mockup";
+        $api['service'] = ApiServices::Mockup;
         $api['purpose_id'] = $request['purpose_id'];
         $api['description'] = $request['description'] . " Mockup";
         $api['method_id'] = $request['mock_method_id'];
@@ -92,6 +108,7 @@ class MockupService
         $api['headers'] = $request['mock_headers'];
         $api['body'] = $request['mock_body'];
         $api['parameters'] = $request['mock_parameters'];
+        $api['mock_response'] = $request['mock_response'];
 
         return $api;
     }
@@ -167,5 +184,66 @@ class MockupService
         } else {
             throw new \Exception("HTTP request failed: " . $response->body());
         }
+    }
+    /**
+     * Simulate the base API behavior
+     *
+     * @param Api $mockupApi
+     * @param Request $request
+     * @return array
+     */
+    public function simulate(Api $mockupApi, Request $request): array
+    {
+        $mockup = Mockup::where("mocked_api_id", $mockupApi->id)->firstOrFail();
+        $baseApi = $this->apiService->prepare($mockup->base_api_id);
+        $method = $this->getMethodTitle($baseApi->method_id);
+
+        $requestData = $this->prepareRequestData($mockupApi, $request);
+        $response = $this->process($baseApi->end_point, $method, ...$requestData);
+
+        return $this->formatResponse($response, $mockupApi);
+    }
+
+    private function getMethodTitle(int $methodId): string
+    {
+        return Method::findOrFail($methodId)->title;
+    }
+
+    private function prepareRequestData(Api $mockupApi, Request $request): array
+    {
+        $requestParts = ['headers', 'parameters', 'body'];
+        $requestData = [];
+
+        foreach ($requestParts as $part) {
+            $requestData[$part] = $this->mapRequestPart($mockupApi->$part, $request);
+        }
+
+        return array_values($requestData);
+    }
+
+    private function mapRequestPart($apiPart, Request $request): array
+    {
+        return $apiPart->mapWithKeys(function ($item) use ($request) {
+            $value = $request->{$item->key} ?? $item->value;
+            return [$item->key => $value];
+        })->toArray();
+    }
+
+    private function formatResponse($response, Api $mockupApi): array
+    {
+        if (!is_array($response)) {
+            return [$response];
+        }
+
+        $apiResponses = ApiResponse::where("api_id", $mockupApi->id)->get();
+
+        return $apiResponses->flatMap(function ($apiResponse) use ($response) {
+            $responseKey = $apiResponse->response_key;
+            $responseValue = $apiResponse->response_value;
+
+            return isset($response[$responseKey])
+                ? [$responseValue => $response[$responseKey]]
+                : [];
+        })->toArray();
     }
 }

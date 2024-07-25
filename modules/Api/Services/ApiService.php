@@ -91,6 +91,10 @@ class ApiService
                 $this->saveResponse($api->id, $request['response']);
             }
 
+            if (isset($request['mock_response'])) {
+                $this->saveMockResponse($api->id, $request['mock_response']);
+            }
+
             // retrieve data
             if ($request['purpose_id'] == 1 && isset($request['data_repository_id'])) {
                 $this->saveDataRepositoryResponse($api->id, $request['data_repository_id']);
@@ -191,6 +195,20 @@ class ApiService
                     'api_id' => $apiId,
                     'response_key' => $response['key'],
                     'response_value' => $response['value'],
+                    'data_type_id' => DataTypes::STRING,
+                ]);
+            }
+        }
+    }
+
+    private function saveMockResponse($apiId, $responses)
+    {
+        foreach ($responses as $key => $value) {
+            if (isset($key) && isset($value) && $key != null) {
+                ApiResponse::create([
+                    'api_id' => $apiId,
+                    'response_key' => $key,
+                    'response_value' => $value,
                     'data_type_id' => DataTypes::STRING,
                 ]);
             }
