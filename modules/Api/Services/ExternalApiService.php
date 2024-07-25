@@ -80,6 +80,7 @@ class ExternalApiService
         $response = [];
 
         if ($api->service == ApiServices::Mockup) {
+            $this->service = "Mockup";
             $response = $this->mockupService->simulate($api, $request);
         } else {
             if ($this->dataRepositoryService->hasKeys($api->data_repository_id) && $this->dataRepositoryService->hasValues($api->data_repository_id)) {
@@ -109,30 +110,36 @@ class ExternalApiService
     private function storeData(Api $api, Request $request): array
     {
         $response = [];
-        if ($this->dataRepositoryService->hasKeys($api->data_repository_id)) {
-            $dataRepositoryKeys = $this->dataRepositoryService->returnKeys($api->data_repository_id);
 
-            foreach ($dataRepositoryKeys as $dataRepositoryKey) {
-                if ($request->input($dataRepositoryKey->data_repository_key)) {
-                    DataRepositoryValue::create([
-                        'data_repository_key_id' => $dataRepositoryKey->id,
-                        'data_repository_value' => $request->input($dataRepositoryKey->data_repository_key)
-                    ]);
-                }
-            }
-
-            if (in_array($api->service, [ApiServices::Template, ApiServices::CloudService])) {
-                $response = $this->processApiTemplate($api, $request);
-                $this->service = ApiServices::getTitle($api->service);
-            }
-
-            $response['status'] = Response::HTTP_OK;
-            $response['success'] = true;
-            $response['message'] = $this->returnMessageResponse($api, "Data Stored Successfully");
+        if ($api->service == ApiServices::Mockup) {
+            $this->service = "Mockup";
+            $response = $this->mockupService->simulate($api, $request);
         } else {
-            $response['status'] = Response::HTTP_NOT_FOUND;
-            $response['success'] = false;
-            $response['message'] = "There's no keys found in the repository.";
+            if ($this->dataRepositoryService->hasKeys($api->data_repository_id)) {
+                $dataRepositoryKeys = $this->dataRepositoryService->returnKeys($api->data_repository_id);
+
+                foreach ($dataRepositoryKeys as $dataRepositoryKey) {
+                    if ($request->input($dataRepositoryKey->data_repository_key)) {
+                        DataRepositoryValue::create([
+                            'data_repository_key_id' => $dataRepositoryKey->id,
+                            'data_repository_value' => $request->input($dataRepositoryKey->data_repository_key)
+                        ]);
+                    }
+                }
+
+                if (in_array($api->service, [ApiServices::Template, ApiServices::CloudService])) {
+                    $response = $this->processApiTemplate($api, $request);
+                    $this->service = ApiServices::getTitle($api->service);
+                }
+
+                $response['status'] = Response::HTTP_OK;
+                $response['success'] = true;
+                $response['message'] = $this->returnMessageResponse($api, "Data Stored Successfully");
+            } else {
+                $response['status'] = Response::HTTP_NOT_FOUND;
+                $response['success'] = false;
+                $response['message'] = "There's no keys found in the repository.";
+            }
         }
 
         return $response;
