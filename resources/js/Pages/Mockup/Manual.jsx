@@ -146,8 +146,8 @@ const Manual = () => {
         }
     }, [mockMethod, mockEndpoint && title && description]);
 
-    const handleMockJsonBodyChange = (edit) => {
-        setMockJsonBody(edit.updated_src);
+    const handleMockJsonResponseChange = (edit) => {
+        setMockResponse(edit.updated_src);
     };
 
     const links = [
@@ -246,7 +246,7 @@ const Manual = () => {
                         <ReactJson
                             src={mockResponse}
                             name={false}
-                            onEdit={handleMockJsonBodyChange}
+                            onEdit={handleMockJsonResponseChange}
                             theme={"monokai"}
                         />
                     </Grid>

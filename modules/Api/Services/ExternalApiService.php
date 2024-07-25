@@ -12,6 +12,7 @@ use Modules\DataRepository\Entities\DataRepositoryValue;
 use Modules\DataRepository\Services\DataRepositoryService;
 use Modules\Log\Services\LogService;
 use Modules\Template\Entities\Template;
+use Modules\Mockup\Services\MockupService;
 use Exception;
 
 class ExternalApiService
@@ -20,6 +21,7 @@ class ExternalApiService
     protected $apiValidatorService;
     protected $dataRepositoryService;
     protected $apiTemplateProcessor;
+    protected $mockupService;
     protected $logService;
     protected $service;
 
@@ -28,12 +30,14 @@ class ExternalApiService
         ApiValidatorService $apiValidatorService,
         DataRepositoryService $dataRepositoryService,
         ApiTemplateProcessor $apiTemplateProcessor,
+        MockupService $mockupService,
         LogService $logService
     ) {
         $this->apiService = $apiService;
         $this->apiValidatorService = $apiValidatorService;
         $this->dataRepositoryService = $dataRepositoryService;
         $this->apiTemplateProcessor = $apiTemplateProcessor;
+        $this->mockupService = $mockupService;
         $this->logService = $logService;
         $this->service = "API";
     }
@@ -75,24 +79,29 @@ class ExternalApiService
     {
         $response = [];
 
-        if ($this->dataRepositoryService->hasKeys($api->data_repository_id) && $this->dataRepositoryService->hasValues($api->data_repository_id)) {
-            if ($api->settings->allow_paginator) {
-                $dataRepositoryValues = $this->dataRepositoryService->paginate($api->data_repository_id);
-            } else {
-                $dataRepositoryValues = $this->dataRepositoryService->all($api->data_repository_id);
-            }
-
-            $response = $dataRepositoryValues;
-
-            if ($api->settings->allow_counter) {
-                $response['total'] = $this->dataRepositoryService->count($api->data_repository_id);
-            }
-            $response['status'] = Response::HTTP_OK;
-            $response['success'] = true;
+        if ($api->service == ApiServices::Mockup) {
+            $this->service = "Mockup";
+            $response = $this->mockupService->simulate($api, $request);
         } else {
-            $response['status'] = Response::HTTP_NOT_FOUND;
-            $response['success'] = false;
-            $response['message'] = "There's no data found in the repository.";
+            if ($this->dataRepositoryService->hasKeys($api->data_repository_id) && $this->dataRepositoryService->hasValues($api->data_repository_id)) {
+                if ($api->settings->allow_paginator) {
+                    $dataRepositoryValues = $this->dataRepositoryService->paginate($api->data_repository_id);
+                } else {
+                    $dataRepositoryValues = $this->dataRepositoryService->all($api->data_repository_id);
+                }
+
+                $response = $dataRepositoryValues;
+
+                if ($api->settings->allow_counter) {
+                    $response['total'] = $this->dataRepositoryService->count($api->data_repository_id);
+                }
+                $response['status'] = Response::HTTP_OK;
+                $response['success'] = true;
+            } else {
+                $response['status'] = Response::HTTP_NOT_FOUND;
+                $response['success'] = false;
+                $response['message'] = "There's no data found in the repository.";
+            }
         }
 
         return $response;
@@ -101,30 +110,36 @@ class ExternalApiService
     private function storeData(Api $api, Request $request): array
     {
         $response = [];
-        if ($this->dataRepositoryService->hasKeys($api->data_repository_id)) {
-            $dataRepositoryKeys = $this->dataRepositoryService->returnKeys($api->data_repository_id);
 
-            foreach ($dataRepositoryKeys as $dataRepositoryKey) {
-                if ($request->input($dataRepositoryKey->data_repository_key)) {
-                    DataRepositoryValue::create([
-                        'data_repository_key_id' => $dataRepositoryKey->id,
-                        'data_repository_value' => $request->input($dataRepositoryKey->data_repository_key)
-                    ]);
-                }
-            }
-
-            if (in_array($api->service, [ApiServices::Template, ApiServices::CloudService])) {
-                $response = $this->processApiTemplate($api, $request);
-                $this->service = ApiServices::getTitle($api->service);
-            }
-
-            $response['status'] = Response::HTTP_OK;
-            $response['success'] = true;
-            $response['message'] = $this->returnMessageResponse($api, "Data Stored Successfully");
+        if ($api->service == ApiServices::Mockup) {
+            $this->service = "Mockup";
+            $response = $this->mockupService->simulate($api, $request);
         } else {
-            $response['status'] = Response::HTTP_NOT_FOUND;
-            $response['success'] = false;
-            $response['message'] = "There's no keys found in the repository.";
+            if ($this->dataRepositoryService->hasKeys($api->data_repository_id)) {
+                $dataRepositoryKeys = $this->dataRepositoryService->returnKeys($api->data_repository_id);
+
+                foreach ($dataRepositoryKeys as $dataRepositoryKey) {
+                    if ($request->input($dataRepositoryKey->data_repository_key)) {
+                        DataRepositoryValue::create([
+                            'data_repository_key_id' => $dataRepositoryKey->id,
+                            'data_repository_value' => $request->input($dataRepositoryKey->data_repository_key)
+                        ]);
+                    }
+                }
+
+                if (in_array($api->service, [ApiServices::Template, ApiServices::CloudService])) {
+                    $response = $this->processApiTemplate($api, $request);
+                    $this->service = ApiServices::getTitle($api->service);
+                }
+
+                $response['status'] = Response::HTTP_OK;
+                $response['success'] = true;
+                $response['message'] = $this->returnMessageResponse($api, "Data Stored Successfully");
+            } else {
+                $response['status'] = Response::HTTP_NOT_FOUND;
+                $response['success'] = false;
+                $response['message'] = "There's no keys found in the repository.";
+            }
         }
 
         return $response;

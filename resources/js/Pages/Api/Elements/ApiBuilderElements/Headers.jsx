@@ -3,6 +3,7 @@ import { Box, Grid, TextField, Button, IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CreatableSelect from "react-select/creatable";
 import ReactSelectDarkMode from "../../../../configs/styles/ReactSelectDarkMode";
+import AuthorizationKeySelector from "./AuthorizationKeySelector";
 
 function Headers({
     apiHeaders,
@@ -10,7 +11,7 @@ function Headers({
     handleHeaderChange,
     addHeader,
     removeHeader,
-    disabled = false
+    disabled = false,
 }) {
     const handleChange = (index, newValue, actionMeta) => {
         if (actionMeta.action === "create-option") {
@@ -22,6 +23,15 @@ function Headers({
             handleHeaderChange(index, createdHeader);
         } else {
             handleHeaderChange(index, newValue);
+        }
+    };
+
+    const handleHeaderKeyChange = (index, key, newValue, actionMeta) => {
+        console.log(index);
+        if (actionMeta.action === "create-option") {
+            handleHeaderChange(index, key, newValue.value, null);
+        } else {
+            handleHeaderChange(index, key, "", newValue.value);
         }
     };
 
@@ -57,7 +67,7 @@ function Headers({
                     <Grid item xs={6}>
                         <CreatableSelect
                             value={options.find(
-                                (option) => option.label === header.key.label
+                                (option) => option.label === header?.key?.label
                             )}
                             onChange={(newValue, actionMeta) =>
                                 handleChange(index, newValue, actionMeta)
@@ -70,18 +80,27 @@ function Headers({
                         />
                     </Grid>
                     <Grid item xs={4}>
-                        <TextField
-                            label="Value"
-                            value={header.value}
-                            onChange={(e) =>
-                                handleHeaderChange(
-                                    index,
-                                    header.key,
-                                    e.target.value
-                                )
-                            }
-                            fullWidth
-                        />
+                        {header?.key?.label == "Authorization" ? (
+                            <AuthorizationKeySelector
+                                disabled={disabled}
+                                header={header}
+                                index={index}
+                                handleHeaderKeyChange={handleHeaderKeyChange}
+                            />
+                        ) : (
+                            <TextField
+                                label="Value"
+                                value={header.value}
+                                onChange={(e) =>
+                                    handleHeaderChange(
+                                        index,
+                                        header.key,
+                                        e.target.value
+                                    )
+                                }
+                                fullWidth
+                            />
+                        )}
                     </Grid>
                     {removeHeader && (
                         <Grid item xs={2}>

@@ -39,6 +39,7 @@ class StoreMockupRequest extends FormRequest
             'mock_headers' => 'array',
             'mock_body' => 'array',
             'mock_parameters' => 'array',
+            'mock_response' => 'array',
         ];
     }
 }

@@ -53,9 +53,13 @@ function ApiBuilder({
     const [dataTypes, setDataTypes] = useState([]);
     const [bodyTypes, setBodyTypes] = useState([]);
 
-    const handleHeaderChange = (index, key, value) => {
+    const handleHeaderChange = (index, key, value, authorization_id = null) => {
         const newHeaders = [...headers];
-        newHeaders[index] = { key, value };
+        newHeaders[index] = {
+            key: typeof key === "string" ? { value: key, label: key } : key,
+            value: value,
+            authorization_id: authorization_id,
+        };
         setHeaders(newHeaders);
     };
 
@@ -203,13 +207,17 @@ function ApiBuilder({
                             onChange={(e) => setEndpoint(e.target.value)}
                             fullWidth
                             required
-                            InputProps={showBaseURL ? {
-                                startAdornment: (
-                                    <InputAdornment position="start">
-                                        {baseURL}
-                                    </InputAdornment>
-                                ),
-                            } : ""}
+                            InputProps={
+                                showBaseURL
+                                    ? {
+                                          startAdornment: (
+                                              <InputAdornment position="start">
+                                                  {baseURL}
+                                              </InputAdornment>
+                                          ),
+                                      }
+                                    : ""
+                            }
                         />
                     </Grid>
                     <Grid item xs={3}>
