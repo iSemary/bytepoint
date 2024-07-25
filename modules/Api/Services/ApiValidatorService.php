@@ -3,9 +3,12 @@
 namespace Modules\Api\Services;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Modules\Api\Entities\Api;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use Modules\Api\Entities\ApiAuthentication;
+use Modules\Key\Entities\Key;
 
 class ApiValidatorService
 {
@@ -37,22 +40,80 @@ class ApiValidatorService
             }
         }
     }
-
     private function validateAuthentication(Api $api, Request $request)
     {
-        if ($api->is_authenticated) {
-            if (!$request->hasHeader("Authorization")) {
-                throw ValidationException::withMessages([
-                    'authentication' => ['This API requires authentication. Authorization header is missing.']
-                ]);
-            }
-
-            if ($request->header("Authorization") != $api->authorization_key) {
-                throw ValidationException::withMessages([
-                    'authentication' => ['Invalid Authorization.']
-                ]);
-            }
+        if (!$api->is_authenticated) {
+            return;
         }
+
+        $this->ensureAuthorizationHeaderExists($request);
+
+        if ($api->authorization_key) {
+            $this->validateDirectAuthorization($request, $api->authorization_key);
+        } else {
+            $this->validateKeyBasedAuthorization($api, $request);
+        }
+    }
+
+    private function ensureAuthorizationHeaderExists(Request $request)
+    {
+        if (!$request->hasHeader("Authorization")) {
+            throw ValidationException::withMessages([
+                'authentication' => ['This API requires authentication. Authorization header is missing.']
+            ]);
+        }
+    }
+
+    private function validateDirectAuthorization(Request $request, string $authorizationKey)
+    {
+        if ($request->header("Authorization") != $authorizationKey) {
+            throw ValidationException::withMessages([
+                'authentication' => ['Invalid Authorization.']
+            ]);
+        }
+    }
+
+    private function validateKeyBasedAuthorization(Api $api, Request $request)
+    {
+        $apiAuthentication = ApiAuthentication::where("api_id", $api->id)->first();
+        if (!$apiAuthentication || !$apiAuthentication->key_id) {
+            return;
+        }
+
+        $key = Key::find($apiAuthentication->key_id);
+        if (!$key) {
+            throw ValidationException::withMessages([
+                'authentication' => ['Invalid Authorization Key.']
+            ]);
+        }
+
+        $this->validateKeyExpiration($key);
+        $this->validateKeyValue($key, $request);
+        $this->updateKeyUsage($key);
+    }
+
+    private function validateKeyExpiration(Key $key)
+    {
+        if ($key->expire_at && $key->expire_at <= time()) {
+            throw ValidationException::withMessages([
+                'authentication' => ['Authorization Key Expired.']
+            ]);
+        }
+    }
+
+    private function validateKeyValue(Key $key, Request $request)
+    {
+        $authorizationValue = Crypt::decryptString($key->key_value);
+        if ($request->header("Authorization") != $authorizationValue) {
+            throw ValidationException::withMessages([
+                'authentication' => ['Invalid Authorization Key.']
+            ]);
+        }
+    }
+
+    private function updateKeyUsage(Key $key)
+    {
+        $key->update(["last_used_at" => now()]);
     }
 
     private function validateParameters(Api $api, Request $request)

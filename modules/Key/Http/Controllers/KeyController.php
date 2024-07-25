@@ -34,6 +34,12 @@ class KeyController extends ApiController
         return $this->return(200, "Keys Fetched Successfully", ['keys' => $keys]);
     }
 
+    public function all()
+    {
+        $keys = Key::withTrashed()->select(['id', 'title'])->orderByDesc('keys.id')->get();
+        return $this->return(200, "Keys Fetched Successfully", ['keys' => $keys]);
+    }
+
     /**
      * Store the Key
      *

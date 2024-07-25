@@ -15,7 +15,7 @@ class ApiAuthentication extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['api_id', 'type', 'authentication_value'];
+    protected $fillable = ['api_id', 'type', 'key_id'];
 
     public function getActivitylogOptions(): LogOptions
     {

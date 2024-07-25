@@ -2,7 +2,6 @@
 
 namespace Modules\Api\Services;
 
-use App\Constants\ApiServices;
 use App\Constants\DataTypes;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
@@ -59,9 +58,13 @@ class ApiService
 
         $api->authorization_key = null;
         if ($api->is_authenticated) {
-            $authorizationKey =  $api->headers->map(function ($header) {
+            $authorizationKey =  $api->headers->map(function ($header) use ($api) {
                 if ($header['key']['label'] == "Authorization") {
-                    return $header['value'];
+                    if ($header['value'] && !empty($header['value'])) {
+                        return $header['value'];
+                    } else {
+                        return null;
+                    }
                 }
             });
 
@@ -143,7 +146,7 @@ class ApiService
     private function checkAuthenticatedHeader($request)
     {
         foreach ($request['headers'] as $header) {
-            if (isset($header['key']['label']) && $header['key']['label'] == 'Authorization' && !empty($header['value'])) {
+            if (isset($header['key']['label']) && $header['key']['label'] == 'Authorization') {
                 return true;
             }
         }

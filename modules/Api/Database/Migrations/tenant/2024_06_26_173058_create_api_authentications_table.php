@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('api_id');
             $table->string('type');
-            $table->text('authentication_value');
+            $table->integer('key_id');
             $table->softDeletes();
             $table->timestamps();
         });
