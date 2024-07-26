@@ -1,19 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Layout from "../../Layout/Layout";
-import {
-    Typography,
-    Box,
-} from "@mui/material";
+import { Typography, Box } from "@mui/material";
 import axiosConfig from "../../configs/AxiosConfig";
 import SaveIcon from "@mui/icons-material/Save";
 import Alert from "../../configs/Alert";
 import { router } from "@inertiajs/react";
 import AITextArea from "../Api/Elements/AI/AITextArea";
 
-export default function Copilot({ id }) {
+export default function Copilot() {
     const [loading, setLoading] = useState(false);
     const [saveLoading, setSaveLoading] = useState(false);
-    const [dataRepository, setDataRepository] = useState({});
     const [columns, setColumns] = useState([]);
     const [rows, setRows] = useState([]);
 
@@ -33,50 +29,22 @@ export default function Copilot({ id }) {
                 values: values,
             });
         });
-
-        axiosConfig
-            .post(`/data-repositories/${id}/fill`, { data: payloadData })
-            .then((response) => {
-                Alert(response.data.message, "success", 3000);
-                router.visit(`/data-repository/create-values/${id}/manual`);
-            })
-            .catch((error) => {
-                Alert(error.response.data.message, "error", 3000);
-                console.error(error);
-                setSaveLoading(false);
-            });
     };
-
-    /**
-     * Get Data Repository
-     */
-    useEffect(() => {
-        axiosConfig
-            .get(`data-repositories/${id}`)
-            .then((response) => {
-                setDataRepository(response.data.data.data_repository);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-    }, [id]);
-
 
     const links = [
         { label: "Home", href: "/", icon: "home" },
         {
-            label: "Data Repository",
-            href: "/data-repository",
-            icon: "data_repository",
+            label: "Apis",
+            href: "/apis",
+            icon: "apis",
         },
         { label: "Create" },
-        { label: dataRepository?.title },
         { label: "Copilot" },
     ];
 
     const actionButtons = [
         {
-            label: "Save Data Values",
+            label: "Save API",
             onClick: handleSaveAIData,
             icon: <SaveIcon />,
             loading: saveLoading,
@@ -86,14 +54,14 @@ export default function Copilot({ id }) {
     return (
         <Layout
             links={links}
-            title="Generate Data Values"
+            title="Generate API & Data Repository"
             actionButtons={
                 columns.length > 0 && rows.length > 0 ? actionButtons : ""
             }
         >
             <Box container>
                 <Typography my={1}>Step 1: Describe your needs</Typography>
-                <AITextArea type={1} />
+                <AITextArea type={2} />
                 <br />
                 {/* <ApiBuilder allowBody={false} /> */}
             </Box>

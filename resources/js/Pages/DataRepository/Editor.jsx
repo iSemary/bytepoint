@@ -19,8 +19,6 @@ export default function Editor({ id }) {
 
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
-    const [type, setType] = useState("");
-    const [types, setTypes] = useState([]);
 
     const [loading, setLoading] = useState(false);
 
@@ -30,7 +28,6 @@ export default function Editor({ id }) {
         const data = {
             title: title,
             description: description,
-            type: type,
         };
         if (id) {
             handleUpdate(data);
@@ -89,7 +86,6 @@ export default function Editor({ id }) {
                     setDescription(
                         response.data.data.data_repository.description
                     );
-                    setType(response.data.data.data_repository.type);
                 })
                 .catch((error) => {
                     console.error(error);
@@ -131,22 +127,6 @@ export default function Editor({ id }) {
                     rows={4}
                     fullWidth
                 />
-                <FormControl variant="outlined" fullWidth>
-                    <InputLabel>Type</InputLabel>
-                    <Select
-                        name="type"
-                        value={type}
-                        onChange={(e) => setType(e.target.value)}
-                        label="Type"
-                    >
-                        <MenuItem value="">
-                            <em>None</em>
-                        </MenuItem>
-                        <MenuItem value="1">Type 1</MenuItem>
-                        <MenuItem value="1">Type 2</MenuItem>
-                        <MenuItem value="1">Type 3</MenuItem>
-                    </Select>
-                </FormControl>
                 <Button
                     type="submit"
                     className="w-fit-content"

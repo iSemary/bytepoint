@@ -13,7 +13,12 @@ Route::group(['middleware' => ['tenant']], function () {
         return Inertia::render('Api/Editor', ['id' => $id]);
     });
 
+    Route::get('/apis/copilot', function () {
+        return Inertia::render('Api/Copilot');
+    });
+    
     Route::get('/apis/create/', function () {
         return Inertia::render('Api/Create');
     });
+
 });
