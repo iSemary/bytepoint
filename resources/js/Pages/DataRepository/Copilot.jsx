@@ -3,6 +3,13 @@ import Layout from "../../Layout/Layout";
 import {
     Typography,
     Box,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper,
 } from "@mui/material";
 import axiosConfig from "../../configs/AxiosConfig";
 import SaveIcon from "@mui/icons-material/Save";
@@ -16,6 +23,7 @@ export default function Copilot({ id }) {
     const [dataRepository, setDataRepository] = useState({});
     const [columns, setColumns] = useState([]);
     const [rows, setRows] = useState([]);
+    const [generatedText, setGeneratedText] = useState(null);
 
     /**
      * Save AI response to the data repository values
@@ -61,6 +69,29 @@ export default function Copilot({ id }) {
             });
     }, [id]);
 
+    useEffect(() => {
+        if (
+            generatedText &&
+            generatedText.data_repository &&
+            generatedText.data_repository.length
+        ) {
+            const generatedDataRepository = generatedText.data_repository;
+    
+            // Extract column names from the first item in data_repository
+            const newColumns = Object.keys(generatedDataRepository[0]);
+            setColumns(newColumns);
+    
+            // Extract row data from all items in data_repository
+            const newRows = generatedDataRepository.map((item) => {
+                return newColumns.map((column) => item[column]);
+            });
+            setRows(newRows);
+        } else {
+            setRows([]);
+            setColumns([]);
+        }
+    }, [generatedText]);
+    
 
     const links = [
         { label: "Home", href: "/", icon: "home" },
@@ -93,10 +124,47 @@ export default function Copilot({ id }) {
         >
             <Box container>
                 <Typography my={1}>Step 1: Describe your needs</Typography>
-                <AITextArea type={1} />
+                <AITextArea
+                    type={1}
+                    generatedText={generatedText}
+                    setGeneratedText={setGeneratedText}
+                />
                 <br />
-                {/* <ApiBuilder allowBody={false} /> */}
             </Box>
+            {columns.length > 0 && rows.length > 0 && (
+                <Box mt={3}>
+                    <Typography variant="h6" gutterBottom>
+                        Generated Data
+                    </Typography>
+                    <TableContainer component={Paper}>
+                        <Table
+                            sx={{ minWidth: 650 }}
+                            aria-label="generated data table"
+                        >
+                            <TableHead>
+                                <TableRow>
+                                    {columns.map((column, index) => (
+                                        <TableCell key={index}>
+                                            {column}
+                                        </TableCell>
+                                    ))}
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {rows.map((row, rowIndex) => (
+                                    <TableRow key={rowIndex}>
+                                        {row.map((cell, cellIndex) => (
+                                            <TableCell key={cellIndex}>
+                                                {cell}
+                                            </TableCell>
+                                        ))}
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Box>
+            )}
         </Layout>
     );
 }

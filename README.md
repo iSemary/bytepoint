@@ -57,12 +57,6 @@ BytePoint CloudAPI is a comprehensive solution for cloud hosting, offering a ran
     php artisan passport:keys
     ```
 
-6. **Install OpenAI**
-
-    ```sh
-    php artisan openai:install
-    ```
-
 7. **Link storage folder to public**
 
     ```

@@ -4,11 +4,10 @@ import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 import axiosConfig from "../../../../configs/AxiosConfig";
 
-export default function AITextArea({ type }) {
+export default function AITextArea({ type, generatedText, setGeneratedText }) {
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [text, setText] = useState("");
     const [timing, setTiming] = useState(null);
-    const [generatedText, setGeneratedText] = useState(null);
     const [startTime, setStartTime] = useState(null);
 
     useEffect(() => {
@@ -42,7 +41,7 @@ export default function AITextArea({ type }) {
         axiosConfig
             .post(`/gpt/generate`, { type: type, text: text })
             .then((response) => {
-                setGeneratedText(response.data.generatedText);
+                setGeneratedText(response.data.data.response);
             })
             .catch((error) => {
                 console.error(error);
@@ -96,11 +95,6 @@ export default function AITextArea({ type }) {
                     </Grid>
                 </Grid>
             </Box>
-            {generatedText && (
-                <Typography variant="body1" sx={{ mt: 2 }}>
-                    Generated Text: {generatedText}
-                </Typography>
-            )}
         </Box>
     );
 }
