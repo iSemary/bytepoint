@@ -27,7 +27,7 @@ class StoreApiRequest extends FormRequest
             'purpose_id' => 'required|numeric',
             'method_id' => 'required|numeric',
             'end_point' => 'required|string|min:3|max:255|unique:apis,end_point',
-            'data_repository_id' => 'required|numeric|exists:data_repositories,id',
+            'data_repository_id' => 'nullable|numeric|exists:data_repositories,id',
             'body_type_id' => 'required|numeric|exists:body_types,id',
             'headers' => 'array',
             'body' => 'array',

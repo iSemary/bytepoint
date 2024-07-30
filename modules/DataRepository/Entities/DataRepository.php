@@ -15,7 +15,7 @@ class DataRepository extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['title', 'description', 'type'];
+    protected $fillable = ['title', 'description'];
 
     public function getActivitylogOptions(): LogOptions
     {

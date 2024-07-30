@@ -21,7 +21,6 @@ class StoreDataRepositoryRequest extends FormRequest {
         return [
             'title' => 'required|max:255',
             'description' => 'nullable|max:4294967295',
-            'type' => 'required|numeric',
         ];
     }
 }

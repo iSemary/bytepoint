@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Layout from "../../Layout/Layout";
 import {
-    CircularProgress,
-    Grid,
+    Typography,
+    Box,
     Table,
     TableBody,
     TableCell,
@@ -10,14 +10,13 @@ import {
     TableHead,
     TableRow,
     Paper,
-    Typography,
-    Box,
 } from "@mui/material";
 import axiosConfig from "../../configs/AxiosConfig";
 import SaveIcon from "@mui/icons-material/Save";
 import Alert from "../../configs/Alert";
 import { router } from "@inertiajs/react";
 import AITextArea from "../Api/Elements/AI/AITextArea";
+import DataTable from "../Api/Elements/DataTable";
 
 export default function Copilot({ id }) {
     const [loading, setLoading] = useState(false);
@@ -25,6 +24,7 @@ export default function Copilot({ id }) {
     const [dataRepository, setDataRepository] = useState({});
     const [columns, setColumns] = useState([]);
     const [rows, setRows] = useState([]);
+    const [generatedText, setGeneratedText] = useState(null);
 
     /**
      * Save AI response to the data repository values
@@ -70,6 +70,28 @@ export default function Copilot({ id }) {
             });
     }, [id]);
 
+    useEffect(() => {
+        if (
+            generatedText &&
+            generatedText.data_repository &&
+            generatedText.data_repository.length
+        ) {
+            const generatedDataRepository = generatedText.data_repository;
+
+            // Extract column names from the first item in data_repository
+            const newColumns = Object.keys(generatedDataRepository[0]);
+            setColumns(newColumns);
+
+            // Extract row data from all items in data_repository
+            const newRows = generatedDataRepository.map((item) => {
+                return newColumns.map((column) => item[column]);
+            });
+            setRows(newRows);
+        } else {
+            setRows([]);
+            setColumns([]);
+        }
+    }, [generatedText]);
 
     const links = [
         { label: "Home", href: "/", icon: "home" },
@@ -101,11 +123,17 @@ export default function Copilot({ id }) {
             }
         >
             <Box container>
-                <Typography my={1}>Step 1: Describe your needs</Typography>
-                <AITextArea type={1} />
+                <Typography my={1}>Describe your needs</Typography>
+                <AITextArea
+                    type={1}
+                    generatedText={generatedText}
+                    setGeneratedText={setGeneratedText}
+                />
                 <br />
-                {/* <ApiBuilder allowBody={false} /> */}
             </Box>
+            {columns.length > 0 && rows.length > 0 && (
+                <DataTable columns={columns} rows={rows} />
+            )}
         </Layout>
     );
 }

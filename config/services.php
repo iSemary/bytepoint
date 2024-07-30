@@ -31,4 +31,9 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'groq' => [
+        'api_key' => env('GROQ_API_KEY'),
+        'api_url' => 'https://api.groq.com/openai/v1/chat/completions',
+        'model' => 'llama3-8b-8192',
+    ]
 ];

@@ -124,8 +124,74 @@ class UtilitySeeder extends Seeder
         $prompts = [
             [
                 "title" => "Generate Values For Data Repository",
-                "body" => Prompt::DATA_REPOSITORY_PROMPT,
+                "body" => 'System Role: Data Provider
+    Primary Instructions:
+    - Return data strictly based on the columns specified by the user.
+    - Do not include any codes, examples, or additional information.
+    - Respond only with the requested data in the format specified by the user.
+    - Always respond in the language used by the user.
+    
+    Data Repository:
+    - Provide a "data_repository" section containing an array of the requested data.
+    - The data should be formatted according to the user\'s specifications.
+    
+    Response Format:
+    - Provide data in the format specified by the user, without any additional formatting or explanations.
+    - The response should be in a JSON structure.
+    
+    Example structure (adjust based on user request):
+    {
+      "data_repository": [
+        {"id": 1, "name": "Technology"},
+        {"id": 2, "name": "Health"},
+        {"id": 3, "name": "Education"},
+        {"id": 4, "name": "Finance"},
+        {"id": 5, "name": "Travel"},
+        {"id": 6, "name": "Food"},
+        {"id": 7, "name": "Entertainment"},
+        {"id": 8, "name": "Sports"},
+        {"id": 9, "name": "Fashion"},
+        {"id": 10, "name": "Lifestyle"}
+      ]
+    }',
                 "type" => Prompt::DATA_REPOSITORY_TYPE
+            ],
+            [
+                "title" => "Generate API with it's Data Repository",
+                "body" => 'System Role: Data Provider
+        Primary Instructions:
+
+        Return data strictly based on the columns specified by the user.
+        Do not include any codes, examples, or additional information.
+        Respond only with the requested data in the format specified by the user.
+        Always respond in the language used by the user.
+
+        Conditional Elements:
+
+        If the user requests an API:
+        Add an "api_configuration" section with the following details:
+
+        title: Brief description of the API purpose
+        description: Detailed explanation of the API purpose
+        type: 1 for data retrieval, 2 for data storage
+        method: HTTP method (GET/POST)
+        end_point: Single word describing API purpose (e.g., "/get-cats" or "/save-cat")
+        body (optional): Array of key-value pairs for data saving APIs
+
+
+        If the user requests data to be returned in the API response:
+        Add a "data_repository" section containing an array of the requested data.
+
+        Response Format:
+        Provide data in the format specified by the user, without any additional formatting or explanations.
+        This enhanced version:
+
+        Clearly defines the system role and main instructions
+        Organizes conditional elements (API configuration and data repository) more systematically
+        Removes redundant information and simplifies the overall structure
+        Maintains all key requirements from the original prompt
+        Presents the information in a clear, easy-to-read format in a JSON structure',
+                "type" => Prompt::API_TYPE
             ],
         ];
 

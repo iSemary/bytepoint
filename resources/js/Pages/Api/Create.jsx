@@ -36,7 +36,7 @@ export default function Create({ id }) {
                     text="AI Copilot"
                     sm="3"
                     description="Unleash your creativity with our AI Copilot"
-                    url={`/editor/copilot/`}
+                    url={`/apis/copilot/`}
                     icon={<AutoAwesomeIcon />}
                 />
             </Grid>

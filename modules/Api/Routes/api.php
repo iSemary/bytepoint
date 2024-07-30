@@ -5,6 +5,7 @@ use Modules\Api\Http\Controllers\ApiController;
 use Modules\Api\Http\Controllers\ExplorerController;
 
 Route::group(['middleware' => ['tenant', 'tenancy.enforce', 'auth:api', '2fa']], function () {
+    Route::post('apis/copilot/store', [ApiController::class, "copilotStore"]);
     Route::get('apis/prepare', [ApiController::class, "prepare"]);
     Route::put('apis/{id}/restore', [ApiController::class, 'restore']);
     Route::get('apis/{id}/sample', [ApiController::class, 'sample']);

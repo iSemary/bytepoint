@@ -2,9 +2,11 @@
 
 namespace Modules\Api\Services;
 
+use App\Constants\ApiServices;
 use App\Constants\DataTypes;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 use Modules\Api\Entities\Api;
 use Modules\Api\Entities\ApiHeader;
 use Modules\Api\Entities\ApiParameter;
@@ -19,6 +21,7 @@ use Modules\Api\Services\Api\BodyService;
 use Modules\Api\Services\Api\HeaderService;
 use Modules\Api\Services\Api\ParameterService;
 use Modules\Api\Services\PostmanService;
+use Modules\DataRepository\Services\DataRepositoryService;
 
 class ApiService
 {
@@ -27,6 +30,7 @@ class ApiService
     public $bodyService;
     public $apiPreparationService;
     public $postmanService;
+    public $dataRepositoryService;
 
     public function __construct(
         HeaderService $headerService,
@@ -34,12 +38,14 @@ class ApiService
         BodyService $bodyService,
         ApiPreparationService $apiPreparationService,
         PostmanService $postmanService,
+        DataRepositoryService $dataRepositoryService,
     ) {
         $this->headerService = $headerService;
         $this->parameterService = $parameterService;
         $this->bodyService = $bodyService;
         $this->apiPreparationService = $apiPreparationService;
         $this->postmanService = $postmanService;
+        $this->dataRepositoryService = $dataRepositoryService;
     }
 
     public function prepare(int $id)
@@ -307,5 +313,26 @@ class ApiService
     {
         return $key ? ApiResponse::where("api_id", $api->id)->where("response_key", $key)->first()
             : ApiResponse::where("api_id", $api->id)->get();
+    }
+
+    public function storeCopilot(Request $request)
+    {
+        $apiConfig = json_decode(json_encode($request->api_configuration), true);
+
+        // Save Data Repository If Exists
+        if ($request->data_repository && count($request->data_repository)) {
+            $dataRepository = DataRepository::create([
+                'title' => $apiConfig['title'] . " Repository",
+                'description' => $apiConfig['title'] . " Repository",
+            ]);
+            $dataRepositoryValues['data'] = $request->data_repository;
+            $this->dataRepositoryService->sync($dataRepository->id, $dataRepositoryValues);
+
+            $apiConfig['data_repository_id'] = $dataRepository->id;
+        }
+
+        $apiConfig['service'] = ApiServices::API;
+
+        return $this->store($apiConfig);
     }
 }

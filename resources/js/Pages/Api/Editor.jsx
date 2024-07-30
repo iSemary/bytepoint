@@ -10,17 +10,10 @@ import Alert from "../../configs/Alert";
 import { router } from "@inertiajs/react";
 
 const Editor = ({ id }) => {
-    const links = [
-        { label: "Home", href: "/", icon: "home" },
-        { label: "Apis", href: "/apis", icon: "apis" },
-        { label: "Create" },
-    ];
-
     const [newId, setNewId] = useState(null);
 
     const [purpose, setPurpose] = useState("");
     const [saveLoading, setSaveLoading] = useState(false);
-    const [fetchAPILoading, setFetchAPILoading] = useState(false);
 
     // Add new state variables
     const [title, setTitle] = useState("");
@@ -152,6 +145,12 @@ const Editor = ({ id }) => {
             handleFetchAPIDetails(id);
         }
     }, [id]);
+
+    const links = [
+        { label: "Home", href: "/", icon: "home" },
+        { label: "Apis", href: "/apis", icon: "apis" },
+        { label: "Create" },
+    ];
 
     const actionButtons = [
         {
