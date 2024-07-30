@@ -16,6 +16,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import Alert from "../../configs/Alert";
 import { router } from "@inertiajs/react";
 import AITextArea from "../Api/Elements/AI/AITextArea";
+import DataTable from "../Api/Elements/DataTable";
 
 export default function Copilot({ id }) {
     const [loading, setLoading] = useState(false);
@@ -76,11 +77,11 @@ export default function Copilot({ id }) {
             generatedText.data_repository.length
         ) {
             const generatedDataRepository = generatedText.data_repository;
-    
+
             // Extract column names from the first item in data_repository
             const newColumns = Object.keys(generatedDataRepository[0]);
             setColumns(newColumns);
-    
+
             // Extract row data from all items in data_repository
             const newRows = generatedDataRepository.map((item) => {
                 return newColumns.map((column) => item[column]);
@@ -91,7 +92,6 @@ export default function Copilot({ id }) {
             setColumns([]);
         }
     }, [generatedText]);
-    
 
     const links = [
         { label: "Home", href: "/", icon: "home" },
@@ -123,7 +123,7 @@ export default function Copilot({ id }) {
             }
         >
             <Box container>
-                <Typography my={1}>Step 1: Describe your needs</Typography>
+                <Typography my={1}>Describe your needs</Typography>
                 <AITextArea
                     type={1}
                     generatedText={generatedText}
@@ -132,38 +132,7 @@ export default function Copilot({ id }) {
                 <br />
             </Box>
             {columns.length > 0 && rows.length > 0 && (
-                <Box mt={3}>
-                    <Typography variant="h6" gutterBottom>
-                        Generated Data
-                    </Typography>
-                    <TableContainer component={Paper}>
-                        <Table
-                            sx={{ minWidth: 650 }}
-                            aria-label="generated data table"
-                        >
-                            <TableHead>
-                                <TableRow>
-                                    {columns.map((column, index) => (
-                                        <TableCell key={index}>
-                                            {column}
-                                        </TableCell>
-                                    ))}
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {rows.map((row, rowIndex) => (
-                                    <TableRow key={rowIndex}>
-                                        {row.map((cell, cellIndex) => (
-                                            <TableCell key={cellIndex}>
-                                                {cell}
-                                            </TableCell>
-                                        ))}
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                </Box>
+                <DataTable columns={columns} rows={rows} />
             )}
         </Layout>
     );

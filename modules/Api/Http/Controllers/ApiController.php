@@ -204,4 +204,21 @@ class ApiController extends ApiControllerHandler
     {
         return $this->externalApiService->run($id, $request);
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function copilotStore(Request $request)
+    {
+        $result = $this->apiService->storeCopilot($request);
+
+        if ($result['success']) {
+            return $this->return(200, "Api Stored Successfully", ['api' => $result['api']]);
+        }
+
+        return $this->return(400, "Api Store Failed", ['message' => $result['message']]);
+    }
 }

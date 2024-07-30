@@ -84,7 +84,7 @@ class ExternalApiService
             $response = $this->mockupService->simulate($api, $request);
         } else {
             if ($this->dataRepositoryService->hasKeys($api->data_repository_id) && $this->dataRepositoryService->hasValues($api->data_repository_id)) {
-                if ($api->settings->allow_paginator) {
+                if (isset($api->settings->allow_paginator) && $api->settings->allow_paginator) {
                     $dataRepositoryValues = $this->dataRepositoryService->paginate($api->data_repository_id);
                 } else {
                     $dataRepositoryValues = $this->dataRepositoryService->all($api->data_repository_id);
@@ -92,7 +92,7 @@ class ExternalApiService
 
                 $response = $dataRepositoryValues;
 
-                if ($api->settings->allow_counter) {
+                if (isset($api->settings->allow_counter) && $api->settings->allow_counter) {
                     $response['total'] = $this->dataRepositoryService->count($api->data_repository_id);
                 }
                 $response['status'] = Response::HTTP_OK;
