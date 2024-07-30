@@ -13,6 +13,7 @@ import { Link, router } from "@inertiajs/react";
 import axiosConfig from "../configs/AxiosConfig";
 import { Box } from "@mui/material";
 import { Token } from "../configs/Token";
+import logo from "../assets/images/icons/logo.svg";
 
 const Header = ({ user, userLoading, open, setOpen }) => {
     const [anchorEl, setAnchorEl] = useState(null);
@@ -36,7 +37,7 @@ const Header = ({ user, userLoading, open, setOpen }) => {
                 Token.explode();
                 setTimeout(() => {
                     setLogoutLoading(false);
-                    window.location.href = '/';
+                    window.location.href = "/";
                 }, 2000);
             })
             .catch((error) => {
@@ -65,9 +66,19 @@ const Header = ({ user, userLoading, open, setOpen }) => {
                     variant="h6"
                     component={Link}
                     href="/"
-                    style={{ flexGrow: 1, textDecoration: "none" }}
+                    style={{
+                        flexGrow: 1,
+                        textDecoration: "none",
+                        display: "flex",
+                        alignItems: "center",
+                    }}
                     color="inherit"
                 >
+                    <img
+                        src={logo}
+                        alt="Logo"
+                        style={{ marginRight: "5px", height: "24px" }}
+                    />
                     {import.meta.env.VITE_APP_NAME}
                 </Typography>
                 {userLoading ? (
