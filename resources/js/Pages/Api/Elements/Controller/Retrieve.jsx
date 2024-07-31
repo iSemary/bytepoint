@@ -73,7 +73,7 @@ function Retrieve({
                                 <FormControlLabel
                                     control={
                                         <Switch
-                                            checked={settings.allow_counter}
+                                            checked={settings?.allow_counter}
                                             onChange={handleSettingChange}
                                             name="allow_counter"
                                         />
@@ -85,7 +85,7 @@ function Retrieve({
                                 <FormControlLabel
                                     control={
                                         <Switch
-                                            checked={settings.allow_paginator}
+                                            checked={settings?.allow_paginator}
                                             onChange={handleSettingChange}
                                             name="allow_paginator"
                                         />

@@ -38,7 +38,7 @@ class UpdateApiRequest extends FormRequest
             'body_type_id' => 'required|numeric|exists:body_types,id',
             'headers' => 'array',
             'body' => 'array',
-            'settings' => 'array',
+            'settings' => 'nullable|array',
             'parameters' => 'array',
         ];
     }

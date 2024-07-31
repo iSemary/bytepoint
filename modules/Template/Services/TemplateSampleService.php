@@ -40,7 +40,7 @@ class TemplateSampleService
                 ];
             case 'ocr':
                 return [
-                    'image' => 'base64_encoded_image_string',
+                    'image' => 'uploaded_image_file',
                 ];
             default:
                 return [];

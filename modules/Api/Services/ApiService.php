@@ -143,7 +143,7 @@ class ApiService
             'title' => $request['title'],
             'description' => $request['description'],
             'type' => $request['purpose_id'],
-            'service' => $request['service'],
+            'service' => $request['service'] ?? ApiServices::API,
             'template_id' => $request['template_id'] ?? null,
             'data_repository_id' => $request['data_repository_id'] ?? null,
             'end_point' => $request['end_point'],
@@ -223,11 +223,13 @@ class ApiService
 
     private function saveSettings($apiId, $settings)
     {
-        ApiSetting::create([
-            'api_id' => $apiId,
-            'allow_counter' => $settings['allow_counter'],
-            'allow_paginator' => $settings['allow_paginator'],
-        ]);
+        if ($settings) {
+            ApiSetting::create([
+                'api_id' => $apiId,
+                'allow_counter' => isset($settings['allow_counter']) ? $settings['allow_counter'] : false,
+                'allow_paginator' => isset($settings['allow_paginator']) ? $settings['allow_paginator'] : false,
+            ]);
+        }
     }
 
     private function updateHeaders($apiId, $headers)
