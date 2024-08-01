@@ -28,6 +28,8 @@ BytePoint offers two primary modes:
 For a visual preview of the project, check out our Figma designs:
 [Open With Figma](https://www.figma.com/design/8A4uOB1LCVCABODcEsNk1f/BytePoint)
 
+<img alt="snapshot" src="https://i.ibb.co/0ryX35C/Screenshot-from-2024-08-01-13-26-40.png" />
+
 ## Features
 
 -   Text to API conversion
