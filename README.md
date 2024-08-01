@@ -25,7 +25,7 @@ BytePoint offers two primary modes:
 
 ## Figma Snapshots
 
-For a visual preview of the project, check out our Figma designs:
+For a visual preview of the project, check out my Figma designs:
 [Open With Figma](https://www.figma.com/design/8A4uOB1LCVCABODcEsNk1f/BytePoint)
 
 <img alt="snapshot" src="https://i.ibb.co/0ryX35C/Screenshot-from-2024-08-01-13-26-40.png" />
@@ -61,7 +61,7 @@ For a visual preview of the project, check out our Figma designs:
 
 ### Postman Collection
 
-To explore the API endpoints, use our Postman collection:
+To explore the API endpoints, use my Postman collection:
 [Open With Postman](https://www.postman.com/petitfour/workspace/bytepoint)
 
 ### Installation
