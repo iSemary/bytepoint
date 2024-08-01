@@ -4,6 +4,7 @@
 
 -   [About](#about)
 -   [Preview](#preview)
+-   [Showcase](#showcase)
 -   [Snapshots](#figma-snapshots)
 -   [Features](#features)
 -   [Get Started](#get-started)
@@ -22,6 +23,11 @@ BytePoint offers two primary modes:
 1. **Copilot Mode**: Assists in building a full RESTful API from scratch to production level. Just describe your use case in a few sentences, and the API is prepared automatically with It's dataset.
 
 2. **Manual Mode**: Allows full control to initiate, import, or fake the dataset for your API, and customize each detail of the API components.
+
+## Showcase
+
+### Click the image below to view the showcase video
+[![Introduction to BytePoint](https://i.ibb.co/phFVsVk/Preview.jpg)](https://player.vimeo.com/video/)
 
 ## Figma Snapshots
 
