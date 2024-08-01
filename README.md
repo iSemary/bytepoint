@@ -1,9 +1,10 @@
-# BytePoint CloudAPI
+# BytePoint: Text to API
 
-BytePoint CloudAPI is a comprehensive solution for cloud hosting, offering a range of powerful features to streamline your development process. With custom endpoints URLs, you can tailor your API to fit your specific needs seamlessly.
+## Table of Contents
 
 -   [About](#about)
 -   [Preview](#preview)
+-   [Snapshots](#figma-snapshots)
 -   [Features](#features)
 -   [Get Started](#get-started)
     -   [Postman Collection](#postman-collection)
@@ -12,63 +13,108 @@ BytePoint CloudAPI is a comprehensive solution for cloud hosting, offering a ran
 
 ## About
 
-BytePoint CloudAPI is a comprehensive solution for cloud hosting, offering a range of powerful features to streamline your development process. With custom endpoints URLs, you can tailor your API to fit your specific needs seamlessly.
+BytePoint is a powerful "Text to API" project built using Laravel and ReactJS, with a touch of Llama 3 magic. It's designed to streamline the process of creating APIs, making it possible to generate a full RESTful API in seconds.
 
-## Postman Collection
+## Preview
 
-[Open With Postman](https://www.postman.com/petitfour/workspace/bytepoint)
+BytePoint offers two primary modes:
 
+1. **Copilot Mode**: Assists in building a full RESTful API from scratch to production level. Just describe your use case in a few sentences, and the API is prepared automatically with It's dataset.
 
-## Figma Snap Shots
+2. **Manual Mode**: Allows full control to initiate, import, or fake the dataset for your API, and customize each detail of the API components.
 
+## Figma Snapshots
+
+For a visual preview of the project, check out our Figma designs:
 [Open With Figma](https://www.figma.com/design/8A4uOB1LCVCABODcEsNk1f/BytePoint)
 
+## Features
 
-## Installation
+-   Text to API conversion
+-   Data Repositories
+-   CRUD Operations API
+-   API Mockups
+-   Pre-prepared API Templates
+-   Integrated Cloud Services
+-   Built-in API Testing
+-   Postman Collection Exports
+-   Key Management for Authorization
+-   Detailed Logs
 
-1. **Install Composer Dependencies**
+### Technologies Used:
 
-    ```sh
+-   Backend: PHP, Laravel
+-   Databases: MySQL, MongoDB
+-   Cloud Services: AWS
+-   Frontend: ReactJS, InertiaJS, Material UI
+-   AI Integration: Llama 3.1
+
+### Architecture and Design Patterns:
+
+-   HMVC (Hierarchical Model-View-Controller)
+-   Multi-tenancy Database
+-   SOLID Principles
+
+## Get Started
+
+### Postman Collection
+
+To explore the API endpoints, use our Postman collection:
+[Open With Postman](https://www.postman.com/petitfour/workspace/bytepoint)
+
+### Installation
+
+1. Clone the repository:
+
+    ```
+    git clone https://github.com/iSemary/bytepoint.git
+    ```
+
+2. Install Composer dependencies:
+
+    ```
     composer install
     ```
 
-2. **Copy Environment File**
+3. Copy the environment file:
 
-    ```sh
+    ```
     cp .env.example .env
     ```
 
-3. **Run Migrations**
+4. Run migrations:
 
-    ```sh
+    ```
     php artisan migrate --path=database/migrations/landlord --database=landlord
     php artisan migrate --path=modules/*/Database/Migrations/landlord --database=landlord
     ```
 
-4. **Seed the Database**
+5. Seed the database:
 
-    ```sh
+    ```
     php artisan db:seed
     ```
 
-5. **Generate Passport Keys**
+6. Generate Passport keys:
 
-    ```sh
+    ```
     php artisan passport:keys
     ```
 
-7. **Link storage folder to public**
+7. Link storage folder to public:
 
     ```
     php artisan storage:link
     ```
 
-8. **Install react Dependencies**
-
-    ```sh
+8. Install React dependencies:
+    ```
     npm install
     ```
 
 ## Contact
 
-For any inquiries or support, please email me at [abdelrahmansamirmostafa@gmail.com](mailto:abdelrahmansamirmostafa@gmail.com) or visit my website at [abdelrahman.online](https://www.abdelrahman.online/).
+For inquiries or support, please contact:
+
+-   Email: [abdelrahmansamirmostafa@gmail.com](mailto:abdelrahmansamirmostafa@gmail.com)
+-   Website: [abdelrahman.online](https://www.abdelrahman.online/)
