@@ -65,6 +65,7 @@ export default function Copilot() {
             );
             setPurpose(generatedText.api_configuration.type);
             setMethod(generatedText.api_configuration.method);
+            setBody(generatedText.api_configuration.body);
         } else {
             setTitle("");
             setDescription("");
