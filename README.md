@@ -27,7 +27,7 @@ BytePoint offers two primary modes:
 ## Showcase
 
 ### Click the image below to view the showcase video
-[![Introduction to BytePoint](https://i.ibb.co/phFVsVk/Preview.jpg)](https://player.vimeo.com/video/)
+[![Introduction to BytePoint](https://i.ibb.co/phFVsVk/Preview.jpg)](https://player.vimeo.com/video/997842783)
 
 ## Figma Snapshots
 
